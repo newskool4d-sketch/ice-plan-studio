@@ -58,9 +58,12 @@ function runGenerator(modelPath, outputPath) {
 }
 
 ipcMain.handle('export-hwpx', async (_event, model) => {
+  // metadata.title은 원본 파일명(예: "계획안.md")을 그대로 담고 있을 수 있어
+  // 확장자를 제거하지 않으면 저장 파일명이 "계획안.md.hwpx"처럼 이중 확장자가 된다.
+  const baseName = (model?.metadata?.title || 'ice-plan-document').replace(/\.(md|txt|hwpx?|iceplan)$/i, '');
   const result = await dialog.showSaveDialog({
     title: 'HWPX로 내보내기',
-    defaultPath: `${model?.metadata?.title || 'ice-plan-document'}.hwpx`,
+    defaultPath: `${baseName}.hwpx`,
     filters: [{ name: 'HWPX 문서', extensions: ['hwpx'] }],
   });
   if (result.canceled || !result.filePath) return { canceled: true };

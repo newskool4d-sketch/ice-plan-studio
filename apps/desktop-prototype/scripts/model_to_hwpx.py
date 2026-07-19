@@ -270,7 +270,10 @@ def build(model_path, output):
     section_path = Path(output).with_suffix('.section0.xml')
     section_path.write_text(section, encoding='utf-8')
     try:
-        doc_title = model.get('metadata', {}).get('title') or 'ICE Plan Studio 문서'
+        # metadata.title은 원본 파일명(예: "계획안.md")을 그대로 담고 있을 수 있어
+        # 확장자를 제거한다 (내부 문서 속성에 ".md"가 그대로 노출되는 것 방지).
+        raw_title = model.get('metadata', {}).get('title') or ''
+        doc_title = re.sub(r'\.(md|txt|hwpx?|iceplan)$', '', raw_title, flags=re.I) or 'ICE Plan Studio 문서'
         subprocess.run([sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', 'gonmun', '--section', str(section_path), '--title', doc_title, '--output', str(output)], check=True)
         if images:
             add_images_to_hwpx(output, images)
