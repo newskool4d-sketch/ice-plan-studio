@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "0.1",
+  "metadata": {
+    "title": ""
+  },
+  "styles": {
+    "coverTitle": {
+      "fontFamily": "맑은 고딕",
+      "fontSizePt": 22,
+      "charPrId": "7"
+    },
+    "heading": {
+      "fontFamily": "맑은 고딕",
+      "fontSizePt": 16,
+      "charPrId": "7"
+    },
+    "body": {
+      "fontFamily": "맑은 고딕",
+      "fontSizePt": 11,
+      "charPrId": "38"
+    },
+    "tableHeader": {
+      "fontFamily": "맑은 고딕",
+      "fontSizePt": 10,
+      "bold": true,
+      "charPrId": "9"
+    },
+    "tableBody": {
+      "fontFamily": "맑은 고딕",
+      "fontSizePt": 10,
+      "charPrId": "0"
+    },
+    "paragraph": {
+      "lineSpacingPercent": 160,
+      "bodyParaPrId": "4",
+      "headingParaPrId": "20",
+      "firstLineIndentHwpUnit": 0,
+      "hangingIndentHwpUnit": 0,
+      "charSpacingPercent": 0
+    }
+  },
+  "layout": {
+    "page": "A4",
+    "table": {
+      "treatAsChar": false,
+      "repeatHeader": true,
+      "splitAcrossPages": true,
+      "overflowStrategy": [
+        "semantic-width",
+        "wrap",
+        "shrink",
+        "split-proposal"
+      ]
+    }
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "2026 읽걷쓰교육 운영 계획"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "추진 방향"
+    },
+    {
+      "type": "paragraph",
+      "text": "학교 현장의 실천을 지원하고 문서 형식을 일관되게 적용한다."
+    },
+    {
+      "type": "table",
+      "header": [
+        "구분",
+        "내용",
+        "담당"
+      ],
+      "rows": [
+        [
+          "1",
+          "기본 계획 수립",
+          "교학팀"
+        ],
+        [
+          "2",
+          "운영 결과 점검",
+          "담당자"
+        ]
+      ],
+      "layout": {
+        "treatAsChar": false,
+        "repeatHeader": true
+      }
+    },
+    {
+      "type": "listItem",
+      "ordered": false,
+      "text": "표는 글자처럼 취급하지 않음"
+    },
+    {
+      "type": "listItem",
+      "ordered": false,
+      "text": "표 머리글은 페이지마다 반복"
+    }
+  ],
+  "ruleFindings": [
+    {
+      "code": "DATE-001",
+      "severity": "warning",
+      "message": "날짜는 YYYY. M. D. 형식으로 표기해야 합니다."
+    },
+    {
+      "code": "END-001",
+      "severity": "warning",
+      "message": "문서 마지막에 끝 표시가 없습니다."
+    }
+  ]
+}

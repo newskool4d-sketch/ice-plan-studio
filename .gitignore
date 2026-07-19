@@ -1,0 +1,27 @@
+node_modules/
+dist/
+out/
+release/
+coverage/
+.cache/
+.vite/
+.npm-cache/
+__pycache__/
+*.pyc
+
+.env
+.env.*
+!.env.example
+
+*.log
+Thumbs.db
+.DS_Store
+
+# 회귀시험 문서는 내부 자료이므로 로컬에서만 사용한다.
+test-data/private/*
+!test-data/private/README.md
+
+# 로컬 편집 세션과 자동 저장 파일
+*.iceplan.autosave
+*.iceplan.snapshot
+

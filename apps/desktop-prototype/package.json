@@ -1,0 +1,54 @@
+{
+  "name": "ice-plan-studio-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "npm run build && electron .",
+    "dist:win": "npm run build && electron-builder --win --dir",
+    "dist:installer": "npm run build && electron-builder --win nsis"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "5.0.4",
+    "vite": "6.4.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "electron": "38.1.0",
+    "electron-builder": "26.0.12"
+  },
+  "build": {
+    "appId": "kr.go.ice.iceplanstudio",
+    "productName": "ICE Plan Studio",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json",
+      "scripts/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ICE Plan Studio"
+    },
+    "asarUnpack": [
+      "scripts/**/*"
+    ]
+  }
+}
