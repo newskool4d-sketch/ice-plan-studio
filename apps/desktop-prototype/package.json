@@ -32,7 +32,10 @@
       "dist/**/*",
       "electron/**/*",
       "package.json",
-      "scripts/**/*"
+      "scripts/**/*",
+      "hwpx-toolkit/**/*",
+      "!scripts/__pycache__",
+      "!hwpx-toolkit/scripts/__pycache__"
     ],
     "win": {
       "target": [
@@ -48,7 +51,8 @@
       "shortcutName": "ICE Plan Studio"
     },
     "asarUnpack": [
-      "scripts/**/*"
+      "scripts/**/*",
+      "hwpx-toolkit/**/*"
     ]
   }
 }

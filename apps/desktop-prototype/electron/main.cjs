@@ -8,6 +8,34 @@ const { spawn } = require('node:child_process');
 const scriptPath = (name) =>
   path.join(__dirname, '..', 'scripts', name).replace('app.asar', 'app.asar.unpacked');
 
+// Python 실행기: py 런처가 없는 PC(파이썬 직접 설치)를 위해 python 폴백을 지원한다.
+function runPython(args, { onStdout } = {}) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const settle = (fn, value) => { if (!settled) { settled = true; fn(value); } };
+    const tryLaunch = (candidates) => {
+      const [command, ...rest] = candidates;
+      const child = spawn(command, args, { windowsHide: true });
+      let stderr = '';
+      child.stderr.on('data', (chunk) => { stderr += chunk.toString(); });
+      if (onStdout) child.stdout.on('data', onStdout);
+      child.on('error', (error) => {
+        if (error.code === 'ENOENT') {
+          if (rest.length) { tryLaunch(rest); return; }
+          settle(reject, new Error('Python을 찾을 수 없습니다. Python 3.11 이상을 설치해 주세요.'));
+          return;
+        }
+        settle(reject, error);
+      });
+      child.on('close', (code) => {
+        if (code === 0) settle(resolve);
+        else settle(reject, new Error(stderr || `변환 실패 (${code})`));
+      });
+    };
+    tryLaunch(['py', 'python']);
+  });
+}
+
 const createWindow = () => {
   const window = new BrowserWindow({
     width: 1440,
@@ -26,14 +54,7 @@ const createWindow = () => {
 };
 
 function runGenerator(modelPath, outputPath) {
-  return new Promise((resolve, reject) => {
-    const script = scriptPath('model_to_hwpx.py');
-    const child = spawn('py', [script, modelPath, outputPath], { windowsHide: true });
-    let stderr = '';
-    child.stderr.on('data', (chunk) => { stderr += chunk.toString(); });
-    child.on('error', reject);
-    child.on('close', (code) => code === 0 ? resolve() : reject(new Error(stderr || `변환 실패 (${code})`)));
-  });
+  return runPython([scriptPath('model_to_hwpx.py'), modelPath, outputPath]);
 }
 
 ipcMain.handle('export-hwpx', async (_event, model) => {
@@ -78,16 +99,11 @@ ipcMain.handle('load-profile', async () => {
 });
 
 ipcMain.handle('extract-hwpx', async (_event, filePath) => {
-  return new Promise((resolve, reject) => {
-    const script = scriptPath('extract_hwpx_text.py');
-    const child = spawn('py', [script, filePath], { windowsHide: true });
-    let stdout = '';
-    let stderr = '';
-    child.stdout.on('data', (chunk) => { stdout += chunk.toString(); });
-    child.stderr.on('data', (chunk) => { stderr += chunk.toString(); });
-    child.on('error', reject);
-    child.on('close', (code) => code === 0 ? resolve({ text: stdout }) : reject(new Error(stderr || `HWPX 추출 실패 (${code})`)));
+  let stdout = '';
+  await runPython([scriptPath('extract_hwpx_text.py'), filePath], {
+    onStdout: (chunk) => { stdout += chunk.toString(); },
   });
+  return { text: stdout };
 });
 
 ipcMain.handle('save-project', async (_event, project) => {

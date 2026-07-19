@@ -184,7 +184,48 @@ TABLE-N·TABLE-HEADER-N)에 한글 제목을 추가해 해소함.
 - 설치본에 `scripts/`(Python 변환기)가 포함되지 않아 설치 후 HWPX 내보내기가 실패하는
   결함 발견 → `build.files`에 `scripts/**/*` 추가, `asarUnpack` 지정,
   `main.cjs`에서 asar → `app.asar.unpacked` 경로 치환 적용.
-- 참고: 설치 대상 PC에 Python(py 런처)과 `hwpx변환` 스킬 경로가 필요하다 (MVP 제약).
+
+## 타 PC 배포성 확보 (2026-07-19)
+
+기존 MVP 제약("설치 대상 PC에 py 런처와 `hwpx변환` 스킬 경로 필요")을 해소한 작업.
+개발자 홈 디렉터리(`C:\Users\홍주형\.agents\skills\hwpx변환`) 절대경로 의존을 제거해,
+**Python 3.11+만 있으면 어떤 PC에서든 설치본이 동작**하도록 만들었다.
+
+### 변경 내용
+
+1. **`hwpx-toolkit/` 벤더링**: 스킬에서 HWPX 생성에 필요한 최소 구성만 앱 내부로 복사
+   — 스크립트 5종(`hwpx_helpers`·`build_hwpx`·`fix_namespaces`·`finalize_hwpx`·`validate`)
+   + 템플릿 2종(base·gonmun, 총 135KB). 출처·수정 내역·동기화 정책은
+   `hwpx-toolkit/VENDORED.md`에 기록.
+2. **lxml 의존 제거**: 벤더링한 `build_hwpx.py`·`validate.py`의 lxml을 stdlib
+   `xml.etree`로 치환. 메타데이터 갱신(`update_metadata`)은 stdlib ET 재직렬화 시
+   네임스페이스 접두사가 `ns0:`으로 오염되는 문제를 피하려고 정규식 텍스트 치환으로
+   재작성 — gonmun 템플릿의 self-closing 태그(`<opf:title/>`)까지 처리(단위 검증:
+   제목·작성자·날짜 3종 + XML 특수문자 이스케이프 + well-formed 유지 확인).
+3. **Pillow 의존 제거**: 표지 이미지 비율 계산을 stdlib PNG(IHDR)/JPEG(SOF) 헤더
+   파서로 대체. 브랜딩 자산 3종 + JPEG 변환본으로 실측 크기 일치 확인.
+4. **`py` 런처 폴백**: `main.cjs`의 Python 스폰을 `py` → `python` 폴백 체인으로 재작성
+   (둘 다 없으면 "Python 3.11 이상을 설치해 주세요" 안내). settled 가드로 이중 응답 방지.
+5. **부수 수정**: `extract_hwpx_text.py` stdout을 UTF-8로 강제 — cp949 콘솔에서
+   `–`·`§` 등 비호환 문자로 크래시하던 버그 + IPC로 한글이 깨져 들어오던 문제 동시 해소.
+6. **패키징**: `build.files`/`asarUnpack`에 `hwpx-toolkit/**/*` 추가, `__pycache__` 제외.
+
+### 검증
+
+| 항목 | 결과 |
+|---|---|
+| 절대경로 정적 스캔(소스 전체) | 통과 — 개발자 홈 경로 참조 0건 (VENDORED.md 출처 표기 제외) |
+| stdlib 이미지 파서 정확성 | 통과 — PNG 3종·JPEG 1종 실측 크기 일치 |
+| fixture 5종 + 표지 테스트 재생성(벤더링 경로) | 통과 — 구조 검증 전부 PASS |
+| 한글 실물 열기 | 통과 — fixture 4종(1페이지) + 표지 테스트(9페이지, 이미지 임베드) 전부 열림·PDF 변환 성공 |
+| 패키징 레이아웃(`app.asar.unpacked`) 직접 실행 | 통과 — 설치본과 동일한 경로 구조에서 변환·검증 성공 |
+| 재빌드 후 CDP 스모크 | 통과 — 콘솔 예외 0건 |
+
+### 남은 배포 요구사항
+
+- **Python 3.11+** (py 런처 또는 PATH의 python) — 유일한 외부 요구사항. 서드파티
+  패키지는 불필요(표준 라이브러리만 사용).
+- 한글(HWP) 열람은 사용자 PC에 한글이 설치되어 있으면 되고, 앱 동작 자체와는 무관.
 
 ## 주요 산출물
 

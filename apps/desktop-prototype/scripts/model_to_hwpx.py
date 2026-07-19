@@ -7,9 +7,11 @@ import sys
 import tempfile
 from pathlib import Path
 
-SKILL = Path(r"C:\Users\홍주형\.agents\skills\hwpx변환")
-SCRIPTS = SKILL / "scripts"
-TEMPLATE_SECTION = SKILL / "templates" / "gonmun" / "section0.xml"
+# 벤더링된 hwpx-toolkit 사용 (타 PC 배포 시 개발자 홈 경로 의존 제거).
+# 원본: ~/.agents/skills/hwpx변환 — 동기화 정책은 hwpx-toolkit/VENDORED.md 참조.
+TOOLKIT = Path(__file__).resolve().parent.parent / "hwpx-toolkit"
+SCRIPTS = TOOLKIT / "scripts"
+TEMPLATE_SECTION = TOOLKIT / "templates" / "gonmun" / "section0.xml"
 sys.path.insert(0, str(SCRIPTS))
 from hwpx_helpers import add_images_to_hwpx, make_image_para, next_id, reset_id, update_content_hpf, xml_escape  # noqa: E402
 
@@ -86,14 +88,41 @@ def decode_data_url_to_tempfile(data_url):
         return tmp.name
 
 
+def read_image_size(path):
+    """PNG/JPEG 픽셀 크기를 표준 라이브러리만으로 읽는다 (Pillow 불필요).
+
+    PNG: 시그니처(8B) 뒤 첫 청크가 IHDR — width/height가 big-endian 4B씩.
+    JPEG: SOF0~SOF15(0xC0~0xCF, 단 C4/C8/CC 제외) 마커의 payload에서
+          [정밀도 1B][height 2B][width 2B].
+    """
+    import struct
+    with open(path, 'rb') as f:
+        head = f.read(24)
+        if head[:8] == b'\x89PNG\r\n\x1a\n' and head[12:16] == b'IHDR':
+            width, height = struct.unpack('>II', head[16:24])
+            return width, height
+        if head[:2] == b'\xff\xd8':  # JPEG SOI
+            f.seek(2)
+            while True:
+                marker = f.read(2)
+                if len(marker) < 2 or marker[0] != 0xFF:
+                    break
+                code = marker[1]
+                if 0xC0 <= code <= 0xCF and code not in (0xC4, 0xC8, 0xCC):
+                    f.read(3)  # length 2B + precision 1B
+                    height, width = struct.unpack('>HH', f.read(4))
+                    return width, height
+                length = struct.unpack('>H', f.read(2))[0]
+                f.seek(length - 2, 1)
+    return None
+
+
 def image_dims_hwpunit(path, max_width_mm, max_height_mm):
     ratio = None
     try:
-        from PIL import Image
-        with Image.open(path) as img:
-            width_px, height_px = img.size
-        if height_px:
-            ratio = width_px / height_px
+        size = read_image_size(path)
+        if size and size[1]:
+            ratio = size[0] / size[1]
     except Exception:
         ratio = None
     if not ratio:
@@ -241,7 +270,8 @@ def build(model_path, output):
     section_path = Path(output).with_suffix('.section0.xml')
     section_path.write_text(section, encoding='utf-8')
     try:
-        subprocess.run([sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', 'gonmun', '--section', str(section_path), '--title', model.get('metadata', {}).get('title', 'ICE Plan Studio 문서'), '--output', str(output)], check=True)
+        doc_title = model.get('metadata', {}).get('title') or 'ICE Plan Studio 문서'
+        subprocess.run([sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', 'gonmun', '--section', str(section_path), '--title', doc_title, '--output', str(output)], check=True)
         if images:
             add_images_to_hwpx(output, images)
             update_content_hpf(output, images)

@@ -31,6 +31,13 @@ Electron 실행 파일은 `release/win-unpacked/ICE Plan Studio.exe`, 설치 파
 - 기관별 CI·슬로건 프로필
 - HWPX 구조 후처리·검증 자동화
 
+## 설치 요구사항
+
+- Windows 10 이상
+- **Python 3.11 이상** (`py` 런처 또는 PATH의 `python`) — HWPX 변환 엔진이 사용.
+  서드파티 패키지는 필요 없습니다(표준 라이브러리만 사용).
+- HWPX 변환 도구는 앱에 내장되어 있어(`hwpx-toolkit/`) 별도 설치가 필요 없습니다.
+
 ## 제한사항
 
 - `.hwp` 바이너리 변환은 지원하지 않습니다. 한글에서 HWPX로 저장한 뒤 불러오세요.
