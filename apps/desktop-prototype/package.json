@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "verify:plan-ir": "node scripts/verify-plan-ir.cjs",
+    "verify:preview-equivalence": "node scripts/verify-preview-equivalence.mjs",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
     "dist:win": "npm run build && electron-builder --win --dir",
@@ -14,9 +16,10 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",
-    "vite": "6.4.2",
+    "kordoc": "4.1.0",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "vite": "6.4.2"
   },
   "devDependencies": {
     "electron": "38.1.0",

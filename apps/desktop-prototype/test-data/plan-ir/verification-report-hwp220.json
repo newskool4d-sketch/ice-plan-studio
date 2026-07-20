@@ -1,0 +1,2713 @@
+{
+  "gate": "plan-ir-input-adapters",
+  "kordoc": {
+    "package": "kordoc",
+    "version": "4.1.0"
+  },
+  "semantic": {
+    "markdownToText": {
+      "passed": true,
+      "mismatches": []
+    },
+    "markdownToHwpx": {
+      "passed": true,
+      "mismatches": []
+    },
+    "hwpToMarkdown": {
+      "passed": true,
+      "mismatches": []
+    },
+    "hwpToText": {
+      "passed": true,
+      "mismatches": []
+    },
+    "hwpToHwpx": {
+      "passed": false,
+      "mismatches": [
+        {
+          "path": "$",
+          "expected": {
+            "approvalStatus": "unapproved",
+            "pageTypes": [],
+            "blocks": [
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "2026. 2."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 2,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_002.jpg)"
+                    ],
+                    [
+                      "학교교육국 초등교육과"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 7,
+                  "cells": [
+                    [
+                      "",
+                      "",
+                      "",
+                      "차  례",
+                      "",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅰ. 추진 근거 및 목적"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "추진 근거"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 「연구대회 관리에 관한 훈령」(교육부훈령), [별표1]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 「공교육 경쟁력 제고방안」(2023.6.21.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 「자율적 수업 혁신 지원방안」(2024.3.12.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ [국정과제 99-5-1] 초중등교육 인문학 및 독서 교육 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 질문 중심 수업ㆍ평가 모형 및 우수사례 등 자료 보급"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "추진 목적"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교육과정에서 추구하는 인간상과 핵심역량을 반영한 학생 참여 중심 수업과 과정 중심 평가가 구현되는 수업 혁신 사례 발굴"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업 혁신의 설계와 실행을 검증하여 학교 현장에서 재현가능한 우수 수업 모델의 공유‧확산 및 학교 수업 문화 개선"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅱ. 추진 경과"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 열린교육실천사례연구발표대회 개최(1999)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교실수업개선실천사례연구발표대회로 명칭 변경(2001)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교실수업개선실천사례연구발표대회 영어 분리 시행(2009)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교실수업개선실천사례연구발표대회(영어 포함) 실시(2015)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 2020년은 COVID19 확산으로 인해 연구대회 미실시"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업혁신사례연구대회로 명칭 변경(2021~)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "출품 서류 간소화, 전국대회 수상자 비율 상향 등(2023, 2024)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 연구대회 출품작 현황 (’23.)907편 → (’24.)1,295편 → (’25.)1,668편"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "심사기준 및 배점, 서류 제출 방법 등 변경(2026)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅲ. 연구대회 개요"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (운영기간) 2026. 2. ~ 2027. 1."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (참가대상) 인천 관내 초･중･고등학교(특수학교 포함) 교원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (출품교과) 교과, 창의적 체험활동 및 융합(교과-교과, 교과-창체) 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 1인 1작품만 참가 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (연구 형태) 개인 연구, 공동연구(2인 이내)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구는 학교급(초/중/고)이 같은 교원 간의 공동연구만 허용"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구의 경우 수업동영상 제출 시 참가 교원 각각 수업동영상을 촬영하여 수업동영상 2개, 수업동영상 요약분 2개 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (주요 내용) 시도대회(예선, ’26.6~8월)을 거쳐 전국대회를 개최하고, 연구 보고서, 수업 동영상 등 심사를 통해 수상작 선정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (심사 방법) 보고서 및 수업 동영상 심사"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(시대회) 출품된 작품 수의 60%내에서 1:1:1의 비율로 1‧2‧3등급 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(전국대회 출품) 시대회 1, 2, 3등급 입상자 전원 전국대회에 추천하고,    전국대회 최종 작품수의 60%내에서 1:1:1 비율로 1‧2‧3등급 결정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (전국대회 수상 특전) 교육부 장관상 수여, 연구실적 평정점* 부여, 우수 수상자 대상 국외 선진 사례연수 기회** 제공"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구실적평정점(교육공무원승진규정)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "** 예산 범위 내에서 심사 결과를 바탕으로 연수 대상자 선정 예정"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅳ. 심사 기준 및 배점"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "1.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "(1차) 연구보고서 심사: 100점"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 세부 기준 및 평가 내용 등은 심사위원회(별도 구성)에서 협의하여 조정 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "2.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "(2차) 수업동영상 심사: 100점"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 세부기준 및 평가 내용 등은 심사위원회(별도 구성)에서 협의하여 조정 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "3.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "감점 항목"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 8,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "감점 항목",
+                      "기준",
+                      "감점 점수"
+                    ],
+                    [
+                      "연구보고서 분량(기준 25쪽)",
+                      "1쪽 이상 ~ 2쪽 미만 초과시",
+                      "0.5"
+                    ],
+                    [
+                      "",
+                      "2쪽 이상 ~ 3쪽 미만 초과시",
+                      "1"
+                    ],
+                    [
+                      "",
+                      "3쪽 이상 ~ 4쪽 미만 초과시",
+                      "1.5"
+                    ],
+                    [
+                      "",
+                      "4쪽 이상 ~",
+                      "2"
+                    ],
+                    [
+                      "[연구보고서] 제본, 인쇄, 표지 등 제출 규정 및 서식 준수",
+                      "규정에 맞지 않을 경우 1건당",
+                      "0.5"
+                    ],
+                    [
+                      "[수업동영상] 주요 단계 안내 등을 위한 자막 처리 외 별도 영상 삽입 등 금지",
+                      "규정에 맞지 않을 경우 1건당",
+                      "1"
+                    ],
+                    [
+                      "[공통] 연구자ㆍ학생 정보 표기(노출) 금지",
+                      "규정에 맞지 않을 경우 1건당",
+                      "1"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구의 경우 연구보고서에 ‘공동연구의 필요성 및 목적’ 미포함 시 2점 감점"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "4.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품 서류 작성 기준: 2026년 3월 ~  ※ 연구실적은 2026년 실적만 인정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구 형태별 출품 서류"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 제출 서류(연구보고서, 수업동영상, 기타 서류) 중 미비한 서류가 있는 경우 심사위원회 협의를 거쳐 심사 대상에서 제외 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "출품 서류 작성 요령"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 연구 보고서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 부록"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업동영상"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "구분"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "작성 및 제출방법"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "비고"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "방법"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪편집 없이 1차시분 수업 전체를 대상으로 녹화 저장한 수업동영상과 함께 수업동영상 요약분(15분)을 제출"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "복수 차시 수업으로 진행한 경우 전 차시 촬영(채점 시 가산점 없음)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "공동연구의 경우 참가 교원 각각 1차시분 전체를 촬영한 영상(원본) 2개, 영상요약본 2개를 제출(미제출 시 심사에서 제외)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구 교원 모두 교수자(코티칭, 팀티칭 등)로서 수업동영상을 각각 촬영해야 함"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪교사와 학생들의 활동을 모두 볼 수 있도록 한 장소에서 고정하여 촬영, 클로즈업 등은 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪수업단계, 핵심활동, 참관 관점 등을 위해 필요한 자막 처리"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 자막 처리 외 별도 영상 삽입 등 금지(미 준수 시 1건당 1점 감점 처리)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 여러 차시의 수업을 편집하여 재구성한 동영상은 심사에서 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 영상(원본) 및 영상요약본을 제출하지 않은 경우 심사에서 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ USB는 라벨 서식[서식5]을 부착한 봉투에 봉하여 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "용량"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪확장자명(형식): mp4"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 동영상 확장자명 철저 준수(미준수 시 심사 대상에서 제외)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪영상규격(권고): 1280×720(HD), 프레임 속도(24fps), 비트심도(8bit), 오디오(128kbps) 등 적정값 고려"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 영상 내 녹음된 음성 일체를 확인 후 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪파일용량(영상(원본), 영상요약본(15분) 모두 포함)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(개인연구) 3 Giga Byte 이하"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(공동연구) 6 Giga Byte 이하"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 영상요약본은 수업 나눔을 위해 연구보고서(PDF)와 합산하여 550MB를 초과하지 않도록 제작"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "예시) 영상(원본) 1.7GB, 영상요약본(15분) 500MB, 연구보고서(PDF) 20MB"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "→ 영상(원본) + 영상요약본 = 2.2GB < 3GB"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "→ 영상요약본 + 연구보고서(PDF) = 520MB < 550MB"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ USB 1개"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅴ. 표절 기준 및 점검 절차"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절 기준"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ ‘연구 윤리 위반 행위’ 4가지 유형(표절, 중복게재, 위조, 변조) 중 한 가지라도 해당되는 경우"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 카피킬러 표절 검사* 결과에서 표절률이 20% 이상인 경우"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절 검사 설정 시, 문서유형에 ‘연구대회/공모자료’를 포함하도록 하며 표절기준은 기본(6어절 이상 및 1문장 이상 일치)으로 설정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 다만, 표절률이 20% 미만이라 하더라도 다음의 경우는 표절로 인정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육과정 재구성 방식, 보고서 핵심 내용, 수업 사진, 학생 소감, 산출물 등이 본인 또는 타인의 작품(저작물)과 동일하거나 유사한 경우"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절 점검 절차"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅵ. 추진 일정"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 일정은 운영 과정에서 변동될 수 있음"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❶ 사전설명회 개최(한국교육과정평가원)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 추후 공문으로 안내"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❷ 전국대회 컨설팅 실시 (시교육청)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (대상) 인천광역시대회 1, 2, 3등급 입상자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (방법) 현장지원단을 매칭하여 1:1 맞춤형 컨설팅 제공"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❸ 전국대회 운영 및 심사[한국교육과정평가원]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (출품작 접수) 시도별 전국대회 참가 교원의 출품서류 접수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "< 제출 서류 (→교육부, 한국교육과정평가원) >"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (출품작 심사) 전국대회 심사위원회에서 초･중등을 나누어 심사하며 예비심사, 연구보고서 심사(1차) 및 수업동영상 심사(2차) 운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 전국대회 현장 실사는 필요하다고 판단될 때 실시함"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 1, 2차 심사별 상세 기준 및 배점은 3~4쪽 참조"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❹ 전국대회 수상예상작 공개 검증[한국교육과정평가원]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (공개검증) 전국대회 심사를 거쳐 선정된 수상예정작은 에듀넷 연구대회 네트워크(http://www.edunet.net)에 2주 이상 공개검증"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(운영목적) 표절(모작, 중복게재), 대리작 등 불공정행위 근절"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (이의신청) 무분별한 무고 방지를 위해 신고자 실명 등을 기입한 이의신청서 접수 시 이의신청위원회 개최를 통해 표절 여부 최종 확인"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ (처리절차) 본인 통보 및 소명기회 부여 → 이의신청위원회 개최"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (기타) 공개검증 및 수상이 확정된 이후라도 표절 등 불공정행위가 발견될 경우, 교육부와 시도교육청은 「연구대회 관리에 관한 훈령」 등 관련 지침에 따라 해당 교원에 대해 제재 조치 시행"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 최종 심사 완료 후 불공정행위 등으로 인하여 수상 대상에서 제외되는 경우 추가 심사를 하지 않으며, 별도 등급 조정도 하지 않음"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 그밖에 운영계획에 명시되지 않거나 별도로 정해지지 않은 사항은 전국대회 심사위원회의 협의를 거쳐 결정함"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅶ. 행정 사항"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "1.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "참가 신청"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "2.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2-1. 연구자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2-2. 교육지원청"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "3.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품 시 유의사항"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 제출된 작품이 수상작으로 선정될 경우, 수상작을 연구대회 네트워크(http://www.edunet.net)에 공개 및 교육자료로 일반화하는데 동의한 것으로 간주하여 탑재"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 복수의 연구대회, 공모전 등에 중복 출품하는 경우가 없도록 확인 후 이상이 없는 경우에만 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 단, 수업혁신사례연구대회 전국대회 출품작 선정을 위한 시도 예선 출품은 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 공정한 경쟁을 저해하는 제반 행위에 대해서는 수상을 취소함"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "❖ 「연구대회 관리에 관한 훈령」(교육부훈령 제516호, 2025.3.18.) 제21조(불공정행위의 관리 및 보고), 제22조(불공정행위의 제재)에 따라 연구대회 출품과정에서 자유롭고 공정한 경쟁을 저해하는 표절, 대리작 등 불공정행위 시 수상 취소, 징계 등 제반 불이익을 당할 수 있으니 연구대회 출품 시 특히 유의"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "전국대회 심사과정 중 표절, 모작 등에 대해 사전점검*을 실시하므로 ‘표절 기준 및 점검 절차’를 충분히 숙지한 후 보고서 작성"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기 출품작 검토, 인터넷, 카피킬러 등을 통해 표절, 모작 등 불공정행위 여부 점검"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절, 모작, 대리 연구물 제출 행위 또는 그 위탁이나 수탁*"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "용역업체나 타인에게 연구보고서 작성을 의뢰하여 대신 작성하게 하는 제반 행위"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "동일 작품을 복수의 연구대회, 공모전 등에 이중으로 출품하는 행위"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구‧시범학교 및 정책연구 결과, 기타 연구대회, 공모전 보고서, 온라인 자료 등의 표절 행위"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "그밖에 연구대회 질서를 어지럽히거나 공정성 제고를 방해하고 운영 효율성을 상실케 할 위험이 있는 행위"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 「연구대회 관리에 관한 훈령」에 따라 취소일로부터 3개 학년도의 모든 연구대회에 출품 자격이 제한됨"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 제출된 작품은 반환하지 않으며, 지적소유권에 관한 사항은 「연구대회 관리에 관한 훈령 제18조」에 따름"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "4.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "관련 각종 서식"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식1] 연구계획서"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "2026학년도 수업혁신사례연구대회 연구계획서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식2] 실사 확인서"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "2026학년도 수업혁신사례연구대회 실사 확인서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 연구보고서에 부착하지 않고 별도 서류로 비전자 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 실사 확인자에게 현장실사(표절, 대리작 등)에 대한 책무성 부여"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 실사 확인자 성명 및 서명 필수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "･ 1차 확인: 학교장"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "･ 2차 확인: 업무 담당 교육전문직원, 공란으로 제출(현장실사 후 작성 예정)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식3] 학교장 추천서  ※ 직인 날인 필수"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "수업혁신사례연구대회 학교장 추천서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "위 사람은 본교 교원으로서 상기 부문에 대하여 본인이 직접 연구"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "실천하였음을 확인하고, 출품자로서 적격하므로 이에 추천합니다."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2026년     월     일"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "학교(기관)장   <직인>"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "인천광역시교육감 귀하"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식4] 출품서약서   ※ 도장 날인 필수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "연구대회 출품 서약서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "본인은 2026학년도 수업혁신사례연구대회에 참가함에 있어 다음 사항을 성실하게 준수하며, 위반 시 불이익이 따를 수 있음을 서약합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "1.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "기존의 출품작품을 표절하거나 대리연구에 의한 작품이 아니고 본인 또는 타인의 선행연구물(학위 취득 실적 포함)과 동일‧유사하지 않으며 현재까지 다른 연구대회에서 수상하지 않았음을 확인합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "2.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "표절, 대리(대행)연구 등 불공정 행위가 발견되는 경우에 관련 규정에 따른 징계 등 제반 조치를 감수하겠습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "3.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "인공지능 도구 등 학습지원 SW 활용 시 학습자의 개인정보, 학습데이터, 연령, 발달 단계 등과 관련하여 교육적‧윤리적 측면 일체를 고려하였습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "4.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품작품이 수상작으로 선정될 경우 수상작에 대한 지적소유권과 관련하여 출품자는 연구대회네트워크 공개 및 교육 자료로서 활용되는데 포괄적으로 동의합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "5.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "연구대회관리에 관한 훈령 및 기타 대회 운영에 따른 제반 사항과 대회 개최조직의 운영 방침 일체를 준수하겠습니다."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2026년     월     일"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "출품자      소   속:              학교"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "직   위(급):"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "성   명:               (인)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "인천광역시교육감 귀하"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식5] 보고서 표지 및 USB 라벨"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 관리번호는 작성하지 않음"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ USB 제출: 편지봉투(표지 축소 부착)에 팀별로 1개, USB라벨(연구주제)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식6] 초상권 동의서 양식(학생용)   ※ 스캔파일 제출(원본 학교 보관)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "참고",
+                      "",
+                      "표절 검사 방법"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "참고",
+                      "",
+                      "2026학년도 교육부 수업혁신사례연구대회 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "2026학년도 교육부 수업혁신사례연구대회 운영 계획(요약)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "(2026.2.10.(화), 교육부 교육과정운영지원과)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구대회 개요"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (목적) 학생의 발달 단계, 흥미 등을 고려한 맞춤형 수업‧평가 방법 적용을 통해 학생의 상호작용이 활발한 수업으로 변화 촉진"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (주최/주관) 교육부･시도교육청 / 한국교육과정평가원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (운영기간) 2026.2. ~ 2027.1."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (참가대상) 전국 초･중･고등학교(특수학교 포함) 교원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (주요내용) 시도대회(예선 2026.6~8월)을 거쳐 전국대회를 개최하고 연구보고서, 수업동영상 등 심사를 통해 수상작 선정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "2026년 주요 변경사항"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 전국대회 출품작(서류) 제출 방법 변경(오프라인 → 온라인)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 연구보고서(1차) 심사 선정 비율 상향(60% → 70%)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 연구보고서와 수업동영상 모두를 균형 있게 심사"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ AI 도구 등 학습지원 SW 활용 출품자 서약 내용(책무성 강화) 포함"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 연구보고서 내 QR은 분량 준수 등 공정성을 고려하여 심사에서 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 수업사례 나눔을 위해 QR을 작성하는 것은 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업동영상 심사는 원본 영상(full version) 활용, 영상 용량 변경"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 수업동영상 합산 용량을 변경(4.7GB → 3GB)하고, 요약본(15분)은 사례 나눔을 위한 에듀넷 탑재 용도(연구보고서(PDF)와 합산하여 550MB 이하)로 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 심사기준 내 평가영역(배점) 조정 및 평가내용 변경"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 교수‧학습과 평가의 균형을 통해 완성도 높은 수업혁신사례 발굴 추진"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "향후 일정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (한국교육과정평가원) 연구대회 사전 설명회 개최(2026.3월)"
+              }
+            ]
+          },
+          "actual": {
+            "approvalStatus": "unapproved",
+            "pageTypes": [],
+            "blocks": [
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "2026. 2."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 2,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_001.jpg)"
+                    ],
+                    [
+                      "학교교육국 초등교육과"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 7,
+                  "cells": [
+                    [
+                      "",
+                      "",
+                      "",
+                      "차 례",
+                      "",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅰ. 추진 근거 및 목적"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "추진 근거"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 「연구대회 관리에 관한 훈령」(교육부훈령), [별표1]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 「공교육 경쟁력 제고방안」(2023.6.21.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 「자율적 수업 혁신 지원방안」(2024.3.12.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ [국정과제 99-5-1] 초중등교육 인문학 및 독서 교육 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 질문 중심 수업ㆍ평가 모형 및 우수사례 등 자료 보급"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "추진 목적"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교육과정에서 추구하는 인간상과 핵심역량을 반영한 학생 참여 중심 수업과 과정 중심 평가가 구현되는 수업 혁신 사례 발굴"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업 혁신의 설계와 실행을 검증하여 학교 현장에서 재현가능한 우수 수업 모델의 공유‧확산 및 학교 수업 문화 개선"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅱ. 추진 경과"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 열린교육실천사례연구발표대회 개최(1999)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교실수업개선실천사례연구발표대회로 명칭 변경(2001)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교실수업개선실천사례연구발표대회 영어 분리 시행(2009)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 교실수업개선실천사례연구발표대회(영어 포함) 실시(2015)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 2020년은 COVID19 확산으로 인해 연구대회 미실시"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업혁신사례연구대회로 명칭 변경(2021~)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "출품 서류 간소화, 전국대회 수상자 비율 상향 등(2023, 2024)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 연구대회 출품작 현황 (’23.)907편 → (’24.)1,295편 → (’25.)1,668편"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "심사기준 및 배점, 서류 제출 방법 등 변경(2026)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅲ. 연구대회 개요"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (운영기간) 2026. 2. ~ 2027. 1."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (참가대상) 인천 관내 초･중･고등학교(특수학교 포함) 교원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (출품교과) 교과, 창의적 체험활동 및 융합(교과-교과, 교과-창체) 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 1인 1작품만 참가 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (연구 형태) 개인 연구, 공동연구(2인 이내)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구는 학교급(초/중/고)이 같은 교원 간의 공동연구만 허용"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구의 경우 수업동영상 제출 시 참가 교원 각각 수업동영상을 촬영하여 수업동영상 2개, 수업동영상 요약분 2개 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (주요 내용) 시도대회(예선, ’26.6~8월)을 거쳐 전국대회를 개최하고, 연구 보고서, 수업 동영상 등 심사를 통해 수상작 선정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (심사 방법) 보고서 및 수업 동영상 심사"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(시대회) 출품된 작품 수의 60%내에서 1:1:1의 비율로 1‧2‧3등급 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(전국대회 출품) 시대회 1, 2, 3등급 입상자 전원 전국대회에 추천하고, 전국대회 최종 작품수의 60%내에서 1:1:1 비율로 1‧2‧3등급 결정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (전국대회 수상 특전) 교육부 장관상 수여, 연구실적 평정점 부여, 우수 수상자 대상 국외 선진 사례연수 기회* 제공"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구실적평정점(교육공무원승진규정)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "** 예산 범위 내에서 심사 결과를 바탕으로 연수 대상자 선정 예정"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅳ. 심사 기준 및 배점"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "1.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "(1차) 연구보고서 심사: 100점"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 세부 기준 및 평가 내용 등은 심사위원회(별도 구성)에서 협의하여 조정 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "2.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "(2차) 수업동영상 심사: 100점"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 세부기준 및 평가 내용 등은 심사위원회(별도 구성)에서 협의하여 조정 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "3.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "감점 항목"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 8,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "감점 항목",
+                      "기준",
+                      "감점 점수"
+                    ],
+                    [
+                      "연구보고서 분량(기준 25쪽)",
+                      "1쪽 이상 ~ 2쪽 미만 초과시",
+                      "0.5"
+                    ],
+                    [
+                      "",
+                      "2쪽 이상 ~ 3쪽 미만 초과시",
+                      "1"
+                    ],
+                    [
+                      "",
+                      "3쪽 이상 ~ 4쪽 미만 초과시",
+                      "1.5"
+                    ],
+                    [
+                      "",
+                      "4쪽 이상 ~",
+                      "2"
+                    ],
+                    [
+                      "[연구보고서] 제본, 인쇄, 표지 등 제출 규정 및 서식 준수",
+                      "규정에 맞지 않을 경우 1건당",
+                      "0.5"
+                    ],
+                    [
+                      "[수업동영상] 주요 단계 안내 등을 위한 자막 처리 외 별도 영상 삽입 등 금지",
+                      "규정에 맞지 않을 경우 1건당",
+                      "1"
+                    ],
+                    [
+                      "[공통] 연구자ㆍ학생 정보 표기(노출) 금지",
+                      "규정에 맞지 않을 경우 1건당",
+                      "1"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구의 경우 연구보고서에 ‘공동연구의 필요성 및 목적’ 미포함 시 2점 감점"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "4.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품 서류 작성 기준: 2026년 3월 ~ ※ 연구실적은 2026년 실적만 인정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구 형태별 출품 서류"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 제출 서류(연구보고서, 수업동영상, 기타 서류) 중 미비한 서류가 있는 경우 심사위원회 협의를 거쳐 심사 대상에서 제외 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "출품 서류 작성 요령"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 연구 보고서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 부록"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업동영상"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "구분"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "작성 및 제출방법"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "비고"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "방법"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪편집 없이 1차시분 수업 전체를 대상으로 녹화 저장한 수업동영상과 함께 수업동영상 요약분(15분)을 제출"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "복수 차시 수업으로 진행한 경우 전 차시 촬영(채점 시 가산점 없음)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "공동연구의 경우 참가 교원 각각 1차시분 전체를 촬영한 영상(원본) 2개, 영상요약본 2개를 제출(미제출 시 심사에서 제외)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 공동연구 교원 모두 교수자(코티칭, 팀티칭 등)로서 수업동영상을 각각 촬영해야 함"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪교사와 학생들의 활동을 모두 볼 수 있도록 한 장소에서 고정하여 촬영, 클로즈업 등은 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪수업단계, 핵심활동, 참관 관점 등을 위해 필요한 자막 처리"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 자막 처리 외 별도 영상 삽입 등 금지(미 준수 시 1건당 1점 감점 처리)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 여러 차시의 수업을 편집하여 재구성한 동영상은 심사에서 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 영상(원본) 및 영상요약본을 제출하지 않은 경우 심사에서 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ USB는 라벨 서식[서식5]을 부착한 봉투에 봉하여 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "용량"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪확장자명(형식): mp4"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 동영상 확장자명 철저 준수(미준수 시 심사 대상에서 제외)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪영상규격(권고): 1280×720(HD), 프레임 속도(24fps), 비트심도(8bit), 오디오(128kbps) 등 적정값 고려"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 영상 내 녹음된 음성 일체를 확인 후 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "▪파일용량(영상(원본), 영상요약본(15분) 모두 포함)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(개인연구) 3 Giga Byte 이하"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(공동연구) 6 Giga Byte 이하"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 영상요약본은 수업 나눔을 위해 연구보고서(PDF)와 합산하여 550MB를 초과하지 않도록 제작"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "예시) 영상(원본) 1.7GB, 영상요약본(15분) 500MB, 연구보고서(PDF) 20MB"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "→ 영상(원본) + 영상요약본 = 2.2GB < 3GB"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "→ 영상요약본 + 연구보고서(PDF) = 520MB < 550MB"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ USB 1개"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅴ. 표절 기준 및 점검 절차"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절 기준"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ ‘연구 윤리 위반 행위’ 4가지 유형(표절, 중복게재, 위조, 변조) 중 한 가지라도 해당되는 경우"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 카피킬러 표절 검사* 결과에서 표절률이 20% 이상인 경우"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절 검사 설정 시, 문서유형에 ‘연구대회/공모자료’를 포함하도록 하며 표절기준은 기본(6어절 이상 및 1문장 이상 일치)으로 설정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 다만, 표절률이 20% 미만이라 하더라도 다음의 경우는 표절로 인정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육과정 재구성 방식, 보고서 핵심 내용, 수업 사진, 학생 소감, 산출물 등이 본인 또는 타인의 작품(저작물)과 동일하거나 유사한 경우"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절 점검 절차"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅵ. 추진 일정"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 일정은 운영 과정에서 변동될 수 있음"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❶ 사전설명회 개최(한국교육과정평가원)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 추후 공문으로 안내"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❷ 전국대회 컨설팅 실시 (시교육청)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (대상) 인천광역시대회 1, 2, 3등급 입상자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (방법) 현장지원단을 매칭하여 1:1 맞춤형 컨설팅 제공"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❸ 전국대회 운영 및 심사[한국교육과정평가원]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (출품작 접수) 시도별 전국대회 참가 교원의 출품서류 접수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "< 제출 서류 (→교육부, 한국교육과정평가원) >"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (출품작 심사) 전국대회 심사위원회에서 초･중등을 나누어 심사하며 예비심사, 연구보고서 심사(1차) 및 수업동영상 심사(2차) 운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 전국대회 현장 실사는 필요하다고 판단될 때 실시함"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 1, 2차 심사별 상세 기준 및 배점은 3~4쪽 참조"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❹ 전국대회 수상예상작 공개 검증[한국교육과정평가원]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (공개검증) 전국대회 심사를 거쳐 선정된 수상예정작은 에듀넷 연구대회 네트워크(http://www.edunet.net)에 2주 이상 공개검증"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "(운영목적) 표절(모작, 중복게재), 대리작 등 불공정행위 근절"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (이의신청) 무분별한 무고 방지를 위해 신고자 실명 등을 기입한 이의신청서 접수 시 이의신청위원회 개최를 통해 표절 여부 최종 확인"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ (처리절차) 본인 통보 및 소명기회 부여 → 이의신청위원회 개최"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (기타) 공개검증 및 수상이 확정된 이후라도 표절 등 불공정행위가 발견될 경우, 교육부와 시도교육청은 「연구대회 관리에 관한 훈령」 등 관련 지침에 따라 해당 교원에 대해 제재 조치 시행"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 최종 심사 완료 후 불공정행위 등으로 인하여 수상 대상에서 제외되는 경우 추가 심사를 하지 않으며, 별도 등급 조정도 하지 않음"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 그밖에 운영계획에 명시되지 않거나 별도로 정해지지 않은 사항은 전국대회 심사위원회의 협의를 거쳐 결정함"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Ⅶ. 행정 사항"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "1.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "참가 신청"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "2.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2-1. 연구자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2-2. 교육지원청"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "3.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품 시 유의사항"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 제출된 작품이 수상작으로 선정될 경우, 수상작을 연구대회 네트워크(http://www.edunet.net)에 공개 및 교육자료로 일반화하는데 동의한 것으로 간주하여 탑재"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 복수의 연구대회, 공모전 등에 중복 출품하는 경우가 없도록 확인 후 이상이 없는 경우에만 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 단, 수업혁신사례연구대회 전국대회 출품작 선정을 위한 시도 예선 출품은 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 공정한 경쟁을 저해하는 제반 행위에 대해서는 수상을 취소함"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "❖ 「연구대회 관리에 관한 훈령」(교육부훈령 제516호, 2025.3.18.) 제21조(불공정행위의 관리 및 보고), 제22조(불공정행위의 제재)에 따라 연구대회 출품과정에서 자유롭고 공정한 경쟁을 저해하는 표절, 대리작 등 불공정행위 시 수상 취소, 징계 등 제반 불이익을 당할 수 있으니 연구대회 출품 시 특히 유의"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "전국대회 심사과정 중 표절, 모작 등에 대해 사전점검*을 실시하므로 ‘표절 기준 및 점검 절차’를 충분히 숙지한 후 보고서 작성"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기 출품작 검토, 인터넷, 카피킬러 등을 통해 표절, 모작 등 불공정행위 여부 점검"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "표절, 모작, 대리 연구물 제출 행위 또는 그 위탁이나 수탁*"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "용역업체나 타인에게 연구보고서 작성을 의뢰하여 대신 작성하게 하는 제반 행위"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "동일 작품을 복수의 연구대회, 공모전 등에 이중으로 출품하는 행위"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구‧시범학교 및 정책연구 결과, 기타 연구대회, 공모전 보고서, 온라인 자료 등의 표절 행위"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "그밖에 연구대회 질서를 어지럽히거나 공정성 제고를 방해하고 운영 효율성을 상실케 할 위험이 있는 행위"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 「연구대회 관리에 관한 훈령」에 따라 취소일로부터 3개 학년도의 모든 연구대회에 출품 자격이 제한됨"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 제출된 작품은 반환하지 않으며, 지적소유권에 관한 사항은 「연구대회 관리에 관한 훈령 제18조」에 따름"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "4.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "관련 각종 서식"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식1] 연구계획서"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "2026학년도 수업혁신사례연구대회 연구계획서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식2] 실사 확인서"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "2026학년도 수업혁신사례연구대회 실사 확인서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 연구보고서에 부착하지 않고 별도 서류로 비전자 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 실사 확인자에게 현장실사(표절, 대리작 등)에 대한 책무성 부여"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 실사 확인자 성명 및 서명 필수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "･ 1차 확인: 학교장"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "･ 2차 확인: 업무 담당 교육전문직원, 공란으로 제출(현장실사 후 작성 예정)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식3] 학교장 추천서 ※ 직인 날인 필수"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 2,
+                "text": "수업혁신사례연구대회 학교장 추천서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "위 사람은 본교 교원으로서 상기 부문에 대하여 본인이 직접 연구"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "실천하였음을 확인하고, 출품자로서 적격하므로 이에 추천합니다."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2026년 월 일"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "학교(기관)장 <직인>"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "인천광역시교육감 귀하"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식4] 출품서약서 ※ 도장 날인 필수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "연구대회 출품 서약서"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "본인은 2026학년도 수업혁신사례연구대회에 참가함에 있어 다음 사항을 성실하게 준수하며, 위반 시 불이익이 따를 수 있음을 서약합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "1.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "기존의 출품작품을 표절하거나 대리연구에 의한 작품이 아니고 본인 또는 타인의 선행연구물(학위 취득 실적 포함)과 동일‧유사하지 않으며 현재까지 다른 연구대회에서 수상하지 않았음을 확인합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "2.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "표절, 대리(대행)연구 등 불공정 행위가 발견되는 경우에 관련 규정에 따른 징계 등 제반 조치를 감수하겠습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "3.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "인공지능 도구 등 학습지원 SW 활용 시 학습자의 개인정보, 학습데이터, 연령, 발달 단계 등과 관련하여 교육적‧윤리적 측면 일체를 고려하였습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "4.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "출품작품이 수상작으로 선정될 경우 수상작에 대한 지적소유권과 관련하여 출품자는 연구대회네트워크 공개 및 교육 자료로서 활용되는데 포괄적으로 동의합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "5.",
+                  "ordered": true,
+                  "level": 0
+                },
+                "text": "연구대회관리에 관한 훈령 및 기타 대회 운영에 따른 제반 사항과 대회 개최조직의 운영 방침 일체를 준수하겠습니다."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "2026년 월 일"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "출품자 소 속: 학교"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "직 위(급):"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "성 명: (인)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "인천광역시교육감 귀하"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식5] 보고서 표지 및 USB 라벨"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 관리번호는 작성하지 않음"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ USB 제출: 편지봉투(표지 축소 부착)에 팀별로 1개, USB라벨(연구주제)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[서식6] 초상권 동의서 양식(학생용) ※ 스캔파일 제출(원본 학교 보관)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "참고",
+                      "",
+                      "표절 검사 방법"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "참고",
+                      "",
+                      "2026학년도 교육부 수업혁신사례연구대회 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "2026학년도 교육부 수업혁신사례연구대회 운영 계획(요약)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "(2026.2.10.(화), 교육부 교육과정운영지원과)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연구대회 개요"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (목적) 학생의 발달 단계, 흥미 등을 고려한 맞춤형 수업‧평가 방법 적용을 통해 학생의 상호작용이 활발한 수업으로 변화 촉진"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (주최/주관) 교육부･시도교육청 / 한국교육과정평가원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (운영기간) 2026.2. ~ 2027.1."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (참가대상) 전국 초･중･고등학교(특수학교 포함) 교원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (주요내용) 시도대회(예선 2026.6~8월)을 거쳐 전국대회를 개최하고 연구보고서, 수업동영상 등 심사를 통해 수상작 선정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "2026년 주요 변경사항"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 전국대회 출품작(서류) 제출 방법 변경(오프라인 → 온라인)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 연구보고서(1차) 심사 선정 비율 상향(60% → 70%)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 연구보고서와 수업동영상 모두를 균형 있게 심사"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ AI 도구 등 학습지원 SW 활용 출품자 서약 내용(책무성 강화) 포함"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 연구보고서 내 QR은 분량 준수 등 공정성을 고려하여 심사에서 제외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 수업사례 나눔을 위해 QR을 작성하는 것은 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 수업동영상 심사는 원본 영상(full version) 활용, 영상 용량 변경"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 수업동영상 합산 용량을 변경(4.7GB → 3GB)하고, 요약본(15분)은 사례 나눔을 위한 에듀넷 탑재 용도(연구보고서(PDF)와 합산하여 550MB 이하)로 제출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ 심사기준 내 평가영역(배점) 조정 및 평가내용 변경"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 교수‧학습과 평가의 균형을 통해 완성도 높은 수업혁신사례 발굴 추진"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "향후 일정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "◦ (한국교육과정평가원) 연구대회 사전 설명회 개최(2026.3월)"
+              },
+              {
+                "role": "image",
+                "type": "image",
+                "image": {
+                  "filename": "image_001.jpg",
+                  "sha256": "57a7996bb7259ef40a566aaaa745fea145cf52d69d527d8a75c445f7c9120ff6"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "inputs": {
+    "md": {
+      "heading": 1,
+      "paragraph": 1,
+      "table": 1,
+      "listItem": 1
+    },
+    "txt": {
+      "heading": 1,
+      "paragraph": 1,
+      "table": 1,
+      "listItem": 1
+    },
+    "hwpx": {
+      "heading": 1,
+      "paragraph": 1,
+      "table": 1,
+      "listItem": 1
+    }
+  },
+  "hwpTextRoundTrip": {
+    "note": "이미지·줄바꿈(또는 |)이 포함된 표 셀은 텍스트 포맷(MD/TXT)에 원천적으로 실을 수 없어 왕복 비교에서 제외했다. 두 항목 모두 hwpSmoke가 원본 파싱 결과로 보존 여부를 별도 검증한다.",
+    "hwpToHwpxNote": "hwpToHwpx는 kordoc의 markdownToHwpx()가 표 셀에 텍스트로 박힌 이미지 참조(예: 표 안 이미지 캡션)를 실제 파일 없이 재해석하면서 자리표시자를 새로 생성해 파일명이 바뀌고, 내부적으로 연속 공백을 정규화하는 것으로 관찰됨 — 우리 어댑터(parseTextToPlanIR/kordocResultToPlanIR) 코드가 아니라 kordoc 자체 왕복 특성. 실사용 MD 입력은 실제 파일 경로를 참조하므로 이 드리프트가 발생하지 않는다. 따라서 hwpSmoke 통과 조건에서 제외하고 참고용으로만 기록한다.",
+    "totalBlocks": 225,
+    "representableBlocks": 186,
+    "skippedImages": 14,
+    "skippedTables": 25
+  },
+  "hwpSmoke": {
+    "passed": true,
+    "imagesPreserved": true,
+    "blocks": {
+      "table": 39,
+      "image": 14,
+      "heading": 4,
+      "listItem": 41,
+      "paragraph": 127
+    },
+    "mergedTableCount": 14,
+    "imageCount": 14,
+    "imageSha256": [
+      "0933079f13608a091c6ad8f2b12d01ad67cb8ba1347d0af27edcd9da42fdb18c",
+      "0b986b64fe02ba390120ec617d3a21c9f63e6924e5f82c3b850df02a185b1e4d",
+      "206d76b14a789211c42dc3645a24d3954a7491cb2eef221841a9460a6af278ff",
+      "2b0d001b654a2a579a38ed845c60fa2e6455fe208b4d7ff1d30fc24bd3095d76",
+      "4d21725fc1d01d09d1e3142c57a64c2f379ae57d68d51c2e07a4802e165649de",
+      "504fa3995f76356aa60f7c0e7ac6589e82e696450408aeb89453dae4bf9e760d",
+      "5a3f5f42a5fff766f5825d057bca9f8a4663219e2a6a61b0957545ee007f79b0",
+      "74fb53bdfb4235982810cfc75a9c030a485f5fabfa10257e914a9672c614a44a",
+      "7699604f9e0606c6f4cce7b368f51c7c7fb23b97b06dc012d07eaf1f9fb59511",
+      "aac348458531dd5ba2d772eb664a1d2415aa8fd917a4ec1acce4519dfc0cb957",
+      "b7c8c0fe15c38494ae60125e2bfe99c83888af5d68575c29fad41d331e208aad",
+      "bc6e9f6d81a317fe8c98d228ee37fd1489d6f3a4536587eac89362d6ab747506",
+      "ebb5a6beb6e5c1938ffe6b023db6bbef583e857f8a02ce66ce72a273bc810600",
+      "f861380d3dcedd1c9cae2a022c6ed1751485160065196e81bf8e02a0d5e8e4c4"
+    ],
+    "diagnostics": []
+  }
+}

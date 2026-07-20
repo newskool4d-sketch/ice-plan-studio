@@ -1,0 +1,5316 @@
+{
+  "gate": "plan-ir-input-adapters",
+  "kordoc": {
+    "package": "kordoc",
+    "version": "4.1.0"
+  },
+  "semantic": {
+    "markdownToText": {
+      "passed": true,
+      "mismatches": []
+    },
+    "markdownToHwpx": {
+      "passed": true,
+      "mismatches": []
+    },
+    "hwpToMarkdown": {
+      "passed": true,
+      "mismatches": []
+    },
+    "hwpToText": {
+      "passed": true,
+      "mismatches": []
+    },
+    "hwpToHwpx": {
+      "passed": false,
+      "mismatches": [
+        {
+          "path": "$",
+          "expected": {
+            "approvalStatus": "unapproved",
+            "pageTypes": [],
+            "blocks": [
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "",
+                      ""
+                    ],
+                    [
+                      "학생맞춤통합지원 체계의 안정적 정착을 위한",
+                      ""
+                    ],
+                    [
+                      "2026 인천 학생맞춤통합지원 기본 계획",
+                      ""
+                    ],
+                    [
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 1,
+                "text": "2026. 2."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 2,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_003.jpg)"
+                    ],
+                    [
+                      "(정책기획조정관)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "사업계획 수립 시 사전검토 항목"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 7,
+                  "cells": [
+                    [
+                      "",
+                      "",
+                      "",
+                      "목  차",
+                      "",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "2026 인천 학생맞춤통합지원 기본 계획 (요약)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "",
+                      "",
+                      ""
+                    ],
+                    [
+                      "2026 인천 학생맞춤통합지원 기본 계획",
+                      "",
+                      ""
+                    ],
+                    [
+                      "",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅰ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "추진 개요"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "1",
+                      "",
+                      "추진 배경"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "◈ 학령인구 수 급감에도 도움이 필요한 학생은 증가"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 학령 인구 수 급감으로 학생 개개인의 성장이 소중한 상황에서 도움이 필요한 학생 수는 증가 추세"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 특히, 위기 학생들은 단일한 어려움이 아니라 학교 폭력, 학업 중단, 심리·정서 문제 등 복합적 위기에 직면한 경우가 다수"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "◈ 사업별‧분절적 지원으로는 학생의 복합적 어려움 해소에 한계"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 기초학력 지원, 심리·정서 지원, 진로, 복지 등 다양한 지원 중이나, 개별적·분절적 지원으로 학생의 복합적 어려움 해소에는 한계"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "< 학생 지원 사업 예시 >"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 개별 사업간 연계 부족으로 중복지원 및 사각지대가 발생하고,  학생 정보 연계 활용 곤란 등으로 종합적 진단·지원 체계 미흡"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "◈ 학교 - 교육청 - 지역사회가 함께 하는 학생 지원 체계 필요"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 담임교사 또는 개별 교직원 1인이 학생 관찰 및 진단, 교내·외 지원 연계까지 담당할 경우, 담당자의 부담 및 책임 과중"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 개별 구성원의 소진을 방지하고, 학교-교육(지원)청-지역사회가 모두 협력하여 학생을 촘촘히 지원하는 통합지원 체계 구축 필요"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "2",
+                      "",
+                      "추진 경과"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2022. 5.) 교육부, 국정과제 84-3. 학생맞춤통합지원 체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2022. 12.) 사회관계장관회의, 학생맞춤통합지원 체계 구축 방안 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 1.) 교육부, 학생맞춤통합지원 체계 구축 방안 안내"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 3.) 2023년 인천 학생맞춤통합지원 기본계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 5.) 학생맞춤통합지원 선도학교 6교 지정(3년)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 12.) 2024년 인천 학생맞춤통합지원 기본계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2024. 3.) 남부, 동부교육지원청 시범교육지원청 운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 12.) 2024년 인천 학생맞춤통합지원 기본계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2024 1.) 학생맞춤통합지원 일반 선도학교 19교 추가 지정(3년)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2024. 4.) 본청, 북부, 서부, 강화교육지원청 시범교육지원청 지정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 1. 21.)「학생맞춤통합지원법」제정·공포"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 2.) 2025년 학생맞춤통합지원 종합계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 5.) 방학 중 사각지대 학생 발견 및 지원 강화 대책 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 7. 14.)「인천광역시교육청학생맞춤통합지원」조례 제정·공포"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 12.)「학생맞춤통합지원법」시행령, 시행규칙 입법예고 완료"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2026. 3. 1.)「학생맞춤통합지원법」전면 시행"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "3",
+                      "",
+                      "추진 근거"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 「학생맞춤통합지원법」"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 2022 교육부 국정과제 84-3. 학생맞춤통합지원 체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 2026년 교육부 학생성장통합지원 사업 계획(2025. 11. 3.)"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅱ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "2025년 주요 추진 성과"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅲ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "학생맞춤통합지원 체계 구축 방향"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "1",
+                      "",
+                      "학생맞춤통합지원 개념"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "【학생맞춤통합지원 사업은 새로운 사업이 아니라 기존 학생지원 사업을 재구조화하는 것임】"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "[기존] 사업별 개별 지원 체계",
+                      "",
+                      "[개선] 학생맞춤통합지원 체계"
+                    ],
+                    [
+                      "![image](image_006.bmp)",
+                      "󰁾",
+                      "![image](image_007.bmp)"
+                    ],
+                    [
+                      "- 분절적 지원으로 중복지원, 사각지대 발생",
+                      "",
+                      "- 다양한 진단 체계를 통해 맞춤형 통합 지원 -"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "2",
+                      "",
+                      "추진 방향"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 전체 학교 구성원이 참여하는 학생맞춤통합지원체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 교육(지원)청·지역사회의 지원 체계 강화를 통해 단위학교 업무 경감"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 교직원 역량 강화 및 현장 소통 활성화로 안정적 정책 기반 바련"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅳ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "목표 및 추진과제"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅴ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "2026년 세부 추진계획"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제1",
+                      "",
+                      "학교 학생맞춤통합지원 기반 조성 및 자율성 확대"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸담임교사-사업담당자 1인이 전담하여 학생 지원",
+                      "",
+                      "▸관리자 중심으로 학교구성원들이 함께 참여·지원"
+                    ],
+                    [
+                      "▸문제가 발견된 이후 사후처방 중심 지원",
+                      "",
+                      "▸학교 모든 구성원 관찰을 통해 조기 발견·개입"
+                    ],
+                    [
+                      "▸사업별·분절적 지원으로 중복지원·사각지대 발생",
+                      "",
+                      "▸사업 간 조정·연계를 통한 학생별 맞춤형 지원"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "1-1",
+                      "학교 학생맞춤통합지원 체계 구축"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교 학생맞춤통합지원 논의절차 마련"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (논의절차 마련) 개별적·분절적 지원 → 학생 맞춤형 지원으로 전환"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교장이 총괄, 교감이 조정‧조율하는 학생 통합지원 논의 절차를 마련(관리자 중심 운영), 기존 교내 위원회(조직) 통합‧활용 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생 사안별 학습·복지·건강·상담·진로 등 관련 교직원이 유동적 참여"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교별 학생 및 교직원 배치 현황 등을 고려하여 기존 팀을 활용하거나 위원회 전환( “(가칭)학생맞춤통합지원팀” 신설도 가능)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (행정업무 경감) 학생 관찰·지원 기록을 일괄 취합하고 학교 내 논의에 활용하도록 나이스(NEIS) 내 기능 신설"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ ’26.3. 희망하는 학교에서 자율 활용 예정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "개별 구성원이 관찰한 내용을 입력하고, 회의에서 일괄 인쇄하여 회의 자료로 활용 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지원 대상 학생 선정·지원 절차"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❶ (관찰·발견) 모든 구성원*이 학생의 학교 생활 전반에서 어려움 관찰"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "담임·교과교사, 부장교사, 영양(교)사, 전문상담(교)사, 교육복지사, 교장·교감 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❷ (통합진단) 단일 지원으로 해결가능한 경우 기존 사업절차에 따라 지원, 복합적·지속적 어려움 등의 경우 학생맞춤통합지원 논의"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_008.bmp)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❸ (통합지원) 학교 구성원 간 논의 결과에 따라, 학습‧진로, 심리‧정서, 건강‧안전, 복지 등 다양한 영역에서 학생별 맞춤 지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "① (학교 내 조정·연계·협력) 학습·진로·심리·정서 등 교내 교육활동· 프로그램 지원 순서나 방식을 조정·연계·협력하여 통합 지원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "진로체험기관 등 학교가 기존 연계하던 지역 자원이 있는 경우 연계 활용"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "② (교육지원청 협조 요청) 학교에서 해결이 어려운 경우, 교육지원청에  지원 요청, 교육지원청에서 각종 사업·지역자원 연계 지원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교 내 지원할 수 있는 자원이 없거나 부족한 경우, 긴급한 위기 상황인 경우 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❹ (사후관리) 학교장 판단 하에 추가 지원하거나 종결 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생 성장·변화 정도 등에 따라 각 지원별 종결 또는 추가 지원 가능"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "1-2",
+                      "학교 내 학생 지원 관련 위원회 통합 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "법적근거",
+                      "",
+                      " 「학생맞춤통합지원법」 제11조제2항"
+                    ],
+                    [
+                      "",
+                      "",
+                      ""
+                    ],
+                    [
+                      "☞ 학교의 장은 지원대상 학생의 선정과 제공·관리하는 지원을 효율적으로 하기 위하여 기존 조직을    활용하거나 통합하여 운영 가능",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (관련 근거)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "「학교 내 각종 위원회 정비 계획 안내」(교육부 교원정책과, ‘24. 3. 19.)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "「2025학년도 학교 업무 경감 및 효율화 종합 계획」 (학교지원단 학교행정지원과-2921,‘25.2.27.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (통합 방안) 위원 구성 등을 통합 수행하여 형식적 운영보다 실질적 안건 심의 중심으로 위원회 구성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 반드시 위원회 명칭이 ‘학생맞춤통합지원위원회’일 필요는 없으며 기존 위원회 활용 가능"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "1-3",
+                      "학생 지원사업 학교기본운영비 통합 배부"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생 지원 관련 사업을 학교기본운영비로 통합 배부하여 단위 학교 예산 편성 및 집행 유연성 제고"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 5,
+                  "cells": [
+                    [
+                      "구분",
+                      "",
+                      "기존 예산",
+                      "![image](image_009.bmp)",
+                      "변경 통합예산"
+                    ],
+                    [
+                      "예산단위",
+                      "",
+                      "사업별 개별 편성",
+                      "",
+                      "통합교부 후 학교 자율 편성"
+                    ],
+                    [
+                      "지원방식",
+                      "",
+                      "사업 중심",
+                      "",
+                      "학생 중심"
+                    ],
+                    [
+                      "의사결정",
+                      "",
+                      "사업담당자 개별 판단",
+                      "",
+                      "각종 위원회(팀) 공동 판단"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (교부항목) 학생맞춤통합지원 체계 구축 운영비, 기초학력-두드림학교 운영, 기초학력-협력강사제, 교육복지우선지원사업학교 운영, 맞춤형학생상담활동지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (교부시기) 2026학년도 학교회계 본예산(학교기본운영비) 교부*"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "「2026학년도 학생맞춤통합지원 통합배부사업 예산 안내」(정책기획조정관-20947,‘25.12.16.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (편성) 해당 항목 예산액 참고하여 학생맞춤통합지원 집행기준 범위 내에서 자율적으로 예산 편성‧집행 [붙임1 사업별 집행기준 참고]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (집행) 학생맞춤통합지원 운영비는 체계 구축 및 협의 등을 위한 예산으로 활용"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기초학력상담 등 개별 사업으로 우선 학생 지원 후, 부족분에 대해 동 예산 활용 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (기대효과) 예산의 자율적·유연성 제고 및 행정 절차의 간소화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생맞춤통합지원 연구 및 사례 공유, 실천공동체로의 성장을 통한 확산"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상) 관내 유·초·중·고·특수학교 교직원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (기간) 2026. 3. ~ 12."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (내용)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원과 관련하여 수업 연계 등 다채로운 주제로 탐구 및 연구"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "2026 교간형 전문적학습공동체 연합 학술제 나눔 활동 참여(2026. 10.~11.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "공동체의 지속적인 연구 활동을 통해 교직원 전문성 신장"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "∙ 분산적 리더십(회장-계획 수립, 총무-예산 집행 등)을 통한 동반 성장 지향"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "∙ 공개 연수, 자체 특강, 수업 성찰, 독서토론, 워크숍, 자료개발 등"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생 성장을 지원하기 위한 공동 연구 및 연구 실천 결과 공유"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "∙ 교간형 전문적학습공동체 연합학술제를 통한 연구 나눔 및 확산 문화 조성"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제2",
+                      "",
+                      "교육(지원)청 현장 밀착 지원 강화"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸교육청 내 개별 센터별 분산 운영",
+                      "",
+                      "▸학생맞춤통합지원 위원회·센터가 총괄·조정"
+                    ],
+                    [
+                      "▸학교 중심 지원으로 고위기 학생 대응 한계",
+                      "",
+                      "▸교육지원청 중심으로 학교·학생 지원 강화"
+                    ],
+                    [
+                      "▸지역 내 인적·물적 자원 활용이 제한적",
+                      "",
+                      "▸지역자원 발굴·연계하여 다양한 자원 충분히 활용"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-1",
+                      "시교육청 학생맞춤통합지원 센터 구축 및 위원회 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시 학생맞춤통합지원센터 구축 및 운영 ('26. 2.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시 학생맞춤통합지원센터 구축) 본청 학생맞춤통합지원센터를 설치하고, 유관 지원 센터(조직)를 총괄‧조정하는 체계 마련"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (공간 통합) 분산되어 있던 주요 지원센터를 통합된 공간으로 이전·구축하여 부서 간 장벽을 허물고 원활한 협업 촉진"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "본청 내 5개 센터* 이전(인천고, '26. 6. 이전 완료)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "위 센터, 학습종합클리닉 센터, 다문화교육지원 센터, 특수교육지원 센터, 결대로 진로 센터(동부)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (주요기능)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "복합 위기 사안 학생 지원에 대한 대책 수립 및 총괄 ‧ 조정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "각 센터 연계 및 컨트롤타워 역할 수행"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기록 정보시스템 운영 총괄 및 개인정보 보호 담당"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지역 학생맞춤통합지원센터 운영 지원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "담당자 역량강화 연수 및 단위학교 컨설팅 총괄"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 지역 협력 체계 기획・추진"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (인력배치) 센터 전담 인력을 배치하여 학생맞춤통합지원 업무를 총괄·운영 → 정책 조정 및 의사 결정 기능 일관성·전문성 확보(′26. 3)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "<학생맞춤통합지원센터 구축(안)>"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시 학생맞춤통합지원위원회 통합·운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (구성) 위원장(부교육감), 부위원장(국장), 위원(교육청․시청 유관 부서장, 시의원, 교원 대표, 학계 전문가 등), 간사 (15명 내외)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학습·복지·건강·진로·상담 등 학생맞춤통합지원 관련 전문성을 갖춘 관계 공무원·전문가·교원 등을 위촉"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (임기) 2년 임기(연임 가능)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방침) 분절적으로 운영되던 각종 위원회를 학생맞춤통합지원위원회로 일원화하여 정책 결정의 효율성 및 일관성 확보"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "본청 교육복지협의회, 학습부진대책 자문위원회, 위기학생 지원위원회, 학생상담운영 지원위원회를 통합 추진 예정(′26. 3.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (주요역할) 학생맞춤통합지원 시책 수립, 기관 간 업무 조정, 센터 지정 등 주요 사항을 심의·의결하는 컨트롤 타워 역할을 수행"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (운영절차)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-2",
+                      "교육지원청 학생맞춤통합지원 센터 및 위원회 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지역 학생맞춤통합지원센터 기능 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (현황) 지원청 내 기존 온이음 센터 활용 운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방향) 온이음 센터를 지역 학생맞춤통합지원센터 거점 공간으로 겸용·활용"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원센터를 학생 지원 의뢰 창구로 단일화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생·학부모·교사가 쉽게 접근 가능한 구조 마련"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "복합 사례의 경우 학생맞춤통합지원센터를 거점으로 관계 부서 협업·연계 기능 강화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육지원청 내 각 센터*는 기존의 기능 및 역할을 유지(온이음센터, Wee센터, 학습종합클리닉센터 등)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지역 학생맞춤통합지원위원회 구성·운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (구성) 위원장(교육장) 포함하여 13명 내외 위원으로 구성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (임기) 2년 임기(연임 가능)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방침) 교육지원청 내에 기존 운영 중인 학생맞춤통합지원 협의체 및 각종 위원회를 활용하여 구성·운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 시 학생맞춤통합지원위원회 운영 방식을 준용"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (주요 역할) 지역 단위 학생맞춤통합지원 사안 심의 및 부서 간 조정 ·협력 사항 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 전담 인력 배치"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (계획) 5개 교육지원청 전담 인력 배치 예정(′26. 9)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 교육지원청 내 분절적으로 운영되는 학생 지원 업무를 학생 중심으로 통합 조정하여 학교 현장 지원 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (역할) 교육지원청 학생맞춤통합지원 체계 구축 및 조정·연계, 운영"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-3",
+                      "교육지원청 학교 현장 지원 강화"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육지원청 단위 학교·학생 지원 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (지원 방안)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "위기 학생 발견 시 1차적으로 교내 학생맞춤통합지원팀을 구성·운영 하거나 위원회를 개최하되 사안*에 따라 1차 회의부터 교육지원청에 개입 요청(유선)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육지원청 담당자가 회의에 참여하거나 외부기관 및 전문가 동행"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "1차 회의에서 해결이 어려운 경우 교육지원청(2차 지원)에 의뢰"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "단순한 사례는 학교 자체 해결이 원칙이나, ①사안이 중한 경우 ②위기 상황인 경우 ③비용이 큰 경우 ④외부기관 협업이 처음인 경우 교육지원청에 협조 요청"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (학생맞춤통합지원 복합위기 학생 의뢰 창구 일원화)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_010.png)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (접수) 학교에서 지원대상 선정‧지원을 요청하는 창구를 학생맞춤통합지원센터로 일원화하고, 각종 양식 등 통합·간소화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (통합진단) 교육지원청 내 유관센터, 지역사회 유관기관 등과 협력하여 대상 학생 선정 여부 및 지원 내용 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육(지원)청에서 학습·복지·건강·진로·상담 등 분야별 전문가 풀 구성, 학교 요청 시 통합 사례 회의에 참여하는 등 실질적 지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (통합지원) 학생맞춤통합지원센터 직접 지원, 교육지원청 내 유관 사업 조정·연계·협력 지원, 지역사회 자원과의 연계 등 맞춤 지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (사후관리) 지원대상 학생에 대하여 모니터링하며 지원 상황을 학교에 공유하고, 상황에 따라 종결 혹은 추가 지원 실시"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[참고] 교육지원청 초등교육과(강화 교육지원과)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 6,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "교육지원청",
+                      "연락처",
+                      "비고"
+                    ],
+                    [
+                      "남부교육지원청(초등교육과)",
+                      "770-0158",
+                      ""
+                    ],
+                    [
+                      "북부교육지원청(초등교육과)",
+                      "510-5435",
+                      ""
+                    ],
+                    [
+                      "동부교육지원청(초등교육과)",
+                      "460-6026",
+                      ""
+                    ],
+                    [
+                      "서부교육지원청(초등교육과)",
+                      "560-6622",
+                      ""
+                    ],
+                    [
+                      "강화교육지원청(교육지원과)",
+                      "930-7756",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-4",
+                      "지역사회 네트워크 발굴·연계"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (지역 자원 발굴) 일반 지자체, 복지관, 병원, 경찰, 아동보호전문기관, 청소년 상담센터 등 지역사회 유관기관과 협력체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (지역 자원 연계) 학교 요청 시 교육지원청에서 지역 자원과 연계하고 후속관리"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (학생맞춤통합지원 누리집 활용) 가이드북 참고하여 여건에 맞게 활용"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 누리집( [https://www.kedi.re.kr/studentsupport/index.do)](https://www.kedi.re.kr/studentsupport/index.do)) 에서 학업, 심리·정서, 돌봄·안전, 건강, 경제 등 지역자원 현황 제공 중"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "《 교육지원청 - 지역자원 협력체계 예시 》"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제3",
+                      "",
+                      "교직원 역량 강화 및 전문 인력 체계 구축"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸학교 구성원의 정책 이해도 및 공감 부족",
+                      "",
+                      "▸연수 확대를 통해 이해도 확산 및 전문성 제고"
+                    ],
+                    [
+                      "▸전문가와 학교현장의 연계 대응 부족",
+                      "",
+                      "▸분야별 전문 인력 구축하여 사례 역량 강화"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "3-1",
+                      "대상별 맞춤형 역량 강화 연수"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "법적근거",
+                      "",
+                      " 「학생맞춤통합지원법」 제14조"
+                    ],
+                    [
+                      "",
+                      "",
+                      ""
+                    ],
+                    [
+                      "☞ 교원 등의 학생맞춤통합지원 업무 및 개인정보보호·관리 전문성을 높이기 위한 정기 연수 실시",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생맞춤통합지원의 정책에 대한 공감 형성 및 이해도 제고"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상별 연수 일정(안))"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (기대 효과)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 이해도를 높이고, 실무에 대한 적용 의지 강화하고 협업의 중요성을 자연스럽게 인식"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "참여자들이 실제 현장에서 활용할 수 있는 실질적인 방법 도출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (초․중등 교감 자격연수 및 1정 자격연수)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "대상 : 교감 및 1정 자격연수 대상자"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수기관 : 인천광역시교육연수원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기간 : 2026. 7."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수방법 : 콘텐츠 제작 온라인 강의 교과목 편성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (신규 교사 직무연수)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "대상 : 신규교사"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수기관 : 인천광역시교육연수원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기간 : 2026. 3."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수방법 : 콘텐츠 제작 온라인 강의 교과목 편성"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "3-3",
+                      "찾아가는 연수 확대 및 강사 인력풀 구성"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 법 전면 시행에 따른 정책 이해도 제고와 현장 밀착 지원 위해 찾아가는 연수 확대 및 강사 인력풀 구성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 4. ~ 11."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (내용)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 방향 및 필요성을 인식하고 구체적 실천 방안 모색"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "통합 사례 과정 학교-교육(지원)청의 역할 수행 시뮬레이션 모의 연수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교 구성원이 전체 참여하여 강의, 토의, 모둠 활동 진행"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 방향에 대한 강의 및 모둠활동을 통한 실천방안 모색"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (강사단 구성) 관내 유․초․중․고 관리자 및 (부장)교사(20명 내외)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "2025년 찾아가는 연수 강사단 및 선도 학교·시범교육 지원청 근무 경험자 중 전문가 연수 이수자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (추진 일정)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "3-4",
+                      "분야별 전문가 인력풀 구성"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 사례 분야별 전문가 인력풀을 구성하여 학교 내 학생맞춤통합지원 사례 회의 시 상담 및 자문 역할 수행"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 3. ~. 2027. 2"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (분야) 심리․정서, 교육복지, 기초학력, 아동학대, 신체건강"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (구성) 전문가 15명 내외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "본청 연계사업 부서 및 교육지원청으로부터 전문가 추천 및 구성"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "인력풀 신청 후 배정된 전문가와 협력하여 맞춤형 지원 제공"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (추진 일정)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "< ’25년 학생맞춤통합지원 업무 추진 사례 >"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 2,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "교원 역량강화 연수(’25.9.)",
+                      "행정실장 연수(’25.12.)",
+                      "유관기관 업무협약(’25.12.)"
+                    ],
+                    [
+                      "![image](image_011.jpg)",
+                      "![image](image_012.jpg)",
+                      "![image](image_013.jpg)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제4",
+                      "",
+                      "현장소통 활성화 및 정책 기반 마련"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸선도학교·시범청 중심의 의견 수렴 한정",
+                      "",
+                      "▸다양한 주체와의 소통을 통한 현장 공감대 확산"
+                    ],
+                    [
+                      "▸정책 안착을 위한 법적·제도적 미비",
+                      "",
+                      "▸법령 개정 및 정책 분석을 통한 정책 고도화"
+                    ],
+                    [
+                      "▸학교 현장 구성원의 인정과 보상 미흡",
+                      "",
+                      "▸업무 담당자의 사기진작과 전문성 제고 확대"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-1",
+                      "우수사례 발굴 및 성과 공유 컨퍼런스"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (우수사례 발굴)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 현장 중심의 우수사례 발굴과 확산을 통한 학생맞춤통합 지원 체계의 안정적 정착 및 신뢰도 제고"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 9.~ 10."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용: 학생맞춤통합지원 현장 모범 사례 발굴"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "활용: 성과 공유 컨퍼런스 공유 및 사례집 발간"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (성과 공유 컨퍼런스 개최)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 우수사례 학교의 운영 성과를 공유하여 2027년 확산 모델 제시"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 11."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "대상: 인천 관내 교직원, 학생, 학부모"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용: 학생맞춤통합지원 우수사례 발표 및 공유"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "학교 현장 중심 운영 모범 모델 확산 방안"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "방법: 사례 중심 발표, 자료 전시, 분과별 토의 등 운영"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-2",
+                      "교육(지원)청 담당자 워크숍 개최"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 담당자의 역할 인식 및 기관 간 협업 체계 강화하여 실행력 제고"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 5."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상) 교육(지원)청 업무 담당자(학교 포함)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (내용)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 운영 방향 및 정책 과제 공유"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기관별 역할 정립 및 협업 절차 점검"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 방향 및 운영에 대한 전문가 특강"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "사례 기반 문제 해결 분임 토의 등을 통한 실행 방향 모색"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-3",
+                      "조례 개정 및 표준 매뉴얼 제작"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (조례 개정 추진)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 「학생통합지원법」전면 시행에 따라 조례를 정비하여 법적 기반 명확화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 3 ~"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용:"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "·「학생맞춤통합지원법 시행령」 및 같은 법 「시행규칙」정합성 확보"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "· 학생맞춤통합지원 센터 및 위원회의 설치·운영 근거 명확화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "방법: 정책 연구 활용한 법령 검토 및 관계 부서 협의"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (표준 매뉴얼 제작)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 학생맞춤통합지원 운영 과정의 절차 및 양식을 표준화하여 현장의 행정부담 경감 및 일관성 확보"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 3 ~ 12."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용: 불필요한 서식 중복 절차 정비 및 서식 간소화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "방법: 시 학생맞춤통합지원 센터 T/F 협의회 활용"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-4",
+                      "학생맞춤통합지원 체계 구축 유공 표창"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생맞춤통합지원과 소관 업무 추진 성과 창출에 기여한 유공자를 발굴·포상"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 12."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상) 교육(지원)청, 학교 및 유관기관 업무 유공자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (훈격) 교육감 및 장관 표창"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅵ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "추진 일정"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅶ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "기대 효과"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 학교-교육지원청-지역사회가 함께하는 촘촘한 학생맞춤통합지원 체계 구축을 통해 단 한 명의 학생도 소외받지 않는 통합 교육 실현"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 모든 학교 구성원들 간의 협력적 조직문화 조성 및 학교-교육청과의 유기적인 협업을 통해 복합 위기 학생 담당 교사의 심리적 부담 감소"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 사후 처방 위주의 개별 사업을 학생맞춤통합지원으로 종합적인 진단 지원 체계를 구축함으로써 조기 개입과 사전 예방 강화"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임1",
+                      "",
+                      "학생맞춤통합지원 통합배부 예산‧집행 기준"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 업무추진비는 통합배부 전체 사업비의 10% 이내 사용"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임2",
+                      "",
+                      "학생맞춤통합지원으로 달라지는 점"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임3",
+                      "",
+                      "「학생맞춤통합지원법」주요 내용"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임4",
+                      "",
+                      "학생맞춤통합지원 체계 관련 질의응답 (Q&A)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q1. 학생맞춤통합지원이 무엇인가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생의 학습참여를 어렵게 하는 다양한 문제*를 통합적으로 해소하고 학생의 전인적 성장과 교육받을 권리 향상을 위하여 이루어지는 통합적 지원(학생맞춤통합지원법 제2조)을 의미합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기초학력 부족, 경제적‧심리적‧정서적 어려움, 학교폭력, 경계선 지능, 아동학대 등"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q2. 학생맞춤통합지원 체계는 왜 필요한가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 위기 학생들은 단일한 어려움이 아니라, 기초학력 미달, 학교폭력, 심리‧정서 문제 등 복합적 위기에 직면한 경우가 많습니다. 그럼에도 각종 학생 지원사업은 개별적‧분절적으로 이루어져 학생 문제를 근본적으로 해결하는데 한계가 있었습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기초학력, 학업중단 예방, 위(Wee) 프로젝트, 다문화, 학교폭력 예방, 교육비, 교육급여 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 이에, 학생의 복합적 어려움을 해소하기 위해 학교 내 다양한 구성원이 소통·협력하고, 학교 - 교육(지원)청 - 지역사회가 함께 지원하는 학생맞춤통합지원 체계로 전환하고자 하는 것입니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q3. 학교에 새로운 복지사업이 생기는 것인가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생맞춤통합지원은 새로운 복지사업이 아닙니다. 기존에 개별적‧분절적으로 운영되어 온 학습·복지·건강·진로·상담 등 다양한 사업들을 학생 중심으로 재구조화하는 학생 지원 패러다임의 변화입니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q4. 선생님들의 부담이 늘어나는 것은 아닌가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 개별 구성원들의 부담이 오히려 완화될 수 있습니다. 선생님 혼자 감당하기 어려웠던 학생의 복합적 어려움을 구성원들이 함께 논의하고, 학교 - 교육청 - 지역사회가 함께 지원하는 체계로 변화하기 때문입니다."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 또, 동일한 학생에 대해 중복적으로 이루어졌던 각종 교내 위원회와 프로그램을 통합·조정하여 학생 지원의 효율성은 높이면서도 중복되는 절차나 회의록 작성 등 행정업무를 해소할 수 있습니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q5. 학교 내에 새 조직이나 위원회를 반드시 만들어야 하나요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 대상학생 선정과 지원을 위해 학교장이 총괄하고 교감이 조정‧조율하는 논의 절차를 마련하고, 학생 사안별로 관계된 교직원이 유동적으로 참여합니다. 새로운 위원회나 조직을 만들 필요가 없이, ｢학생맞춤통합지원법｣ 제11조에 근거하여 기존 위원회를 통합‧활용하거나, 관련 교직원 회의로 대체할 수 있습니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q6. 대상학생 선정과 지원은 어떻게 이루어지나요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생이 겪고 있는 어려움을 해소하기 위해 학습‧진로‧상담‧건강‧복지 등 교내 교육활동, 프로그램을 조정‧연계하여 지원합니다. 예를 들어, 기초학력 미달 학생이지만 논의 결과 심리‧정서 요인이 근본적 원인으로 판단될 경우, 위(Wee) 클래스 상담을 실시한 뒤 교과 보충학습을 제공하는 등 우선순위를 정하거나 추가 지원을 할 수 있습니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q7. 학교의 노력만으로 어려운 학생은 어떻게 하나요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학교의 1차적 지원에도 학생의 어려움이 지속적으로 해결되지 않거나, 가정 내 학대, 의료적 개입, 지역사회 돌봄 연계 등 학교에서 해결하기 어려운 문제라고 판단될 경우, 관할 교육(지원)청 학생맞춤통합지원센터에 심층 진단과 외부기관 연계*를 요청할 수 있습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교가 그동안 학습‧복지‧건강‧진로‧상담 등 학생 지원과 관련하여 연계해 오던 지역자원과 기관이 있다면 활용하여 지원 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생맞춤통합지원센터는 정신건강복지센터, 청소년상담복지센터, 아동보호전문기관, 병의원 등 구축한 협력망으로 학생에게 가장 적합한 서비스를 연결하는 허브 역할을 수행합니다."
+              }
+            ]
+          },
+          "actual": {
+            "approvalStatus": "unapproved",
+            "pageTypes": [],
+            "blocks": [
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "",
+                      ""
+                    ],
+                    [
+                      "학생맞춤통합지원 체계의 안정적 정착을 위한",
+                      ""
+                    ],
+                    [
+                      "2026 인천 학생맞춤통합지원 기본 계획",
+                      ""
+                    ],
+                    [
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 1,
+                "text": "2026. 2."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 2,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_001.jpg)"
+                    ],
+                    [
+                      "(정책기획조정관)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "사업계획 수립 시 사전검토 항목"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 7,
+                  "cells": [
+                    [
+                      "",
+                      "",
+                      "",
+                      "목 차",
+                      "",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "2026 인천 학생맞춤통합지원 기본 계획 (요약)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "",
+                      "",
+                      ""
+                    ],
+                    [
+                      "2026 인천 학생맞춤통합지원 기본 계획",
+                      "",
+                      ""
+                    ],
+                    [
+                      "",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅰ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "추진 개요"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "1",
+                      "",
+                      "추진 배경"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "◈ 학령인구 수 급감에도 도움이 필요한 학생은 증가"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 학령 인구 수 급감으로 학생 개개인의 성장이 소중한 상황에서 도움이 필요한 학생 수는 증가 추세"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 특히, 위기 학생들은 단일한 어려움이 아니라 학교 폭력, 학업 중단, 심리·정서 문제 등 복합적 위기에 직면한 경우가 다수"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "◈ 사업별‧분절적 지원으로는 학생의 복합적 어려움 해소에 한계"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 기초학력 지원, 심리·정서 지원, 진로, 복지 등 다양한 지원 중이나, 개별적·분절적 지원으로 학생의 복합적 어려움 해소에는 한계"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "< 학생 지원 사업 예시 >"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 개별 사업간 연계 부족으로 중복지원 및 사각지대가 발생하고, 학생 정보 연계 활용 곤란 등으로 종합적 진단·지원 체계 미흡"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "◈ 학교 - 교육청 - 지역사회가 함께 하는 학생 지원 체계 필요"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 담임교사 또는 개별 교직원 1인이 학생 관찰 및 진단, 교내·외 지원 연계까지 담당할 경우, 담당자의 부담 및 책임 과중"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 개별 구성원의 소진을 방지하고, 학교-교육(지원)청-지역사회가 모두 협력하여 학생을 촘촘히 지원하는 통합지원 체계 구축 필요"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "2",
+                      "",
+                      "추진 경과"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2022. 5.) 교육부, 국정과제 84-3. 학생맞춤통합지원 체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2022. 12.) 사회관계장관회의, 학생맞춤통합지원 체계 구축 방안 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 1.) 교육부, 학생맞춤통합지원 체계 구축 방안 안내"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 3.) 2023년 인천 학생맞춤통합지원 기본계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 5.) 학생맞춤통합지원 선도학교 6교 지정(3년)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 12.) 2024년 인천 학생맞춤통합지원 기본계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2024. 3.) 남부, 동부교육지원청 시범교육지원청 운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2023. 12.) 2024년 인천 학생맞춤통합지원 기본계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2024 1.) 학생맞춤통합지원 일반 선도학교 19교 추가 지정(3년)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2024. 4.) 본청, 북부, 서부, 강화교육지원청 시범교육지원청 지정"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 1. 21.)「학생맞춤통합지원법」제정·공포"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 2.) 2025년 학생맞춤통합지원 종합계획 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 5.) 방학 중 사각지대 학생 발견 및 지원 강화 대책 수립"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 7. 14.)「인천광역시교육청학생맞춤통합지원」조례 제정·공포"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2025. 12.)「학생맞춤통합지원법」시행령, 시행규칙 입법예고 완료"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (2026. 3. 1.)「학생맞춤통합지원법」전면 시행"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "3",
+                      "",
+                      "추진 근거"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 「학생맞춤통합지원법」"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 2022 교육부 국정과제 84-3. 학생맞춤통합지원 체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 2026년 교육부 학생성장통합지원 사업 계획(2025. 11. 3.)"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅱ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "2025년 주요 추진 성과"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅲ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "학생맞춤통합지원 체계 구축 방향"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "1",
+                      "",
+                      "학생맞춤통합지원 개념"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "【학생맞춤통합지원 사업은 새로운 사업이 아니라 기존 학생지원 사업을 재구조화하는 것임】"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "[기존] 사업별 개별 지원 체계",
+                      "",
+                      "[개선] 학생맞춤통합지원 체계"
+                    ],
+                    [
+                      "![image](image_002.bmp)",
+                      "󰁾",
+                      "![image](image_003.bmp)"
+                    ],
+                    [
+                      "- 분절적 지원으로 중복지원, 사각지대 발생",
+                      "",
+                      "- 다양한 진단 체계를 통해 맞춤형 통합 지원 -"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "2",
+                      "",
+                      "추진 방향"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 전체 학교 구성원이 참여하는 학생맞춤통합지원체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 교육(지원)청·지역사회의 지원 체계 강화를 통해 단위학교 업무 경감"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 교직원 역량 강화 및 현장 소통 활성화로 안정적 정책 기반 바련"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅳ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "목표 및 추진과제"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅴ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "2026년 세부 추진계획"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제1",
+                      "",
+                      "학교 학생맞춤통합지원 기반 조성 및 자율성 확대"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸담임교사-사업담당자 1인이 전담하여 학생 지원",
+                      "",
+                      "▸관리자 중심으로 학교구성원들이 함께 참여·지원"
+                    ],
+                    [
+                      "▸문제가 발견된 이후 사후처방 중심 지원",
+                      "",
+                      "▸학교 모든 구성원 관찰을 통해 조기 발견·개입"
+                    ],
+                    [
+                      "▸사업별·분절적 지원으로 중복지원·사각지대 발생",
+                      "",
+                      "▸사업 간 조정·연계를 통한 학생별 맞춤형 지원"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "1-1",
+                      "학교 학생맞춤통합지원 체계 구축"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교 학생맞춤통합지원 논의절차 마련"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (논의절차 마련) 개별적·분절적 지원 → 학생 맞춤형 지원으로 전환"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교장이 총괄, 교감이 조정‧조율하는 학생 통합지원 논의 절차를 마련(관리자 중심 운영), 기존 교내 위원회(조직) 통합‧활용 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생 사안별 학습·복지·건강·상담·진로 등 관련 교직원이 유동적 참여"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교별 학생 및 교직원 배치 현황 등을 고려하여 기존 팀을 활용하거나 위원회 전환( “(가칭)학생맞춤통합지원팀” 신설도 가능)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (행정업무 경감) 학생 관찰·지원 기록을 일괄 취합하고 학교 내 논의에 활용하도록 나이스(NEIS) 내 기능 신설"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ ’26.3. 희망하는 학교에서 자율 활용 예정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "개별 구성원이 관찰한 내용을 입력하고, 회의에서 일괄 인쇄하여 회의 자료로 활용 가능"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지원 대상 학생 선정·지원 절차"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❶ (관찰·발견) 모든 구성원*이 학생의 학교 생활 전반에서 어려움 관찰"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "담임·교과교사, 부장교사, 영양(교)사, 전문상담(교)사, 교육복지사, 교장·교감 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❷ (통합진단) 단일 지원으로 해결가능한 경우 기존 사업절차에 따라 지원, 복합적·지속적 어려움 등의 경우 학생맞춤통합지원 논의"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_004.bmp)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❸ (통합지원) 학교 구성원 간 논의 결과에 따라, 학습‧진로, 심리‧정서, 건강‧안전, 복지 등 다양한 영역에서 학생별 맞춤 지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "① (학교 내 조정·연계·협력) 학습·진로·심리·정서 등 교내 교육활동· 프로그램 지원 순서나 방식을 조정·연계·협력하여 통합 지원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "진로체험기관 등 학교가 기존 연계하던 지역 자원이 있는 경우 연계 활용"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "② (교육지원청 협조 요청) 학교에서 해결이 어려운 경우, 교육지원청에 지원 요청, 교육지원청에서 각종 사업·지역자원 연계 지원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교 내 지원할 수 있는 자원이 없거나 부족한 경우, 긴급한 위기 상황인 경우 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "❹ (사후관리) 학교장 판단 하에 추가 지원하거나 종결 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생 성장·변화 정도 등에 따라 각 지원별 종결 또는 추가 지원 가능"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "1-2",
+                      "학교 내 학생 지원 관련 위원회 통합 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "법적근거",
+                      "",
+                      " 「학생맞춤통합지원법」 제11조제2항"
+                    ],
+                    [
+                      "",
+                      "",
+                      ""
+                    ],
+                    [
+                      "☞ 학교의 장은 지원대상 학생의 선정과 제공·관리하는 지원을 효율적으로 하기 위하여 기존 조직을 활용하거나 통합하여 운영 가능",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (관련 근거)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "「학교 내 각종 위원회 정비 계획 안내」(교육부 교원정책과, ‘24. 3. 19.)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "「2025학년도 학교 업무 경감 및 효율화 종합 계획」 (학교지원단 학교행정지원과-2921,‘25.2.27.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (통합 방안) 위원 구성 등을 통합 수행하여 형식적 운영보다 실질적 안건 심의 중심으로 위원회 구성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 반드시 위원회 명칭이 ‘학생맞춤통합지원위원회’일 필요는 없으며 기존 위원회 활용 가능"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "1-3",
+                      "학생 지원사업 학교기본운영비 통합 배부"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생 지원 관련 사업을 학교기본운영비로 통합 배부하여 단위 학교 예산 편성 및 집행 유연성 제고"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 5,
+                  "cells": [
+                    [
+                      "구분",
+                      "",
+                      "기존 예산",
+                      "![image](image_005.bmp)",
+                      "변경 통합예산"
+                    ],
+                    [
+                      "예산단위",
+                      "",
+                      "사업별 개별 편성",
+                      "",
+                      "통합교부 후 학교 자율 편성"
+                    ],
+                    [
+                      "지원방식",
+                      "",
+                      "사업 중심",
+                      "",
+                      "학생 중심"
+                    ],
+                    [
+                      "의사결정",
+                      "",
+                      "사업담당자 개별 판단",
+                      "",
+                      "각종 위원회(팀) 공동 판단"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (교부항목) 학생맞춤통합지원 체계 구축 운영비, 기초학력-두드림학교 운영, 기초학력-협력강사제, 교육복지우선지원사업학교 운영, 맞춤형학생상담활동지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (교부시기) 2026학년도 학교회계 본예산(학교기본운영비) 교부*"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "「2026학년도 학생맞춤통합지원 통합배부사업 예산 안내」(정책기획조정관-20947,‘25.12.16.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (편성) 해당 항목 예산액 참고하여 학생맞춤통합지원 집행기준 범위 내에서 자율적으로 예산 편성‧집행 [붙임1 사업별 집행기준 참고]"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (집행) 학생맞춤통합지원 운영비는 체계 구축 및 협의 등을 위한 예산으로 활용"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기초학력상담 등 개별 사업으로 우선 학생 지원 후, 부족분에 대해 동 예산 활용 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (기대효과) 예산의 자율적·유연성 제고 및 행정 절차의 간소화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생맞춤통합지원 연구 및 사례 공유, 실천공동체로의 성장을 통한 확산"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상) 관내 유·초·중·고·특수학교 교직원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (기간) 2026. 3. ~ 12."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (내용)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원과 관련하여 수업 연계 등 다채로운 주제로 탐구 및 연구"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "2026 교간형 전문적학습공동체 연합 학술제 나눔 활동 참여(2026. 10.~11.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "공동체의 지속적인 연구 활동을 통해 교직원 전문성 신장"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "∙ 분산적 리더십(회장-계획 수립, 총무-예산 집행 등)을 통한 동반 성장 지향"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "∙ 공개 연수, 자체 특강, 수업 성찰, 독서토론, 워크숍, 자료개발 등"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생 성장을 지원하기 위한 공동 연구 및 연구 실천 결과 공유"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "∙ 교간형 전문적학습공동체 연합학술제를 통한 연구 나눔 및 확산 문화 조성"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제2",
+                      "",
+                      "교육(지원)청 현장 밀착 지원 강화"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸교육청 내 개별 센터별 분산 운영",
+                      "",
+                      "▸학생맞춤통합지원 위원회·센터가 총괄·조정"
+                    ],
+                    [
+                      "▸학교 중심 지원으로 고위기 학생 대응 한계",
+                      "",
+                      "▸교육지원청 중심으로 학교·학생 지원 강화"
+                    ],
+                    [
+                      "▸지역 내 인적·물적 자원 활용이 제한적",
+                      "",
+                      "▸지역자원 발굴·연계하여 다양한 자원 충분히 활용"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-1",
+                      "시교육청 학생맞춤통합지원 센터 구축 및 위원회 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시 학생맞춤통합지원센터 구축 및 운영 ('26. 2.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시 학생맞춤통합지원센터 구축) 본청 학생맞춤통합지원센터를 설치하고, 유관 지원 센터(조직)를 총괄‧조정하는 체계 마련"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (공간 통합) 분산되어 있던 주요 지원센터를 통합된 공간으로 이전·구축하여 부서 간 장벽을 허물고 원활한 협업 촉진"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "본청 내 5개 센터* 이전(인천고, '26. 6. 이전 완료)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "위 센터, 학습종합클리닉 센터, 다문화교육지원 센터, 특수교육지원 센터, 결대로 진로 센터(동부)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (주요기능)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "복합 위기 사안 학생 지원에 대한 대책 수립 및 총괄 ‧ 조정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "각 센터 연계 및 컨트롤타워 역할 수행"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기록 정보시스템 운영 총괄 및 개인정보 보호 담당"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지역 학생맞춤통합지원센터 운영 지원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "담당자 역량강화 연수 및 단위학교 컨설팅 총괄"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 지역 협력 체계 기획・추진"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (인력배치) 센터 전담 인력을 배치하여 학생맞춤통합지원 업무를 총괄·운영 → 정책 조정 및 의사 결정 기능 일관성·전문성 확보(′26. 3)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "<학생맞춤통합지원센터 구축(안)>"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시 학생맞춤통합지원위원회 통합·운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (구성) 위원장(부교육감), 부위원장(국장), 위원(교육청․시청 유관 부서장, 시의원, 교원 대표, 학계 전문가 등), 간사 (15명 내외)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학습·복지·건강·진로·상담 등 학생맞춤통합지원 관련 전문성을 갖춘 관계 공무원·전문가·교원 등을 위촉"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (임기) 2년 임기(연임 가능)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방침) 분절적으로 운영되던 각종 위원회를 학생맞춤통합지원위원회로 일원화하여 정책 결정의 효율성 및 일관성 확보"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "본청 교육복지협의회, 학습부진대책 자문위원회, 위기학생 지원위원회, 학생상담운영 지원위원회를 통합 추진 예정(′26. 3.)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (주요역할) 학생맞춤통합지원 시책 수립, 기관 간 업무 조정, 센터 지정 등 주요 사항을 심의·의결하는 컨트롤 타워 역할을 수행"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (운영절차)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-2",
+                      "교육지원청 학생맞춤통합지원 센터 및 위원회 운영"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지역 학생맞춤통합지원센터 기능 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (현황) 지원청 내 기존 온이음 센터 활용 운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방향) 온이음 센터를 지역 학생맞춤통합지원센터 거점 공간으로 겸용·활용"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원센터를 학생 지원 의뢰 창구로 단일화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생·학부모·교사가 쉽게 접근 가능한 구조 마련"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "복합 사례의 경우 학생맞춤통합지원센터를 거점으로 관계 부서 협업·연계 기능 강화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육지원청 내 각 센터*는 기존의 기능 및 역할을 유지(온이음센터, Wee센터, 학습종합클리닉센터 등)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "지역 학생맞춤통합지원위원회 구성·운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (구성) 위원장(교육장) 포함하여 13명 내외 위원으로 구성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (임기) 2년 임기(연임 가능)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방침) 교육지원청 내에 기존 운영 중인 학생맞춤통합지원 협의체 및 각종 위원회를 활용하여 구성·운영"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 시 학생맞춤통합지원위원회 운영 방식을 준용"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (주요 역할) 지역 단위 학생맞춤통합지원 사안 심의 및 부서 간 조정 ·협력 사항 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 전담 인력 배치"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (계획) 5개 교육지원청 전담 인력 배치 예정(′26. 9)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 교육지원청 내 분절적으로 운영되는 학생 지원 업무를 학생 중심으로 통합 조정하여 학교 현장 지원 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (역할) 교육지원청 학생맞춤통합지원 체계 구축 및 조정·연계, 운영"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-3",
+                      "교육지원청 학교 현장 지원 강화"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "□",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육지원청 단위 학교·학생 지원 강화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (지원 방안)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "위기 학생 발견 시 1차적으로 교내 학생맞춤통합지원팀을 구성·운영 하거나 위원회를 개최하되 사안*에 따라 1차 회의부터 교육지원청에 개입 요청(유선)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육지원청 담당자가 회의에 참여하거나 외부기관 및 전문가 동행"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "1차 회의에서 해결이 어려운 경우 교육지원청(2차 지원)에 의뢰"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "단순한 사례는 학교 자체 해결이 원칙이나, ①사안이 중한 경우 ②위기 상황인 경우 ③비용이 큰 경우 ④외부기관 협업이 처음인 경우 교육지원청에 협조 요청"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (학생맞춤통합지원 복합위기 학생 의뢰 창구 일원화)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "![image](image_006.png)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (접수) 학교에서 지원대상 선정‧지원을 요청하는 창구를 학생맞춤통합지원센터로 일원화하고, 각종 양식 등 통합·간소화"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (통합진단) 교육지원청 내 유관센터, 지역사회 유관기관 등과 협력하여 대상 학생 선정 여부 및 지원 내용 결정"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "교육(지원)청에서 학습·복지·건강·진로·상담 등 분야별 전문가 풀 구성, 학교 요청 시 통합 사례 회의에 참여하는 등 실질적 지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (통합지원) 학생맞춤통합지원센터 직접 지원, 교육지원청 내 유관 사업 조정·연계·협력 지원, 지역사회 자원과의 연계 등 맞춤 지원"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (사후관리) 지원대상 학생에 대하여 모니터링하며 지원 상황을 학교에 공유하고, 상황에 따라 종결 혹은 추가 지원 실시"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "[참고] 교육지원청 초등교육과(강화 교육지원과)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 6,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "교육지원청",
+                      "연락처",
+                      "비고"
+                    ],
+                    [
+                      "남부교육지원청(초등교육과)",
+                      "770-0158",
+                      ""
+                    ],
+                    [
+                      "북부교육지원청(초등교육과)",
+                      "510-5435",
+                      ""
+                    ],
+                    [
+                      "동부교육지원청(초등교육과)",
+                      "460-6026",
+                      ""
+                    ],
+                    [
+                      "서부교육지원청(초등교육과)",
+                      "560-6622",
+                      ""
+                    ],
+                    [
+                      "강화교육지원청(교육지원과)",
+                      "930-7756",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "2-4",
+                      "지역사회 네트워크 발굴·연계"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (지역 자원 발굴) 일반 지자체, 복지관, 병원, 경찰, 아동보호전문기관, 청소년 상담센터 등 지역사회 유관기관과 협력체계 구축"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (지역 자원 연계) 학교 요청 시 교육지원청에서 지역 자원과 연계하고 후속관리"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (학생맞춤통합지원 누리집 활용) 가이드북 참고하여 여건에 맞게 활용"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 누리집( https://www.kedi.re.kr/studentsupport/index.do)) 에서 학업, 심리·정서, 돌봄·안전, 건강, 경제 등 지역자원 현황 제공 중"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "《 교육지원청 - 지역자원 협력체계 예시 》"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제3",
+                      "",
+                      "교직원 역량 강화 및 전문 인력 체계 구축"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸학교 구성원의 정책 이해도 및 공감 부족",
+                      "",
+                      "▸연수 확대를 통해 이해도 확산 및 전문성 제고"
+                    ],
+                    [
+                      "▸전문가와 학교현장의 연계 대응 부족",
+                      "",
+                      "▸분야별 전문 인력 구축하여 사례 역량 강화"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "3-1",
+                      "대상별 맞춤형 역량 강화 연수"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 3,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "법적근거",
+                      "",
+                      " 「학생맞춤통합지원법」 제14조"
+                    ],
+                    [
+                      "",
+                      "",
+                      ""
+                    ],
+                    [
+                      "☞ 교원 등의 학생맞춤통합지원 업무 및 개인정보보호·관리 전문성을 높이기 위한 정기 연수 실시",
+                      "",
+                      ""
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생맞춤통합지원의 정책에 대한 공감 형성 및 이해도 제고"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상별 연수 일정(안))"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (기대 효과)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 이해도를 높이고, 실무에 대한 적용 의지 강화하고 협업의 중요성을 자연스럽게 인식"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "참여자들이 실제 현장에서 활용할 수 있는 실질적인 방법 도출"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (초․중등 교감 자격연수 및 1정 자격연수)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "대상 : 교감 및 1정 자격연수 대상자"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수기관 : 인천광역시교육연수원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기간 : 2026. 7."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수방법 : 콘텐츠 제작 온라인 강의 교과목 편성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (신규 교사 직무연수)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "대상 : 신규교사"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수기관 : 인천광역시교육연수원"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기간 : 2026. 3."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "연수방법 : 콘텐츠 제작 온라인 강의 교과목 편성"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "3-3",
+                      "찾아가는 연수 확대 및 강사 인력풀 구성"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 법 전면 시행에 따른 정책 이해도 제고와 현장 밀착 지원 위해 찾아가는 연수 확대 및 강사 인력풀 구성"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 4. ~ 11."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (내용)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 방향 및 필요성을 인식하고 구체적 실천 방안 모색"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "통합 사례 과정 학교-교육(지원)청의 역할 수행 시뮬레이션 모의 연수"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교 구성원이 전체 참여하여 강의, 토의, 모둠 활동 진행"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 방향에 대한 강의 및 모둠활동을 통한 실천방안 모색"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (강사단 구성) 관내 유․초․중․고 관리자 및 (부장)교사(20명 내외)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "2025년 찾아가는 연수 강사단 및 선도 학교·시범교육 지원청 근무 경험자 중 전문가 연수 이수자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (추진 일정)"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "3-4",
+                      "분야별 전문가 인력풀 구성"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 사례 분야별 전문가 인력풀을 구성하여 학교 내 학생맞춤통합지원 사례 회의 시 상담 및 자문 역할 수행"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 3. ~. 2027. 2"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (분야) 심리․정서, 교육복지, 기초학력, 아동학대, 신체건강"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (구성) 전문가 15명 내외"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "본청 연계사업 부서 및 교육지원청으로부터 전문가 추천 및 구성"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "인력풀 신청 후 배정된 전문가와 협력하여 맞춤형 지원 제공"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (추진 일정)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "< ’25년 학생맞춤통합지원 업무 추진 사례 >"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 2,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "교원 역량강화 연수(’25.9.)",
+                      "행정실장 연수(’25.12.)",
+                      "유관기관 업무협약(’25.12.)"
+                    ],
+                    [
+                      "![image](image_007.jpg)",
+                      "![image](image_008.jpg)",
+                      "![image](image_009.jpg)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "과제4",
+                      "",
+                      "현장소통 활성화 및 정책 기반 마련"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 4,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "현 재",
+                      "☞",
+                      "개 선"
+                    ],
+                    [
+                      "▸선도학교·시범청 중심의 의견 수렴 한정",
+                      "",
+                      "▸다양한 주체와의 소통을 통한 현장 공감대 확산"
+                    ],
+                    [
+                      "▸정책 안착을 위한 법적·제도적 미비",
+                      "",
+                      "▸법령 개정 및 정책 분석을 통한 정책 고도화"
+                    ],
+                    [
+                      "▸학교 현장 구성원의 인정과 보상 미흡",
+                      "",
+                      "▸업무 담당자의 사기진작과 전문성 제고 확대"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-1",
+                      "우수사례 발굴 및 성과 공유 컨퍼런스"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (우수사례 발굴)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 현장 중심의 우수사례 발굴과 확산을 통한 학생맞춤통합 지원 체계의 안정적 정착 및 신뢰도 제고"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 9.~ 10."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용: 학생맞춤통합지원 현장 모범 사례 발굴"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "활용: 성과 공유 컨퍼런스 공유 및 사례집 발간"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (성과 공유 컨퍼런스 개최)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 우수사례 학교의 운영 성과를 공유하여 2027년 확산 모델 제시"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 11."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "대상: 인천 관내 교직원, 학생, 학부모"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용: 학생맞춤통합지원 우수사례 발표 및 공유"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "학교 현장 중심 운영 모범 모델 확산 방안"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "방법: 사례 중심 발표, 자료 전시, 분과별 토의 등 운영"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-2",
+                      "교육(지원)청 담당자 워크숍 개최"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 담당자의 역할 인식 및 기관 간 협업 체계 강화하여 실행력 제고"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 5."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상) 교육(지원)청 업무 담당자(학교 포함)"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (내용)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학생맞춤통합지원 운영 방향 및 정책 과제 공유"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기관별 역할 정립 및 협업 절차 점검"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (방법)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "정책 방향 및 운영에 대한 전문가 특강"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "사례 기반 문제 해결 분임 토의 등을 통한 실행 방향 모색"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-3",
+                      "조례 개정 및 표준 매뉴얼 제작"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (조례 개정 추진)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 「학생통합지원법」전면 시행에 따라 조례를 정비하여 법적 기반 명확화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 3 ~"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용:"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "·「학생맞춤통합지원법 시행령」 및 같은 법 「시행규칙」정합성 확보"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "· 학생맞춤통합지원 센터 및 위원회의 설치·운영 근거 명확화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "방법: 정책 연구 활용한 법령 검토 및 관계 부서 협의"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (표준 매뉴얼 제작)"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "목적: 학생맞춤통합지원 운영 과정의 절차 및 양식을 표준화하여 현장의 행정부담 경감 및 일관성 확보"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "시기: 2026. 3 ~ 12."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "내용: 불필요한 서식 중복 절차 정비 및 서식 간소화"
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "-",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "방법: 시 학생맞춤통합지원 센터 T/F 협의회 활용"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 2,
+                  "cells": [
+                    [
+                      "4-4",
+                      "학생맞춤통합지원 체계 구축 유공 표창"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (목적) 학생맞춤통합지원과 소관 업무 추진 성과 창출에 기여한 유공자를 발굴·포상"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (시기) 2026. 12."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (대상) 교육(지원)청, 학교 및 유관기관 업무 유공자"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " (훈격) 교육감 및 장관 표창"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅵ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "추진 일정"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "Ⅶ"
+              },
+              {
+                "role": "heading",
+                "type": "heading",
+                "level": 3,
+                "text": "기대 효과"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 학교-교육지원청-지역사회가 함께하는 촘촘한 학생맞춤통합지원 체계 구축을 통해 단 한 명의 학생도 소외받지 않는 통합 교육 실현"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 모든 학교 구성원들 간의 협력적 조직문화 조성 및 학교-교육청과의 유기적인 협업을 통해 복합 위기 학생 담당 교사의 심리적 부담 감소"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": " 사후 처방 위주의 개별 사업을 학생맞춤통합지원으로 종합적인 진단 지원 체계를 구축함으로써 조기 개입과 사전 예방 강화"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임1",
+                      "",
+                      "학생맞춤통합지원 통합배부 예산‧집행 기준"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "※ 업무추진비는 통합배부 전체 사업비의 10% 이내 사용"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임2",
+                      "",
+                      "학생맞춤통합지원으로 달라지는 점"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임3",
+                      "",
+                      "「학생맞춤통합지원법」주요 내용"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 3,
+                  "cells": [
+                    [
+                      "붙임4",
+                      "",
+                      "학생맞춤통합지원 체계 관련 질의응답 (Q&A)"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q1. 학생맞춤통합지원이 무엇인가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생의 학습참여를 어렵게 하는 다양한 문제*를 통합적으로 해소하고 학생의 전인적 성장과 교육받을 권리 향상을 위하여 이루어지는 통합적 지원(학생맞춤통합지원법 제2조)을 의미합니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기초학력 부족, 경제적‧심리적‧정서적 어려움, 학교폭력, 경계선 지능, 아동학대 등"
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q2. 학생맞춤통합지원 체계는 왜 필요한가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 위기 학생들은 단일한 어려움이 아니라, 기초학력 미달, 학교폭력, 심리‧정서 문제 등 복합적 위기에 직면한 경우가 많습니다. 그럼에도 각종 학생 지원사업은 개별적‧분절적으로 이루어져 학생 문제를 근본적으로 해결하는데 한계가 있었습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "기초학력, 학업중단 예방, 위(Wee) 프로젝트, 다문화, 학교폭력 예방, 교육비, 교육급여 등"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 이에, 학생의 복합적 어려움을 해소하기 위해 학교 내 다양한 구성원이 소통·협력하고, 학교 - 교육(지원)청 - 지역사회가 함께 지원하는 학생맞춤통합지원 체계로 전환하고자 하는 것입니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q3. 학교에 새로운 복지사업이 생기는 것인가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생맞춤통합지원은 새로운 복지사업이 아닙니다. 기존에 개별적‧분절적으로 운영되어 온 학습·복지·건강·진로·상담 등 다양한 사업들을 학생 중심으로 재구조화하는 학생 지원 패러다임의 변화입니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q4. 선생님들의 부담이 늘어나는 것은 아닌가요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 개별 구성원들의 부담이 오히려 완화될 수 있습니다. 선생님 혼자 감당하기 어려웠던 학생의 복합적 어려움을 구성원들이 함께 논의하고, 학교 - 교육청 - 지역사회가 함께 지원하는 체계로 변화하기 때문입니다."
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 또, 동일한 학생에 대해 중복적으로 이루어졌던 각종 교내 위원회와 프로그램을 통합·조정하여 학생 지원의 효율성은 높이면서도 중복되는 절차나 회의록 작성 등 행정업무를 해소할 수 있습니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q5. 학교 내에 새 조직이나 위원회를 반드시 만들어야 하나요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 대상학생 선정과 지원을 위해 학교장이 총괄하고 교감이 조정‧조율하는 논의 절차를 마련하고, 학생 사안별로 관계된 교직원이 유동적으로 참여합니다. 새로운 위원회나 조직을 만들 필요가 없이, ｢학생맞춤통합지원법｣ 제11조에 근거하여 기존 위원회를 통합‧활용하거나, 관련 교직원 회의로 대체할 수 있습니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q6. 대상학생 선정과 지원은 어떻게 이루어지나요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생이 겪고 있는 어려움을 해소하기 위해 학습‧진로‧상담‧건강‧복지 등 교내 교육활동, 프로그램을 조정‧연계하여 지원합니다. 예를 들어, 기초학력 미달 학생이지만 논의 결과 심리‧정서 요인이 근본적 원인으로 판단될 경우, 위(Wee) 클래스 상담을 실시한 뒤 교과 보충학습을 제공하는 등 우선순위를 정하거나 추가 지원을 할 수 있습니다."
+              },
+              {
+                "role": "table",
+                "type": "table",
+                "table": {
+                  "rowCnt": 1,
+                  "colCnt": 1,
+                  "cells": [
+                    [
+                      "Q7. 학교의 노력만으로 어려운 학생은 어떻게 하나요?"
+                    ]
+                  ]
+                }
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학교의 1차적 지원에도 학생의 어려움이 지속적으로 해결되지 않거나, 가정 내 학대, 의료적 개입, 지역사회 돌봄 연계 등 학교에서 해결하기 어려운 문제라고 판단될 경우, 관할 교육(지원)청 학생맞춤통합지원센터에 심층 진단과 외부기관 연계*를 요청할 수 있습니다."
+              },
+              {
+                "role": "list",
+                "type": "listItem",
+                "list": {
+                  "marker": "*",
+                  "ordered": false,
+                  "level": 0
+                },
+                "text": "학교가 그동안 학습‧복지‧건강‧진로‧상담 등 학생 지원과 관련하여 연계해 오던 지역자원과 기관이 있다면 활용하여 지원 가능"
+              },
+              {
+                "role": "body",
+                "type": "paragraph",
+                "text": "☞ 학생맞춤통합지원센터는 정신건강복지센터, 청소년상담복지센터, 아동보호전문기관, 병의원 등 구축한 협력망으로 학생에게 가장 적합한 서비스를 연결하는 허브 역할을 수행합니다."
+              },
+              {
+                "role": "image",
+                "type": "image",
+                "image": {
+                  "filename": "image_001.jpg",
+                  "sha256": "57a7996bb7259ef40a566aaaa745fea145cf52d69d527d8a75c445f7c9120ff6"
+                }
+              },
+              {
+                "role": "image",
+                "type": "image",
+                "image": {
+                  "filename": "image_002.bmp",
+                  "sha256": "f939a17e586c3feb4be7da7fa3b7e3b1ea15bbd9eaadf6a36a3e907e4dad5873"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "inputs": {
+    "md": {
+      "heading": 1,
+      "paragraph": 1,
+      "table": 1,
+      "listItem": 1
+    },
+    "txt": {
+      "heading": 1,
+      "paragraph": 1,
+      "table": 1,
+      "listItem": 1
+    },
+    "hwpx": {
+      "heading": 1,
+      "paragraph": 1,
+      "table": 1,
+      "listItem": 1
+    }
+  },
+  "hwpTextRoundTrip": {
+    "note": "이미지·줄바꿈(또는 |)이 포함된 표 셀은 텍스트 포맷(MD/TXT)에 원천적으로 실을 수 없어 왕복 비교에서 제외했다. 두 항목 모두 hwpSmoke가 원본 파싱 결과로 보존 여부를 별도 검증한다.",
+    "hwpToHwpxNote": "hwpToHwpx는 kordoc의 markdownToHwpx()가 표 셀에 텍스트로 박힌 이미지 참조(예: 표 안 이미지 캡션)를 실제 파일 없이 재해석하면서 자리표시자를 새로 생성해 파일명이 바뀌고, 내부적으로 연속 공백을 정규화하는 것으로 관찰됨 — 우리 어댑터(parseTextToPlanIR/kordocResultToPlanIR) 코드가 아니라 kordoc 자체 왕복 특성. 실사용 MD 입력은 실제 파일 경로를 참조하므로 이 드리프트가 발생하지 않는다. 따라서 hwpSmoke 통과 조건에서 제외하고 참고용으로만 기록한다.",
+    "totalBlocks": 344,
+    "representableBlocks": 290,
+    "skippedImages": 20,
+    "skippedTables": 34
+  },
+  "hwpSmoke": {
+    "passed": true,
+    "imagesPreserved": true,
+    "blocks": {
+      "image": 20,
+      "table": 89,
+      "heading": 15,
+      "paragraph": 135,
+      "listItem": 85
+    },
+    "mergedTableCount": 24,
+    "imageCount": 20,
+    "imageSha256": [
+      "07c3f3b807c195039e2a7fe787729fec6fb2c1ffb08e098672faf8ca73f4e22e",
+      "1f39b349b95a6893176d0ad801c3375e70b7689fee31812c4f5eb094fe0a9e64",
+      "2a5c11734cead4c70ad34230a9fdb023edf5db0453975453b13e2afafd627786",
+      "38a6a58b1391852aa734df6cced099641438836618340c9c856d58deee2ecdb1",
+      "3fe32647ec8a662ce1a602152693199bc94f30a9f8473e07196f562819bbe133",
+      "66068c47489255bf6d8c3773310703cdb4513a08de28183ef70438625b1e2006",
+      "8333c027f7dc843f5100d89dbcb5f4a97e91c0544d50c4416c71a1b53ab0538e",
+      "ae1ca6b66c10310ea2799528d0474020294798fee3ab456ce8239e6fd4f7ca13",
+      "af73528fa77f718178c74fe7d6850d14ce78978fd25ec1d7f601c9297e7b6e62",
+      "bbe474e0237f2fc46e7f056ee666478b313dff6f7416b362e47f6ca6b4058ab2",
+      "d38b12b854e90b870869ed3869be81dd2ea51f5b2147329defcbe4c046fe48ce",
+      "e1d551f213530592c09c7229630f3376d0233d8596ad46561793062d7da90ee4",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "e898698d65c7a68e22f8e868cd1df83294215f5946ecc4913a24f779235abf22",
+      "fcf9bda7d30e7e867d15f1e82fe6c48447120554a0f64807dbee1c27d4eb56d3"
+    ],
+    "diagnostics": []
+  },
+  "hwpxStructure": {
+    "passed": true,
+    "blocks": {
+      "image": 53,
+      "table": 80,
+      "listItem": 303,
+      "paragraph": 175
+    },
+    "mergedTableCount": 27,
+    "imageCount": 53,
+    "imageSha256": [
+      "0dc064eeeed79a76aa91888dd32b96f9cc2f2b2524fed5df463bc3657541bb22",
+      "0e469f0d96221cd6dd31ac017effff61db91c717654ece38fccae8f245d4f0d3",
+      "1056a78e99a49a554350d8591b52208d1fc165003078c5f897cb46be71cc0f81",
+      "2d87682a39b929b7e288bb6301119fd5cbde2ec932b9f7b15f69f8d931d3dc09",
+      "2ddb7bcecbaded89b659d1c323e17f3821b203d7dd08a62fea438dc35d718849",
+      "2fdd43e31f4cdfe9d9c8326e8abe3fd93ed72f14b7ffcbcfd5bc50798342a29a",
+      "30f8d95881f8232d8261e2907d978328d79361187931c54b9472d95d0c1ab160",
+      "3946373a1e22f74c4e78f51d7a72e225280a7ad1f2e48e8b4e40ff0b98433072",
+      "422b88dc4baefbc82a2222a5c563b884f2aadaaee292db8c01fa5a2a38e3e6e6",
+      "490f3e01a38556572162bfb64a32d8c909cb17a50f9d0a92e51ce74852957910",
+      "4d43fdd0b89090dbcc7f2fd8a71d07de489267be2b85b926f8d5906312d85649",
+      "562f011cc41451dac55b45caf579206863701932309c04d0cd9d50ca09f1bd07",
+      "5913c8ac6b86b4a675f41198bc34e8e3e4a1ade62cb6fbefe047774d81d54b5d",
+      "5b54764a27a618d837fdce039232578c21989239107deee6b40fdedede23d979",
+      "5c22e3c07f63d4157cef21edd3fbeb8b84450c4e458d67a4e7570b54959049c3",
+      "5f35df5dd56dfc85bc62f316d06268abf59e7a804f082049fd4f286e4492df09",
+      "5fcb17ec992f8dcb15cbe8c067eec3aa61ae23de9870ad409a4cd72bf3644a80",
+      "6ce8428b6c7a80e103729ced19e9d813d05650c37cbaa1a357b9b4280e10069c",
+      "6fa4dc5b4f097b59d6ad8b37c29fe25625a161e533533b7a9071158cf2aa896a",
+      "730652e083fcde4e1c21bc11e0cd0400d65694822b17228a48d20932e96597ea",
+      "81e4aee6d0a5a6aee438c6e3265a13dd4b7f0d67ba4b337d96183c3478d0f300",
+      "8c4cd3086bdfeea7bd18ba17e792c528e72c02b571a646dcb811f600339ae3e0",
+      "8f84a93296928f72d3ee6e214ade20ad4d57003ac2dc584d21697bb035ae8df4",
+      "911b8069b7e5ae19666db76a7ae99df58f7cfc4dc2f9bd1f298438af6e95b53a",
+      "9192830c6826cde4e3a4f0ad353a980047323cf9c409867829de0c8337308ae3",
+      "995b8551da943b8cf2ee6236f4c95f5cc9366dc5d6a7de23289c1fecab641451",
+      "99635ef1aa0dbc7a22b74c65364d8fdd63f447f174d1d1bb95c797caa20501ec",
+      "9a912470815112cf5941086976e51a23d31bc0a3a2cac14acf78168d954d31d7",
+      "a45b3cf24b31949c3852aa69d6ff788230b457937f12cefaa5c035dac834833b",
+      "a479f67adb14bd0b58e7b48a34c704d0ceff63531365541096324c23681d8132",
+      "a594c0db63faa414e39dd8dd4315b7eae29bcf4efcaf0fcd1b8c1a4ccdcb778c",
+      "a7f61073918704b91c099b5227caccc05a18ed60437bdc714a24073fdff050b7",
+      "abd2cde01a3703967c0a4e81cb97f7660092653e92996099e598fbcced400522",
+      "b247e28c67d1751e0f05e26821b3de8143375dd5b27a3737b98387f864af3219",
+      "b90c246210a58efef1c7a7852fa65889e673ec8baca0c50dcc32cbafa597e2f3",
+      "c5d32f098d1f3fd40633678f567e80a562b0128c628649404513415cefae88ad",
+      "c92c8d2e621fe5ae19f61787bb15e221c764123f39339f730b0ae41b89c5ead4",
+      "d1766240d237cf702ab961ad1cb7c901f800da14b623df9c6ddbae02da902743",
+      "d1dda90018ebb3239fe6651f0427ae3d3c447938582190b07ab1bc0df9f613b8",
+      "d6b4d21acbf15cf04a38bea160318d50eec1e2ba1da89752b06a6bb83f76de14",
+      "d7879ee2dc31f87689a6ae3b7b993988d1633dba2fe691c64634f61c47d337b5",
+      "e14c1ca18970efc226aac458f2695b0c447b5e9c47e32fb0de11d09e26a60f98",
+      "e1c39df31e7b4ed9c328c5bd56aad137bfb751f6231187ae6a5e1b2d08a0f1a0",
+      "e524a5336ce7bc733dc3e9ac0ee6d1c3efeade8e5c37ea70f0a34e50bd65871e",
+      "e56d10553fcde45dfe40d97a80810a236c60d3de4bfa160dd7be0879fe5a3279",
+      "e5744a840cf6ac5268d7fe8e3458634bb15aa508d9d8dea8ba9db9f534563352",
+      "e8ce6a2e284c2f5a679ca2cf538c75dd3aeca545cbde0d834b1e10664f5b31ab",
+      "e8ce6a2e284c2f5a679ca2cf538c75dd3aeca545cbde0d834b1e10664f5b31ab",
+      "e8ce6a2e284c2f5a679ca2cf538c75dd3aeca545cbde0d834b1e10664f5b31ab",
+      "e9d354eb1fc805ce08cc938d237517a4a262e2aacf986cd35add1d8333f23de9",
+      "f705a951a2f2d8c7366f7675fb01f665eb82837f7967d88f702e8c27d10b01eb",
+      "f895f6d6dca6e702b31ec3a39dfd98eb366f97cec82d4afb0621f9517b3a7dcf",
+      "fea4c3d8da43349a70f27881f53db8dfb56befaa229f7f72c17caa6c62867c64"
+    ],
+    "diagnostics": []
+  }
+}
