@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import base64
 import json
 import re
@@ -11,32 +12,61 @@ from pathlib import Path
 # 원본: ~/.agents/skills/hwpx변환 — 동기화 정책은 hwpx-toolkit/VENDORED.md 참조.
 TOOLKIT = Path(__file__).resolve().parent.parent / "hwpx-toolkit"
 SCRIPTS = TOOLKIT / "scripts"
-TEMPLATE_SECTION = TOOLKIT / "templates" / "gonmun" / "section0.xml"
+GONMUN_SECTION = TOOLKIT / "templates" / "gonmun" / "section0.xml"
+BONCHEONG_ANCHOR = TOOLKIT / "templates" / "boncheong" / "cover-anchor.xml"
+TEMPLATE_CHOICES = ("gonmun", "boncheong")
 sys.path.insert(0, str(SCRIPTS))
 from hwpx_helpers import add_images_to_hwpx, make_image_para, next_id, reset_id, update_content_hpf, xml_escape  # noqa: E402
-
-HWPUNIT_PER_MM = 7200 / 25.4
+from image_dimensions import image_dims_hwpunit  # noqa: E402
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
 
-# gonmun 템플릿에 실제 존재하는 스타일 ID만 사용한다 (dangling 참조 방지).
-# charPr: 0=본문 10pt, 7=22pt bold, 8=16pt bold, 9=8pt, 10=10pt bold
-# paraPr: 0=양쪽정렬(번호 없음), 11=왼쪽, 14=왼쪽 들여쓰기, 20=가운데, 22=셀 본문
-# 주의: paraPr 2~8·16~18은 OUTLINE 자동번호 문단 — 본문에 사용 금지
-VALID_CHARPR = {str(i) for i in range(11)}
-BOLD_CHARPR = {'0': '10', '1': '10', '9': '10'}  # 본문 계열 → 10pt bold
-HEADING_STYLES = {1: ('7', '20'), 2: ('8', '11')}
-HEADING_DEFAULT = ('10', '11')  # level 3 이상
-BODY_CHARPR, BODY_PARAPR = '0', '0'
-LIST_PARAPR = '14'
-CELL_PARAPR = '22'
-TABLE_ANCHOR_PARAPR = '0'
+# 스타일 ID는 템플릿마다 완전히 다르다. 템플릿의 header.xml에 실제 존재하는 ID만
+# 써야 하며, 다른 템플릿의 ID를 쓰면 dangling 참조가 되거나 엉뚱한 서식으로 렌더된다.
+#
+# gonmun: charPr 0=본문 10pt, 7=22pt bold, 8=16pt bold, 9=8pt, 10=10pt bold
+#         paraPr 0=양쪽정렬, 11=왼쪽, 14=들여쓰기, 20=가운데, 22=셀 본문
+#         주의: paraPr 2~8·16~18은 OUTLINE 자동번호 문단 — 본문 사용 금지
+# boncheong: 레퍼런스 A(세계로배움학교) 실측값 — docs/BASELINE_ANALYSIS.md §4 참조
+STYLE_SETS = {
+    'gonmun': {
+        'valid_charpr': {str(i) for i in range(11)},
+        'bold_map': {'0': '10', '1': '10', '9': '10'},
+        'heading': {1: ('7', '20'), 2: ('8', '11')},
+        'heading_default': ('10', '11'),
+        'body': ('0', '0'),
+        'list_parapr': '14',
+        'cell_parapr': '22',
+        'cell_charpr': {'header': '10', 'body': '0'},
+        'table_anchor_parapr': '0',
+    },
+    'boncheong': {
+        # 실측 ID 맵: 9=장제목 14pt, 121=본문 12pt(paraPr 73=개조식 내어쓰기),
+        # 307=표 머리글 맑은고딕 11pt(자간 -15%), 417=표 본문 맑은고딕 10pt,
+        # 64=표 셀 문단(가운데 120%)
+        'valid_charpr': {'9', '11', '15', '18', '121', '132', '204', '277', '307', '338', '417', '512'},
+        'bold_map': {'121': '132'},
+        'heading': {1: ('9', '1'), 2: ('132', '73')},
+        'heading_default': ('132', '73'),
+        'body': ('121', '73'),
+        'list_parapr': '73',
+        'cell_parapr': '64',
+        'cell_charpr': {'header': '307', 'body': '417'},
+        'table_anchor_parapr': '1',
+        # 본문 폭 170mm (A4 210 − 좌우 여백 20씩) = 48190 HWPUNIT, 실측 확인
+        'body_width': 48190,
+        # bf4·bf13·bf17 모두 4면 실선. 표 셀에는 bf13 사용(레퍼런스 표 셀 계열)
+        'cell_borderfill': {'header': '13', 'body': '13'},
+        'table_borderfill': '13',
+    },
+}
 BOLD_PATTERN = re.compile(r'\*\*(.+?)\*\*')
 
 
-def runs_xml(text, charpr):
+def runs_xml(text, charpr, style=None):
     """`**굵게**` 마커를 bold run으로 변환하고 나머지는 일반 run으로 출력."""
-    bold_charpr = BOLD_CHARPR.get(charpr, charpr)
+    bold_map = (style or STYLE_SETS['gonmun'])['bold_map']
+    bold_charpr = bold_map.get(charpr, charpr)
     parts = []
     pos = 0
     for m in BOLD_PATTERN.finditer(text):
@@ -54,10 +84,10 @@ def runs_xml(text, charpr):
     )
 
 
-def text_para(text, charpr, parapr):
+def text_para(text, charpr, parapr, style=None):
     return (
         f'<hp:p id="{next_id()}" paraPrIDRef="{parapr}" styleIDRef="0" '
-        f'pageBreak="0" columnBreak="0" merged="0">{runs_xml(text, charpr)}</hp:p>'
+        f'pageBreak="0" columnBreak="0" merged="0">{runs_xml(text, charpr, style)}</hp:p>'
     )
 
 
@@ -86,55 +116,6 @@ def decode_data_url_to_tempfile(data_url):
     with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
         tmp.write(raw)
         return tmp.name
-
-
-def read_image_size(path):
-    """PNG/JPEG 픽셀 크기를 표준 라이브러리만으로 읽는다 (Pillow 불필요).
-
-    PNG: 시그니처(8B) 뒤 첫 청크가 IHDR — width/height가 big-endian 4B씩.
-    JPEG: SOF0~SOF15(0xC0~0xCF, 단 C4/C8/CC 제외) 마커의 payload에서
-          [정밀도 1B][height 2B][width 2B].
-    """
-    import struct
-    with open(path, 'rb') as f:
-        head = f.read(24)
-        if head[:8] == b'\x89PNG\r\n\x1a\n' and head[12:16] == b'IHDR':
-            width, height = struct.unpack('>II', head[16:24])
-            return width, height
-        if head[:2] == b'\xff\xd8':  # JPEG SOI
-            f.seek(2)
-            while True:
-                marker = f.read(2)
-                if len(marker) < 2 or marker[0] != 0xFF:
-                    break
-                code = marker[1]
-                if 0xC0 <= code <= 0xCF and code not in (0xC4, 0xC8, 0xCC):
-                    f.read(3)  # length 2B + precision 1B
-                    height, width = struct.unpack('>HH', f.read(4))
-                    return width, height
-                length = struct.unpack('>H', f.read(2))[0]
-                f.seek(length - 2, 1)
-    return None
-
-
-def image_dims_hwpunit(path, max_width_mm, max_height_mm):
-    ratio = None
-    try:
-        size = read_image_size(path)
-        if size and size[1]:
-            ratio = size[0] / size[1]
-    except Exception:
-        ratio = None
-    if not ratio:
-        ratio = max_width_mm / max_height_mm
-    max_width = max_width_mm * HWPUNIT_PER_MM
-    max_height = max_height_mm * HWPUNIT_PER_MM
-    width = max_width
-    height = width / ratio
-    if height > max_height:
-        height = max_height
-        width = height * ratio
-    return round(width), round(height)
 
 
 def cover_paragraphs(cover, images):
@@ -171,18 +152,40 @@ def cover_paragraphs(cover, images):
 
 
 def first_paragraph():
-    source = TEMPLATE_SECTION.read_text(encoding='utf-8')
+    source = GONMUN_SECTION.read_text(encoding='utf-8')
     match = re.search(r'<hp:p id="1000000001".*?</hp:p>', source, flags=re.S)
     if not match:
         raise RuntimeError('Could not locate secPr paragraph')
     return match.group(0)
 
 
-def table_xml(block, styles):
+def boncheong_cover_paragraphs(model):
+    """Render the boncheong cover anchor with model values and a body page break."""
+    metadata = model.get('metadata', {})
+    cover = metadata.get('cover') or {}
+    first_heading = next(
+        (block.get('text') for block in model.get('blocks', [])
+         if block.get('type') == 'heading' and block.get('text')),
+        '본청 계획안',
+    )
+    replacements = {
+        '기본 방향 문구를 입력하세요': cover.get('direction') or '기본 방향',
+        '2026 ○○○○ 기본 계획': cover.get('title') or metadata.get('title') or first_heading,
+        '2026. 7. ': cover.get('date') or '2026. 7.',
+        '인천광역시교육청 ○○과 ': cover.get('displayName') or '인천광역시교육청',
+    }
+    anchor_xml = BONCHEONG_ANCHOR.read_text(encoding='utf-8')
+    for placeholder, value in replacements.items():
+        anchor_xml = anchor_xml.replace(placeholder, xml_escape(str(value)))
+    return [anchor_xml, page_break_para()]
+
+
+def table_xml(block, styles, style=None):
+    style = style or STYLE_SETS['gonmun']
     header = block.get('header', [])
     rows = [header] + block.get('rows', [])
     columns = max((len(row) for row in rows), default=1)
-    total_width = 42520
+    total_width = style.get('body_width', 42520)
     minimum_width = 6500
     content_lengths = [max((len(str(row[col])) for row in rows if col < len(row)), default=1) for col in range(columns)]
     usable = total_width - minimum_width * columns
@@ -200,12 +203,13 @@ def table_xml(block, styles):
         for col_index in range(columns):
             value = row[col_index] if col_index < len(row) else ''
             cell_id = next_id()
-            cell_border = '4' if row_index == 0 else '3'
+            borders = style.get('cell_borderfill', {'header': '4', 'body': '3'})
+            cell_border = borders['header'] if row_index == 0 else borders['body']
             para_id = next_id()
             style_key = 'tableHeader' if row_index == 0 else 'tableBody'
             charpr = styles.get(style_key, {}).get('charPrId')
-            if charpr not in VALID_CHARPR:
-                charpr = '10' if row_index == 0 else '0'
+            if charpr not in style['valid_charpr']:
+                charpr = style['cell_charpr']['header' if row_index == 0 else 'body']
             header_flag = '1' if row_index == 0 else '0'
             cells.append(
                 f'<hp:tc name="" header="{header_flag}" hasMargin="0" protect="0" editable="0" dirty="0" borderFillIDRef="{cell_border}">'
@@ -215,54 +219,65 @@ def table_xml(block, styles):
                 '<hp:cellMargin left="283" right="283" top="141" bottom="141"/>'
                 f'<hp:subList id="{cell_id}" textDirection="HORIZONTAL" lineWrap="BREAK" vertAlign="CENTER" '
                 f'linkListIDRef="0" linkListNextIDRef="0" textWidth="{max(widths[col_index] - 566, 1)}" fieldName="">'
-                f'<hp:p id="{para_id}" paraPrIDRef="{CELL_PARAPR}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
-                f'{runs_xml(str(value), charpr)}'
+                f'<hp:p id="{para_id}" paraPrIDRef="{style["cell_parapr"]}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+                f'{runs_xml(str(value), charpr, style)}'
                 f'</hp:p></hp:subList></hp:tc>'
             )
         cells.append('</hp:tr>')
     return (
         f'<hp:tbl id="{table_id}" zOrder="0" numberingType="TABLE" textWrap="TOP_AND_BOTTOM" '
         f'textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" pageBreak="CELL" repeatHeader="1" '
-        f'rowCnt="{len(rows)}" colCnt="{columns}" cellSpacing="0" borderFillIDRef="3" noAdjust="0">'
+        f'rowCnt="{len(rows)}" colCnt="{columns}" cellSpacing="0" borderFillIDRef="{style.get("table_borderfill", "3")}" noAdjust="0">'
         f'<hp:sz width="{total_width}" widthRelTo="ABSOLUTE" height="{sum(row_heights)}" heightRelTo="ABSOLUTE" protect="0"/>'
-        '<hp:pos treatAsChar="0" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" '
+        # treatAsChar=1: 표를 글자처럼 취급해 본문 흐름에 고정한다. 0(띄우기)이면 한글이
+        # 표를 앞 문단 위로 재배치해 원본 블록 순서가 뒤바뀐다(2026-07-20 실물 확인).
+        # 레퍼런스 A도 소형 표는 treatAsChar=1을 쓴다 — BASELINE_ANALYSIS §2.5 참조.
+        '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" '
         'vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
         '<hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:inMargin left="0" right="0" top="0" bottom="0"/>'
         + ''.join(cells) + '</hp:tbl>'
     )
 
 
-def table_paragraph(block, styles):
+def table_paragraph(block, styles, style=None):
+    style = style or STYLE_SETS['gonmun']
+    anchor_charpr = style['cell_charpr']['body']
     return (
-        f'<hp:p id="{next_id()}" paraPrIDRef="{TABLE_ANCHOR_PARAPR}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
-        f'<hp:run charPrIDRef="0">{table_xml(block, styles)}</hp:run></hp:p>'
+        f'<hp:p id="{next_id()}" paraPrIDRef="{style["table_anchor_parapr"]}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+        f'<hp:run charPrIDRef="{anchor_charpr}">{table_xml(block, styles, style)}</hp:run></hp:p>'
     )
 
 
-def build(model_path, output):
+def build(model_path, output, template='gonmun'):
     model = json.loads(Path(model_path).read_text(encoding='utf-8'))
+    if template not in TEMPLATE_CHOICES:
+        raise ValueError(f'Unsupported template: {template}')
     styles = model.get('styles', {})
+    style = STYLE_SETS[template]
     reset_id(1000)
-    paragraphs = [first_paragraph()]
     images = []
-    cover = model.get('metadata', {}).get('cover')
-    if cover and (cover.get('ciDataUrl') or cover.get('sloganDataUrl')):
-        paragraphs.extend(cover_paragraphs(cover, images))
+    if template == 'boncheong':
+        paragraphs = boncheong_cover_paragraphs(model)
+    else:
+        paragraphs = [first_paragraph()]
+        cover = model.get('metadata', {}).get('cover')
+        if cover and (cover.get('ciDataUrl') or cover.get('sloganDataUrl')):
+            paragraphs.extend(cover_paragraphs(cover, images))
     for block in model.get('blocks', []):
         if block['type'] == 'table':
-            paragraphs.append(table_paragraph(block, styles))
+            paragraphs.append(table_paragraph(block, styles, style))
             continue
         text = block.get('text', '')
         if block['type'] == 'listItem':
             text = ('1. ' if block.get('ordered') else '- ') + text
         if text:
             if block['type'] == 'heading':
-                charpr, parapr = HEADING_STYLES.get(block.get('level', 1), HEADING_DEFAULT)
+                charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
             elif block['type'] == 'listItem':
-                charpr, parapr = BODY_CHARPR, LIST_PARAPR
+                charpr, parapr = style['body'][0], style['list_parapr']
             else:
-                charpr, parapr = BODY_CHARPR, BODY_PARAPR
-            paragraphs.append(text_para(text, charpr, parapr))
+                charpr, parapr = style['body']
+            paragraphs.append(text_para(text, charpr, parapr, style))
     section = ('<?xml version="1.0" encoding="UTF-8"?>'
                '<hs:sec xmlns:hp="http://www.hancom.co.kr/hwpml/2011/paragraph" '
                'xmlns:hs="http://www.hancom.co.kr/hwpml/2011/section" '
@@ -274,7 +289,7 @@ def build(model_path, output):
         # 확장자를 제거한다 (내부 문서 속성에 ".md"가 그대로 노출되는 것 방지).
         raw_title = model.get('metadata', {}).get('title') or ''
         doc_title = re.sub(r'\.(md|txt|hwpx?|iceplan)$', '', raw_title, flags=re.I) or 'ICE Plan Studio 문서'
-        subprocess.run([sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', 'gonmun', '--section', str(section_path), '--title', doc_title, '--output', str(output)], check=True)
+        subprocess.run([sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', template, '--section', str(section_path), '--title', doc_title, '--output', str(output)], check=True)
         if images:
             add_images_to_hwpx(output, images)
             update_content_hpf(output, images)
@@ -287,13 +302,14 @@ def build(model_path, output):
             Path(image['src_path']).unlink(missing_ok=True)
 
 
+def main():
+    parser = argparse.ArgumentParser(description='Convert an ICE Plan model to HWPX')
+    parser.add_argument('model_path')
+    parser.add_argument('output')
+    parser.add_argument('--template', choices=TEMPLATE_CHOICES, default='gonmun')
+    args = parser.parse_args()
+    build(args.model_path, args.output, args.template)
+
+
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        raise SystemExit('Usage: python model_to_hwpx.py model.json output.hwpx')
-    build(sys.argv[1], sys.argv[2])
-
-
-
-
-
-
+    main()

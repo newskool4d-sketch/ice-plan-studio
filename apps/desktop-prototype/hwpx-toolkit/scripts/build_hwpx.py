@@ -3,7 +3,7 @@
 
 Assembles a valid HWPX file by:
 1. Copying the base template
-2. Optionally overlaying a document-type template (gonmun, report, minutes)
+2. Optionally overlaying a document-type template (gonmun, report, minutes, boncheong)
 3. Optionally overriding header.xml and/or section0.xml with custom files
 4. Optionally setting metadata (title, creator)
 5. Validating XML well-formedness
@@ -48,7 +48,25 @@ SKILL_DIR = SCRIPT_DIR.parent
 TEMPLATES_DIR = SKILL_DIR / "templates"
 BASE_DIR = TEMPLATES_DIR / "base"
 
-AVAILABLE_TEMPLATES = ["gonmun", "report", "minutes"]
+AVAILABLE_TEMPLATES = ["gonmun", "report", "minutes", "boncheong"]
+
+
+def apply_template_overlay(overlay_dir: Path, work: Path) -> None:
+    """Overlay either a legacy flat template or a complete package tree."""
+    if (overlay_dir / "Contents").is_dir():
+        for overlay_path in overlay_dir.iterdir():
+            if overlay_path.name == "cover-anchor.xml":
+                continue
+            destination = work / overlay_path.name
+            if overlay_path.is_dir():
+                shutil.copytree(overlay_path, destination, dirs_exist_ok=True)
+            elif overlay_path.is_file():
+                shutil.copy2(overlay_path, destination)
+        return
+
+    for overlay_file in overlay_dir.iterdir():
+        if overlay_file.is_file() and overlay_file.suffix == ".xml":
+            shutil.copy2(overlay_file, work / "Contents" / overlay_file.name)
 
 
 def validate_xml(filepath: Path) -> None:
@@ -199,10 +217,7 @@ def build(
                     f"Template '{template}' not found. "
                     f"Available: {', '.join(AVAILABLE_TEMPLATES)}"
                 )
-            for overlay_file in overlay_dir.iterdir():
-                if overlay_file.is_file() and overlay_file.suffix == ".xml":
-                    dest = work / "Contents" / overlay_file.name
-                    shutil.copy2(overlay_file, dest)
+            apply_template_overlay(overlay_dir, work)
 
         # 3. Apply custom overrides
         if header_override:
