@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.1",
+  "metadata": {
+    "title": "2026 읽걷쓰교육 운영 계획",
+    "cover": {
+      "subtitle": "기본 방향",
+      "title": "2026 읽걷쓰교육 운영 계획",
+      "date": "2026. 7.",
+      "org": "인천광역시교육청"
+    }
+  },
+  "styles": {},
+  "layout": { "page": "A4" },
+  "blocks": [
+    { "type": "paragraph", "text": "학교 현장의 실천을 지원하고 문서 형식을 일관되게 적용한다." },
+    { "type": "listItem", "ordered": false, "text": "표는 글자처럼 취급하지 않음" },
+    { "type": "listItem", "ordered": false, "text": "표 머리글은 페이지마다 반복" },
+    {
+      "type": "table",
+      "header": ["구분", "내용", "담당"],
+      "rows": [
+        ["1", "기본 계획 수립", "교학팀"],
+        ["2", "운영 결과 점검", "담당자"]
+      ],
+      "layout": { "treatAsChar": false, "repeatHeader": true }
+    }
+  ]
+}

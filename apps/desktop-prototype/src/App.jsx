@@ -98,6 +98,7 @@ function App() {
   const [loadedFile, setLoadedFile] = useState("");
   const [loadedModel, setLoadedModel] = useState(null);
   const [customBranding, setCustomBranding] = useState({});
+  const [fontReport, setFontReport] = useState(null);
   const agencyProfile = agencyProfiles[agencyId] || defaultAgencyProfile;
   const activeBranding = customBranding[agencyId] || {};
 
@@ -136,6 +137,22 @@ function App() {
     };
     window.addEventListener("keydown", onKeyDown);
   return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  // 시작 시 필수 글꼴 설치 현황을 검사한다. 누락 글꼴이 있으면 한글이 임의 대체
+  // 렌더링해 줄바꿈·페이지 수가 달라지므로, 승인 없는 대체를 막기 위해 표시한다.
+  useEffect(() => {
+    if (!window.icePlan?.checkFonts) return;
+    let cancelled = false;
+    window.icePlan.checkFonts()
+      .then((report) => {
+        if (cancelled) return;
+        setFontReport(report);
+        if (report?.error) setNotice(`글꼴 검사 실패: ${report.error}`);
+        else if (report?.missing?.length) setNotice(`필수 글꼴 ${report.missing.length}종이 설치되지 않았습니다.`);
+      })
+      .catch((error) => { if (!cancelled) setFontReport({ ok: false, error: error.message, missing: [], results: [] }); });
+    return () => { cancelled = true; };
   }, []);
 
   const applyResolution = () => {
@@ -408,6 +425,25 @@ function App() {
           </section>
 
           <aside className="rule-inspector" aria-label="규칙 인스펙터" aria-live="polite">
+            {fontReport && (fontReport.error || fontReport.missing?.length) ? (
+              <div className="rule-findings-card">
+                <span className="section-label">글꼴 검사</span>
+                {fontReport.error ? (
+                  <div className="rule-finding">
+                    <span className="finding-dot is-error">오류</span>
+                    <span><strong>글꼴 검사 실패</strong><small>{fontReport.error}</small></span>
+                  </div>
+                ) : fontReport.results.filter((r) => !r.installed).map((r) => (
+                  <div className="rule-finding" key={r.font}>
+                    <span className="finding-dot is-warning">주의</span>
+                    <span>
+                      <strong>{r.font} 미설치</strong>
+                      <small>{r.substitutes.length ? `대체 후보: ${r.substitutes.join(", ")} (승인 필요)` : "대체 후보 없음 — 설치 필요"}</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
             {loadedModel ? (
               <>
                 <div className="imported-model-card"><span className="section-label">불러온 문서</span><strong>{loadedFile}</strong><span>{loadedTitle || "제목 없음"}</span><small>{loadedModel.blocks.length}개 블록 · 규칙 {loadedModel.ruleFindings?.length || 0}건 · HWPX 내보내기 가능</small></div>

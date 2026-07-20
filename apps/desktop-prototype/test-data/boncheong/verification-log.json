@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-07-20T11:40:57Z",
+  "generate": {
+    "exitCode": 0,
+    "ok": true
+  },
+  "structuralVerify": {
+    "exitCode": 0,
+    "ok": true,
+    "summary": "  zip_entries=13 table_rows=7"
+  },
+  "com": {
+    "hwpVersion": "11, 0, 0, 9136",
+    "open": true,
+    "pages": 2,
+    "pdfSaved": true,
+    "ok": true
+  },
+  "sha256": {
+    "boncheong-minimal.model.json": "a884be66e042a47008ade8092866eabef9006b08984113d1119ba88696982c93",
+    "boncheong-minimal.hwpx": "24bdaaa4b65ae9b125a3fca32a9410aa9f7acd7568bac5620dc66ca0d96a36c7",
+    "boncheong-minimal.pdf": "6387b19d9517e17b1f436cf8cefb654741bb1d29713ef81a0bd22dd0f42a4885"
+  }
+}

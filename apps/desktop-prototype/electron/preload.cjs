@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('icePlan', {
   saveProfile: (profile) => ipcRenderer.invoke('save-profile', profile),
   loadProfile: () => ipcRenderer.invoke('load-profile'),
   extractHwpx: (filePath) => ipcRenderer.invoke('extract-hwpx', filePath),
+  checkFonts: (required) => ipcRenderer.invoke('check-fonts', required),
   saveProject: (project) => ipcRenderer.invoke('save-project', project),
   loadProject: () => ipcRenderer.invoke('load-project'),
 });

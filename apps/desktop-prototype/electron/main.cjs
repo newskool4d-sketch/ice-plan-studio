@@ -101,6 +101,27 @@ ipcMain.handle('load-profile', async () => {
   return { canceled: false, filePath: result.filePaths[0], profile };
 });
 
+ipcMain.handle('check-fonts', async (_event, required) => {
+  // font_inspector는 누락 글꼴이 있으면 종료코드 1을 반환한다(정상 판정 결과이지
+  // 실행 실패가 아님). runPython은 0이 아니면 reject하므로 stdout을 먼저 파싱한다.
+  const args = [scriptPath('font_inspector.py')];
+  if (Array.isArray(required) && required.length) args.push('--required', ...required);
+  let stdout = '';
+  const collect = (chunk) => { stdout += chunk.toString(); };
+  try {
+    await runPython(args, { onStdout: collect });
+  } catch (error) {
+    if (!stdout.trim()) {
+      return { ok: false, error: `글꼴 검사 실행 실패: ${error.message}`, results: [], missing: [] };
+    }
+  }
+  try {
+    return JSON.parse(stdout);
+  } catch {
+    return { ok: false, error: '글꼴 검사 결과를 해석하지 못했습니다.', results: [], missing: [] };
+  }
+});
+
 ipcMain.handle('extract-hwpx', async (_event, filePath) => {
   let stdout = '';
   await runPython([scriptPath('extract_hwpx_text.py'), filePath], {
