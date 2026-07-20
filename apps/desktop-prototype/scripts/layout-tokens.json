@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0",
+  "page": {
+    "widthMm": 210,
+    "heightMm": 297,
+    "marginLeftMm": 20,
+    "marginRightMm": 20,
+    "marginTopMm": 15,
+    "marginBottomMm": 15,
+    "hwpUnitPerMm": 283.4645669,
+    "bodyWidthHwpUnit": 48190
+  },
+  "table": {
+    "minimumColumnWidthHwpUnit": 6500,
+    "baseRowHeightHwpUnit": 1400,
+    "lineHeightHwpUnit": 500,
+    "maxEstimatedLines": 5,
+    "estimatedCharWidthHwpUnit": 900,
+    "repeatHeader": true
+  },
+  "typography": {
+    "body": { "font": "함초롬바탕", "sizePt": 12, "lineSpacingPercent": 160, "charPrId": "121", "paraPrId": "73" },
+    "heading": { "font": "함초롬바탕", "sizePt": 14, "charPrId": "9", "paraPrId": "1" },
+    "tableHeader": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "307", "charSpacingPercent": -15 },
+    "tableBody": { "font": "맑은 고딕", "sizePt": 10, "charPrId": "417", "charSpacingPercent": -11 }
+  },
+  "pageTypes": {
+    "cover": "표지",
+    "inner-cover": "속표지",
+    "preflight": "사전검토표",
+    "toc": "목 차",
+    "summary": "요약",
+    "body": "일반 본문",
+    "task": "세부과제",
+    "schedule": "일정·예산·성과표",
+    "appendix": "부록·붙임"
+  },
+  "coverProfiles": {
+    "metropolitan-a": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": null },
+    "direct-b": { "titleBox": false, "bannerImage": false, "innerCover": false, "englishName": "Incheon Student Education Institute" },
+    "direct-f": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": "Incheon Lifelong Learning Center" },
+    "direct-g": { "titleBox": false, "bannerImage": true, "innerCover": true, "englishName": "Incheon Student Education Institute" }
+  }
+}

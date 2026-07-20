@@ -18,6 +18,7 @@ TEMPLATE_CHOICES = ("gonmun", "boncheong")
 sys.path.insert(0, str(SCRIPTS))
 from hwpx_helpers import add_images_to_hwpx, make_image_para, next_id, reset_id, update_content_hpf, xml_escape  # noqa: E402
 from image_dimensions import image_dims_hwpunit  # noqa: E402
+from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, page_sequence, resolve_profile, table_column_widths, table_row_heights  # noqa: E402
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
 
@@ -53,8 +54,6 @@ STYLE_SETS = {
         'cell_parapr': '64',
         'cell_charpr': {'header': '307', 'body': '417'},
         'table_anchor_parapr': '1',
-        # 본문 폭 170mm (A4 210 − 좌우 여백 20씩) = 48190 HWPUNIT, 실측 확인
-        'body_width': 48190,
         # bf4·bf13·bf17 모두 4면 실선. 표 셀에는 bf13 사용(레퍼런스 표 셀 계열)
         'cell_borderfill': {'header': '13', 'body': '13'},
         'table_borderfill': '13',
@@ -159,8 +158,8 @@ def first_paragraph():
     return match.group(0)
 
 
-def boncheong_cover_paragraphs(model):
-    """Render the boncheong cover anchor with model values and a body page break."""
+def boncheong_cover_paragraphs(model, profile):
+    """Render the boncheong cover anchor with profile-specific variants."""
     metadata = model.get('metadata', {})
     cover = metadata.get('cover') or {}
     first_heading = next(
@@ -177,7 +176,67 @@ def boncheong_cover_paragraphs(model):
     anchor_xml = BONCHEONG_ANCHOR.read_text(encoding='utf-8')
     for placeholder, value in replacements.items():
         anchor_xml = anchor_xml.replace(placeholder, xml_escape(str(value)))
-    return [anchor_xml, page_break_para()]
+    title = replacements['2026 ○○○○ 기본 계획']
+    parts = [anchor_xml]
+    if not profile.banner_image:
+        # 소유 banner asset(image1)만 제거하여 배너형/무배너형을 명시적으로 구분한다.
+        parts[0], removed = re.subn(r'<hp:pic[^>]*>.*?<hc:img binaryItemIDRef="image1".*?</hp:pic>', '', parts[0], count=1, flags=re.S)
+        if removed != 1:
+            raise RuntimeError('Could not remove the cover banner image anchor')
+    if not profile.title_box:
+        # 제목틀을 통째로 대체해 직접기관형 제목도 명시적 charPr 9 토큰을 사용한다.
+        title_run = f'<hp:run charPrIDRef="9"><hp:t>{xml_escape(str(title))}</hp:t></hp:run>'
+        parts[0], replaced = re.subn(
+            r'<hp:run charPrIDRef="0"><hp:tbl id="2063551796".*?</hp:tbl><hp:t/></hp:run>',
+            title_run, parts[0], count=1, flags=re.S,
+        )
+        if replaced != 1:
+            raise RuntimeError('Could not replace the cover title-box anchor')
+    if profile.english_name:
+        # 표지는 고정 레이아웃(결정사항 6)이므로 새 문단을 추가해 페이지 높이를
+        # 늘리지 않는다 — 앵커에 이미 있는 빈 여분 문단(부서명 줄과 동일한
+        # paraPr/charPr, 원본 문서의 미사용 여백 줄)을 재사용해 영문 기관명을 채운다.
+        trailing_slot = '<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="15"/>'
+        filled_slot = ('<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+                        f'<hp:run charPrIDRef="15"><hp:t>{xml_escape(str(profile.english_name))}</hp:t></hp:run>')
+        if trailing_slot not in parts[0]:
+            raise RuntimeError('Could not find the cover english-name anchor slot')
+        parts[0] = parts[0].replace(trailing_slot, filled_slot, 1)
+    parts.append(page_break_para())
+    return parts
+
+
+def page_placeholder_blocks(page_type):
+    """Content generation 없이도 각 페이지 유형의 조판 구조를 검증할 최소 블록."""
+    if page_type == 'preflight':
+        return [{'type': 'table', 'header': ['점검 항목', '검토완료', '해당없음'], 'rows': [['형식 점검', '□', '□'], ['내용 확인', '□', '□']]}]
+    if page_type == 'schedule':
+        return [{'type': 'table', 'header': ['구분', '내용'], 'rows': [['일정', '입력 대기']]}]
+    label = {'toc': '목차 항목 입력', 'summary': '요약 내용 입력', 'task': '세부과제 내용 입력', 'appendix': '부록·붙임 내용 입력'}.get(page_type, '내용 입력 대기')
+    return [{'type': 'paragraph', 'text': label}]
+
+
+def page_type_paragraphs(page, model, profile, styles, style, starts_new_page=True):
+    """Render one of the nine layout page types; policy content remains caller-owned."""
+    page_type = page['type']
+    metadata = model.get('metadata', {})
+    if page_type == 'cover':
+        return boncheong_cover_paragraphs(model, profile)
+    if page_type == 'body':
+        parts = [page_break_para()] if starts_new_page else []
+        parts.extend(render_blocks(page.get('blocks', model.get('blocks', [])), styles, style))
+        return parts
+    title = page.get('title') or PAGE_LABELS[page_type]
+    parts = [page_break_para()] if starts_new_page else []
+    if page_type == 'inner-cover':
+        parts.append(text_para(metadata.get('title') or title, '9', '1', style))
+        covered = metadata.get('cover') or {}
+        parts.append(text_para(covered.get('displayName') or '인천광역시교육청', '121', '73', style))
+        parts.append(text_para('운영 계획', '121', '73', style))
+    else:
+        parts.append(text_para(title, '9', '1', style))
+    parts.extend(render_blocks(page.get('blocks') or page_placeholder_blocks(page_type), styles, style))
+    return parts
 
 
 def table_xml(block, styles, style=None):
@@ -185,17 +244,9 @@ def table_xml(block, styles, style=None):
     header = block.get('header', [])
     rows = [header] + block.get('rows', [])
     columns = max((len(row) for row in rows), default=1)
-    total_width = style.get('body_width', 42520)
-    minimum_width = 6500
-    content_lengths = [max((len(str(row[col])) for row in rows if col < len(row)), default=1) for col in range(columns)]
-    usable = total_width - minimum_width * columns
-    length_total = max(sum(content_lengths), 1)
-    widths = [minimum_width + int(usable * length / length_total) for length in content_lengths]
-    widths[-1] += total_width - sum(widths)
-    row_heights = []
-    for row in rows:
-        line_count = max((max(1, (len(str(row[col])) + max(widths[col] // 900, 1) - 1) // max(widths[col] // 900, 1)) for col in range(min(len(row), columns))), default=1)
-        row_heights.append(1400 + min(line_count, 5) * 500)
+    total_width = style.get('body_width', BODY_WIDTH_HWPUNIT)
+    widths = table_column_widths(rows, total_width=total_width)
+    row_heights = table_row_heights(rows, widths)
     table_id = next_id()
     cells = []
     for row_index, row in enumerate(rows):
@@ -248,6 +299,27 @@ def table_paragraph(block, styles, style=None):
     )
 
 
+def render_blocks(blocks, styles, style):
+    paragraphs = []
+    for block in blocks:
+        if block['type'] == 'table':
+            paragraphs.append(table_paragraph(block, styles, style))
+            continue
+        text = block.get('text', '')
+        if block['type'] == 'listItem':
+            text = ('1. ' if block.get('ordered') else '- ') + text
+        if not text:
+            continue
+        if block['type'] == 'heading':
+            charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
+        elif block['type'] == 'listItem':
+            charpr, parapr = style['body'][0], style['list_parapr']
+        else:
+            charpr, parapr = style['body']
+        paragraphs.append(text_para(text, charpr, parapr, style))
+    return paragraphs
+
+
 def build(model_path, output, template='gonmun'):
     model = json.loads(Path(model_path).read_text(encoding='utf-8'))
     if template not in TEMPLATE_CHOICES:
@@ -257,27 +329,18 @@ def build(model_path, output, template='gonmun'):
     reset_id(1000)
     images = []
     if template == 'boncheong':
-        paragraphs = boncheong_cover_paragraphs(model)
+        profile = resolve_profile(model.get('metadata', {}))
+        paragraphs = []
+        pages = page_sequence(model.get('metadata', {}), profile)
+        for index, page in enumerate(pages):
+            starts_new_page = index > 0 and pages[index - 1]['type'] != 'cover'
+            paragraphs.extend(page_type_paragraphs(page, model, profile, styles, style, starts_new_page=starts_new_page))
     else:
         paragraphs = [first_paragraph()]
         cover = model.get('metadata', {}).get('cover')
         if cover and (cover.get('ciDataUrl') or cover.get('sloganDataUrl')):
             paragraphs.extend(cover_paragraphs(cover, images))
-    for block in model.get('blocks', []):
-        if block['type'] == 'table':
-            paragraphs.append(table_paragraph(block, styles, style))
-            continue
-        text = block.get('text', '')
-        if block['type'] == 'listItem':
-            text = ('1. ' if block.get('ordered') else '- ') + text
-        if text:
-            if block['type'] == 'heading':
-                charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
-            elif block['type'] == 'listItem':
-                charpr, parapr = style['body'][0], style['list_parapr']
-            else:
-                charpr, parapr = style['body']
-            paragraphs.append(text_para(text, charpr, parapr, style))
+        paragraphs.extend(render_blocks(model.get('blocks', []), styles, style))
     section = ('<?xml version="1.0" encoding="UTF-8"?>'
                '<hs:sec xmlns:hp="http://www.hancom.co.kr/hwpml/2011/paragraph" '
                'xmlns:hs="http://www.hancom.co.kr/hwpml/2011/section" '

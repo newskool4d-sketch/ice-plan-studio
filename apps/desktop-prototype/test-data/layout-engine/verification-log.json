@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-07-20T13:46:56Z",
+  "fixtures": {
+    "metropolitan-a": {
+      "layout": {
+        "ok": true,
+        "bodyWidthHwpUnit": 48190,
+        "widths": [
+          7582,
+          40608
+        ],
+        "rowHeights": [
+          1900,
+          2900
+        ]
+      },
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "tableWidthHwpUnit": 48190,
+        "anchorToleranceHwpUnit": 141,
+        "bannerImage": true,
+        "titleBox": true,
+        "englishName": null
+      },
+      "typography": {
+        "ok": true,
+        "mismatches": []
+      },
+      "com": {
+        "expectedPages": 8,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 8,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "sha256": {
+        "metropolitan-a.model.json": "fc93004a9226509b79e8dcf3fb1d6e2864bdcd10d189b1aaedd35ebb187e1767",
+        "metropolitan-a.hwpx": "afb048361b657829a633fe8e82a9182bcd52dcc8d0c5b2c3670e227849f53418",
+        "metropolitan-a.pdf": "0e926e3929cfe82928fc43d34a97876c6b0df6949d85a5f12b144d6e4ef5975d"
+      }
+    },
+    "direct-b": {
+      "layout": {
+        "ok": true,
+        "bodyWidthHwpUnit": 48190,
+        "widths": [
+          7582,
+          40608
+        ],
+        "rowHeights": [
+          1900,
+          2900
+        ]
+      },
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "tableWidthHwpUnit": 48190,
+        "anchorToleranceHwpUnit": 141,
+        "bannerImage": false,
+        "titleBox": false,
+        "englishName": "Incheon Student Education Institute"
+      },
+      "typography": {
+        "ok": true,
+        "mismatches": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "sha256": {
+        "direct-b.model.json": "ffa716e1a49d0f5eb7822ad9cb1235694c280d10d68fd7d789622bf755bbc938",
+        "direct-b.hwpx": "7e6fb8ad6d083d19be8fe76b6b53558f33fb6167cc38e7d176dc1ff120586639",
+        "direct-b.pdf": "a6ea339cbcb18c676545a84cce46ea0f5c7dcd89cf4456d93585e78653cc8b55"
+      }
+    },
+    "direct-f": {
+      "layout": {
+        "ok": true,
+        "bodyWidthHwpUnit": 48190,
+        "widths": [
+          7582,
+          40608
+        ],
+        "rowHeights": [
+          1900,
+          2900
+        ]
+      },
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "tableWidthHwpUnit": 48190,
+        "anchorToleranceHwpUnit": 141,
+        "bannerImage": true,
+        "titleBox": true,
+        "englishName": "Incheon Lifelong Learning Center"
+      },
+      "typography": {
+        "ok": true,
+        "mismatches": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "sha256": {
+        "direct-f.model.json": "03a93dddea1ab4ffd0bdd137f99eecd59bb1f06f06b343bce0b400941e448324",
+        "direct-f.hwpx": "6bed35f5f22c4ff3aa41e891bfd3e6b2226d34000c736d1e52b3d8aef563f26a",
+        "direct-f.pdf": "369b6007247308bbf05aa9b839a54cae15e26b8af06d54305fb30acafd318db6"
+      }
+    },
+    "direct-g": {
+      "layout": {
+        "ok": true,
+        "bodyWidthHwpUnit": 48190,
+        "widths": [
+          7582,
+          40608
+        ],
+        "rowHeights": [
+          1900,
+          2900
+        ]
+      },
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "tableWidthHwpUnit": 48190,
+        "anchorToleranceHwpUnit": 141,
+        "bannerImage": true,
+        "titleBox": false,
+        "englishName": "Incheon Student Education Institute"
+      },
+      "typography": {
+        "ok": true,
+        "mismatches": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "sha256": {
+        "direct-g.model.json": "e113b9f8a9e6c8c2142131e27e017110990b6c3a7710f1a4a5206b5c1f7f62d1",
+        "direct-g.hwpx": "5d6a3d010ebe7eed3cbba34b1253cf7d14fbdbc2e213b0ecf1a647f4b4a3a8d0",
+        "direct-g.pdf": "cd8ef870842ea3089675cf70af08398e2f3db6f6766d209cabd359ad1f425c28"
+      }
+    }
+  }
+}

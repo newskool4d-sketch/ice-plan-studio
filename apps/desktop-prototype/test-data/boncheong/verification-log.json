@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T11:40:57Z",
+  "generatedAt": "2026-07-20T13:48:32Z",
   "generate": {
     "exitCode": 0,
     "ok": true
@@ -18,7 +18,7 @@
   },
   "sha256": {
     "boncheong-minimal.model.json": "a884be66e042a47008ade8092866eabef9006b08984113d1119ba88696982c93",
-    "boncheong-minimal.hwpx": "24bdaaa4b65ae9b125a3fca32a9410aa9f7acd7568bac5620dc66ca0d96a36c7",
-    "boncheong-minimal.pdf": "6387b19d9517e17b1f436cf8cefb654741bb1d29713ef81a0bd22dd0f42a4885"
+    "boncheong-minimal.hwpx": "24256624c1ea1f1c07a259ef18c78d0c8a50bc0c0fc1921f32d049c7fd511c42",
+    "boncheong-minimal.pdf": "e6c21d1990d326fc1f38ffb21efb5ceda43ae0ce78bc05b3c383fb2bf297bf2d"
   }
 }

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "0.2",
+  "metadata": {
+    "title": "2026 metropolitan-a 조판 검증 계획",
+    "cover": {
+      "title": "2026 metropolitan-a 조판 검증 계획",
+      "direction": "검증 방향",
+      "date": "2026. 7.",
+      "displayName": "인천광역시교육청"
+    },
+    "layout": {
+      "coverProfile": "metropolitan-a"
+    },
+    "pages": [
+      {
+        "type": "cover"
+      },
+      {
+        "type": "preflight"
+      },
+      {
+        "type": "toc"
+      },
+      {
+        "type": "summary"
+      },
+      {
+        "type": "body"
+      },
+      {
+        "type": "task"
+      },
+      {
+        "type": "schedule",
+        "blocks": [
+          {
+            "type": "table",
+            "header": [
+              "월",
+              "내용",
+              "담당"
+            ],
+            "rows": [
+              [
+                "7",
+                "조판 검증",
+                "교학팀"
+              ],
+              [
+                "8",
+                "결과 확인",
+                "담당자"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "type": "appendix"
+      }
+    ]
+  },
+  "styles": {},
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Ⅰ. 일반 본문"
+    },
+    {
+      "type": "paragraph",
+      "text": "조판 엔진의 본문·줄바꿈·표 너비를 검증한다."
+    },
+    {
+      "type": "table",
+      "header": [
+        "구분",
+        "내용"
+      ],
+      "rows": [
+        [
+          "본문폭",
+          "170mm"
+        ],
+        [
+          "표 머리글",
+          "반복"
+        ]
+      ]
+    }
+  ]
+}
