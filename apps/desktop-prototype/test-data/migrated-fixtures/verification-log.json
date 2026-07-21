@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "0.2",
+  "gate": "migrated-fixtures",
+  "fixtures": {
+    "integration": {
+      "source": "integration.model.json",
+      "sourceSchema": "0.1",
+      "targetSchema": "0.2",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "sha256": {
+        "integration.v0.2.model.json": "7f5726e59074cd4d68319d9d4868a878dd6528308b0d63c0c2aeb07918616061",
+        "integration.v0.2.hwpx": "697e41f858d23688d0f9e8c2448bf51d282b180d2a9611cf738a5009dab9b848"
+      }
+    },
+    "long-table": {
+      "source": "long-table.model.json",
+      "sourceSchema": "0.1",
+      "targetSchema": "0.2",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "sha256": {
+        "long-table.v0.2.model.json": "dc3f25815787737f69344f542c1a90e0d6af11954d905d957c913f724ce5f7bd",
+        "long-table.v0.2.hwpx": "8d40d642d71b00c7638e0928862a9de3f5e12da7ffaba492b9b9c50b6507fb66"
+      }
+    },
+    "multipage-table": {
+      "source": "multipage-table.model.json",
+      "sourceSchema": "0.1",
+      "targetSchema": "0.2",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "sha256": {
+        "multipage-table.v0.2.model.json": "436e68060b0582fcb450e29fd86b3ea748b7e5960a1df277d47caa71f90457b5",
+        "multipage-table.v0.2.hwpx": "749e08cdfa74e5e369da54984223a8757612dce154cd0b30a972c1bc90fabf9b"
+      }
+    },
+    "paragraph-style": {
+      "source": "paragraph-style.model.json",
+      "sourceSchema": "0.1",
+      "targetSchema": "0.2",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "sha256": {
+        "paragraph-style.v0.2.model.json": "cc34032564e2ffa64f49b98bb941dd63a149ae6a7ceefcb8f02df7387588e6e9",
+        "paragraph-style.v0.2.hwpx": "b45a18aa9446cc7f2a50ebb928e9634431f1a55fe46669c39d6d2e1bef7ff4a7"
+      }
+    },
+    "rules": {
+      "source": "rules.model.json",
+      "sourceSchema": "0.1",
+      "targetSchema": "0.2",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "sha256": {
+        "rules.v0.2.model.json": "748219f91f5a4b9787c257b9cc1acbebebe6c9b0c50a2d015a157b89dde12032",
+        "rules.v0.2.hwpx": "6d60bee64fd5945b4a11b0c61dd8c327acc14fda4a06b10b310587291812f1a8"
+      }
+    },
+    "sample-plan": {
+      "source": "sample-plan.model.json",
+      "sourceSchema": "0.1",
+      "targetSchema": "0.2",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "sha256": {
+        "sample-plan.v0.2.model.json": "685e7f9675cbcb85da23f4a3793efb1f7173bf934ceac3fe84fc341123355046",
+        "sample-plan.v0.2.hwpx": "d3b6ee53fb5e734a9814b01b6b3452f0e491c61f9b8bdd4b89f428733bf64e46"
+      }
+    }
+  },
+  "passed": true
+}

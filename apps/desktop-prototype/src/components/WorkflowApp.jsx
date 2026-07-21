@@ -43,6 +43,22 @@ function compositionModel(model, agency) {
   };
 }
 
+function profilePackage(agency) {
+  return {
+    schemaVersion: "0.2",
+    kind: "iceprofile",
+    profile: {
+      id: agency.id,
+      label: agency.label,
+      baseAgencyId: agency.id,
+      organization: { displayName: agency.displayName, department: null },
+      branding: { slogan: agency.slogan, ci: agency.ci, sloganAsset: agency.sloganAsset, customByAgency: {} },
+      layout: { coverProfile: agency.coverProfile },
+      extensions: {},
+    },
+  };
+}
+
 function pageDraftsFrom(model, agency) {
   return createPreviewProjection(compositionModel(model, agency)).pages.map((page) => ({
     id: page.id,
@@ -327,11 +343,132 @@ function WorkflowApp() {
     }
   };
 
+  const saveWorkspace = async () => {
+    if (!model || !window.icePlan?.saveProject) {
+      setNotice(model ? "프로젝트 저장은 Electron에서 사용할 수 있습니다." : "먼저 문서를 불러와 주세요.");
+      return;
+    }
+    try {
+      const result = await window.icePlan.saveProject({
+        project: {
+          schemaVersion: "0.2",
+          kind: "iceplan",
+          metadata: { loadedFile: file, title: modelTitle(model, file) },
+          workflow: { activeStep, analysisConfirmed, infoDraft, infoConfirmed, pageDrafts, rulesConfirmed, ignoredRuleIds },
+          view: { page, zoom, previewMode },
+          settings: { agencyId },
+        },
+        document: model,
+        profile: profilePackage(agency),
+        validation: { approval: model.approval || { status: "unapproved" }, ignoredRuleIds, rulesConfirmed },
+        history: { snapshots: [] },
+      });
+      if (!result.canceled) setNotice(`프로젝트 v${result.schemaVersion}로 저장했습니다: ${result.filePath}`);
+    } catch (error) {
+      setNotice(`프로젝트 저장 실패: ${error.message}`);
+    }
+  };
+
+  const loadWorkspace = async () => {
+    if (!window.icePlan?.loadProject) {
+      setNotice("프로젝트 불러오기는 Electron에서 사용할 수 있습니다.");
+      return;
+    }
+    try {
+      const result = await window.icePlan.loadProject();
+      if (result.canceled) return;
+      const snapshot = result.project;
+      const nextModel = snapshot.document;
+      if (!nextModel?.blocks) throw new Error("프로젝트에 Plan IR 문서가 없습니다.");
+      const workflow = snapshot.project?.workflow || {};
+      const view = snapshot.project?.view || {};
+      const settings = snapshot.project?.settings || {};
+      const requestedAgencyId = settings.agencyId || snapshot.profile?.profile?.baseAgencyId || defaultAgencyProfile.id;
+      const nextAgency = agencyProfiles[requestedAgencyId] || defaultAgencyProfile;
+      const nextDrafts = Array.isArray(workflow.pageDrafts) && workflow.pageDrafts.length
+        ? workflow.pageDrafts.map((item) => ({ ...item, confirmed: Boolean(item.confirmed) }))
+        : pageDraftsFrom(nextModel, nextAgency);
+      const nextAnalysisConfirmed = Boolean(workflow.analysisConfirmed);
+      const nextInfoConfirmed = nextAnalysisConfirmed && Boolean(workflow.infoConfirmed);
+      const nextStructureConfirmed = nextInfoConfirmed && nextDrafts.length > 0 && nextDrafts.every((item) => item.confirmed);
+      const nextIgnored = Array.isArray(workflow.ignoredRuleIds) ? workflow.ignoredRuleIds : [];
+      const pendingRules = inspectDocumentRules(nextModel).filter((item) => !nextIgnored.includes(item.id));
+      const nextRulesConfirmed = nextStructureConfirmed && Boolean(workflow.rulesConfirmed) && pendingRules.length === 0;
+      const maxStep = nextRulesConfirmed ? 5 : nextStructureConfirmed ? 4 : nextInfoConfirmed ? 3 : nextAnalysisConfirmed ? 2 : 1;
+      const restoredStep = Math.min(maxStep, Math.max(1, Number(workflow.activeStep) || 1));
+      setModel(nextModel);
+      setFile(snapshot.project?.metadata?.loadedFile || result.filePath.split(/[\\/]/).pop());
+      setAgencyId(nextAgency.id);
+      setAnalysisConfirmed(nextAnalysisConfirmed);
+      setInfoDraft(workflow.infoDraft || { title: modelTitle(nextModel, "프로젝트"), date: nextModel.metadata?.cover?.date || "" });
+      setInfoConfirmed(nextInfoConfirmed);
+      setPageDrafts(nextDrafts);
+      setRulesConfirmed(nextRulesConfirmed);
+      setIgnoredRuleIds(nextIgnored);
+      setSelectedRuleId(null);
+      setRuleHistory([]);
+      setPage(Math.max(1, Number(view.page) || 1));
+      setZoom(Math.min(125, Math.max(50, Number(view.zoom) || 75)));
+      setPreviewMode(view.previewMode === "rendered" ? "rendered" : "react");
+      setActiveStep(restoredStep);
+      setNotice(`${result.migratedFrom ? `v${result.migratedFrom} 프로젝트를 v0.2로 승격해 ` : ""}불러왔습니다: ${result.filePath}`);
+    } catch (error) {
+      setNotice(`프로젝트를 읽지 못했습니다: ${error.message}`);
+    }
+  };
+
+  const saveAgencyProfile = async () => {
+    if (!window.icePlan?.saveProfile) {
+      setNotice("프로필 저장은 Electron에서 사용할 수 있습니다.");
+      return;
+    }
+    try {
+      const result = await window.icePlan.saveProfile(profilePackage(agency));
+      if (!result.canceled) setNotice(`프로필 v${result.schemaVersion}로 저장했습니다: ${result.filePath}`);
+    } catch (error) {
+      setNotice(`프로필 저장 실패: ${error.message}`);
+    }
+  };
+
+  const loadAgencyProfile = async () => {
+    if (!window.icePlan?.loadProfile) {
+      setNotice("프로필 불러오기는 Electron에서 사용할 수 있습니다.");
+      return;
+    }
+    try {
+      const result = await window.icePlan.loadProfile();
+      if (result.canceled) return;
+      const imported = result.profile?.profile;
+      const requested = imported?.baseAgencyId || imported?.id;
+      const nextAgency = agencyProfiles[requested]
+        || Object.values(agencyProfiles).find((item) => item.coverProfile === imported?.layout?.coverProfile)
+        || defaultAgencyProfile;
+      setAgencyId(nextAgency.id);
+      if (model) {
+        setInfoConfirmed(false);
+        setRulesConfirmed(false);
+        setActiveStep(2);
+      }
+      setNotice(`${result.migratedFrom ? `v${result.migratedFrom} 프로필을 v0.2로 승격해 ` : ""}${nextAgency.label}로 불러왔습니다.`);
+    } catch (error) {
+      setNotice(`프로필을 읽지 못했습니다: ${error.message}`);
+    }
+  };
+
   const renderStepPanel = () => {
     if (activeStep === 0) return <div className="workflow-panel" data-panel="start">
       <span className="eyebrow">1단계 · 시작</span><h2>계획안 원본을 불러오세요</h2>
       <p>MD·TXT·HWP·HWPX를 Plan IR로 변환한 뒤 분석 단계가 열립니다.</p>
       <label className="primary-action file-load-button">문서 선택<input type="file" accept=".md,.txt,.hwp,.hwpx" onChange={load} /></label>
+      <div className="package-resume-card">
+        <strong>기존 작업 재개</strong>
+        <p>v0.1 평면 JSON 프로젝트·프로필도 불러올 때 v0.2로 자동 승격합니다.</p>
+        <div className="package-action-row">
+          <button id="start-project-load" type="button" onClick={loadWorkspace}>프로젝트 불러오기</button>
+          <button id="start-profile-load" type="button" onClick={loadAgencyProfile}>프로필 불러오기</button>
+          <button id="start-profile-save" type="button" onClick={saveAgencyProfile}>현재 프로필 저장</button>
+        </div>
+      </div>
     </div>;
 
     if (activeStep === 1) return <div className="workflow-panel" data-panel="analysis">
@@ -411,6 +548,8 @@ function WorkflowApp() {
       <div className="topbar-actions">
         <span className="save-state"><span className="status-dot" />{completed.slice(0, 5).filter(Boolean).length}/5 확정</span>
         <label className="profile-select">기관<select value={agencyId} onChange={handleAgencyChange}>{Object.values(agencyProfiles).map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</select></label>
+        <button id="workspace-save" type="button" className="topbar-button" disabled={!model} onClick={saveWorkspace}>작업 저장</button>
+        <button id="workspace-load" type="button" className="topbar-button" onClick={loadWorkspace}>작업 열기</button>
         <label className="topbar-button file-load-button">파일 불러오기<input type="file" accept=".md,.txt,.hwp,.hwpx" onChange={load} /></label>
         <button type="button" className="topbar-button" disabled={!available[5]} onClick={() => setActiveStep(5)}>내보내기 단계</button>
       </div>

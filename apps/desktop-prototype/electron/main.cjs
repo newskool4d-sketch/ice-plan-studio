@@ -5,6 +5,7 @@ const os = require('node:os');
 const { spawn } = require('node:child_process');
 const { renderHwpxToSvg } = require('kordoc');
 const { kordocSmokeInfo, loadPlanInput } = require('./input-adapters.cjs');
+const { createProfileArchive, createProjectArchive, readProfileArchive, readProjectArchive } = require('./workspace-packages.cjs');
 
 // 패키징(asar) 환경에서는 Python이 asar 내부를 읽지 못하므로 unpacked 경로로 치환한다.
 const scriptPath = (name) =>
@@ -106,8 +107,9 @@ ipcMain.handle('save-profile', async (_event, profile) => {
     filters: [{ name: 'ICE Plan Studio 프로필', extensions: ['iceprofile'] }],
   });
   if (result.canceled || !result.filePath) return { canceled: true };
-  await fs.writeFile(result.filePath, JSON.stringify({ schemaVersion: '0.1', ...profile }, null, 2), 'utf8');
-  return { canceled: false, filePath: result.filePath };
+  const packaged = createProfileArchive(profile);
+  await fs.writeFile(result.filePath, packaged.buffer);
+  return { canceled: false, filePath: result.filePath, schemaVersion: packaged.profile.schemaVersion };
 });
 
 ipcMain.handle('load-profile', async () => {
@@ -117,8 +119,8 @@ ipcMain.handle('load-profile', async () => {
     filters: [{ name: 'ICE Plan Studio 프로필', extensions: ['iceprofile'] }],
   });
   if (result.canceled || !result.filePaths[0]) return { canceled: true };
-  const profile = JSON.parse(await fs.readFile(result.filePaths[0], 'utf8'));
-  return { canceled: false, filePath: result.filePaths[0], profile };
+  const loaded = readProfileArchive(await fs.readFile(result.filePaths[0]));
+  return { canceled: false, filePath: result.filePaths[0], profile: loaded.profile, migratedFrom: loaded.migratedFrom, format: loaded.format };
 });
 
 ipcMain.handle('check-fonts', async (_event, required) => {
@@ -159,12 +161,15 @@ ipcMain.handle('load-plan-input', async (_event, filePath) => {
 ipcMain.handle('save-project', async (_event, project) => {
   const result = await dialog.showSaveDialog({
     title: 'ICE Plan Studio 프로젝트 저장',
-    defaultPath: `${project?.loadedFile || '문서작업'}.iceplan`,
+    // 렌더러는 v0.2 형태({ project: { metadata: { loadedFile } }, ... })로 보낸다.
+    // 최상위 project.loadedFile을 읽으면 항상 undefined라 기본 파일명이 폴백으로 고정된다.
+    defaultPath: `${project?.project?.metadata?.loadedFile?.replace(/\.(md|txt|hwpx?|iceplan)$/i, '') || '문서작업'}.iceplan`,
     filters: [{ name: 'ICE Plan Studio 프로젝트', extensions: ['iceplan'] }],
   });
   if (result.canceled || !result.filePath) return { canceled: true };
-  await fs.writeFile(result.filePath, JSON.stringify({ schemaVersion: '0.1', ...project }, null, 2), 'utf8');
-  return { canceled: false, filePath: result.filePath };
+  const packaged = createProjectArchive(project);
+  await fs.writeFile(result.filePath, packaged.buffer);
+  return { canceled: false, filePath: result.filePath, schemaVersion: packaged.project.project.schemaVersion };
 });
 
 ipcMain.handle('load-project', async () => {
@@ -174,8 +179,8 @@ ipcMain.handle('load-project', async () => {
     filters: [{ name: 'ICE Plan Studio 프로젝트', extensions: ['iceplan'] }],
   });
   if (result.canceled || !result.filePaths[0]) return { canceled: true };
-  const project = JSON.parse(await fs.readFile(result.filePaths[0], 'utf8'));
-  return { canceled: false, filePath: result.filePaths[0], project };
+  const loaded = readProjectArchive(await fs.readFile(result.filePaths[0]));
+  return { canceled: false, filePath: result.filePaths[0], project: loaded.project, migratedFrom: loaded.migratedFrom, format: loaded.format };
 });
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null);

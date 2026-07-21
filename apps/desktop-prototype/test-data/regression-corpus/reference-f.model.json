@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "0.2",
+  "kind": "plan-ir",
+  "metadata": {
+    "title": "2026 레퍼런스 F 회귀 검증 계획",
+    "reference": {
+      "id": "F",
+      "documentType": "직속기관 종합계획",
+      "sanitized": true
+    },
+    "cover": {
+      "title": "2026 레퍼런스 F 회귀 검증 계획",
+      "direction": "기준선 회귀",
+      "date": "2026. 7.",
+      "displayName": "인천광역시교육청 평생학습관"
+    },
+    "layout": {
+      "coverProfile": "direct-f"
+    },
+    "rules": {
+      "itemMarkers": [
+        "❍",
+        "−",
+        "ㆍ"
+      ]
+    },
+    "pages": [
+      {
+        "type": "cover"
+      },
+      {
+        "type": "body"
+      },
+      {
+        "type": "schedule",
+        "blocks": [
+          {
+            "type": "table",
+            "header": [
+              "월",
+              "내용",
+              "담당"
+            ],
+            "rows": [
+              [
+                "7",
+                "회귀 검증",
+                "교학팀"
+              ]
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "source": {
+    "format": "regression-fixture",
+    "filePath": null
+  },
+  "approval": {
+    "status": "unapproved"
+  },
+  "pageTypes": [
+    "cover",
+    "body",
+    "schedule"
+  ],
+  "diagnostics": [],
+  "blocks": [
+    {
+      "id": "f-heading",
+      "type": "heading",
+      "role": "heading",
+      "level": 1,
+      "text": "Ⅰ. 회귀 검증"
+    },
+    {
+      "id": "f-body",
+      "type": "paragraph",
+      "role": "body",
+      "text": "레퍼런스 F의 페이지 시퀀스와 조판 토큰을 검증한다."
+    },
+    {
+      "id": "f-list",
+      "type": "listItem",
+      "role": "list",
+      "level": 0,
+      "marker": "❍",
+      "text": "항목기호 계열 확인"
+    },
+    {
+      "id": "f-table",
+      "type": "table",
+      "role": "table",
+      "header": [
+        "구분",
+        "내용"
+      ],
+      "rows": [
+        [
+          "문서 유형",
+          "직속기관 종합계획"
+        ],
+        [
+          "본문폭",
+          "170mm"
+        ]
+      ]
+    }
+  ]
+}

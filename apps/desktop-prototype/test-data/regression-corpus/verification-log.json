@@ -1,0 +1,399 @@
+{
+  "schemaVersion": "0.2",
+  "generatedAt": "2026-07-21T08:38:53Z",
+  "references": {
+    "A": {
+      "documentType": "본청 기본계획",
+      "profile": "metropolitan-a",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "toc",
+          "body",
+          "appendix"
+        ],
+        "expectedPages": 4,
+        "itemMarkers": [
+          "■",
+          "□",
+          "❍",
+          "−",
+          "·"
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-a.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-a.hwpx",
+          "pageCount": 4,
+          "expectedTableCount": 1,
+          "outputTableCount": 1,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 4,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 4,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "34d5fa68ecff3d30b737a2147da4ce4006756e0a02633fc01bbc5e3e5cf243a2"
+        },
+        "hwpx": {
+          "section0Sha256": "6e740e58a80da219ced91317e2473861b1f969761adf48a3ea5ccdcfc39b2089",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 82212
+        }
+      }
+    },
+    "B": {
+      "documentType": "직속기관 실무형",
+      "profile": "direct-b",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "body",
+          "appendix"
+        ],
+        "expectedPages": 3,
+        "itemMarkers": [
+          "❍",
+          "1.",
+          "가.",
+          "−"
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-b.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-b.hwpx",
+          "pageCount": 3,
+          "expectedTableCount": 1,
+          "outputTableCount": 1,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "82c862023c1968dffcc31033155d6b223553739b30a6ecbce512da30e86c2cda"
+        },
+        "hwpx": {
+          "section0Sha256": "6aff11fce3523f6ce5dc72c5c04e1c888c87c7ad6c33ce7b247a78f838c153e1",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 51994
+        }
+      }
+    },
+    "C": {
+      "documentType": "본청 정책브랜드형",
+      "profile": "metropolitan-a",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "preflight",
+          "toc",
+          "summary",
+          "body",
+          "task",
+          "schedule"
+        ],
+        "expectedPages": 7,
+        "itemMarkers": [
+          "❍",
+          "❖",
+          "￭",
+          "−"
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-c.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-c.hwpx",
+          "pageCount": 7,
+          "expectedTableCount": 3,
+          "outputTableCount": 3,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 7,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 7,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "7418a789c3638643cf360cf5ebb4c047f0cc8789182dd976089561a91e743a66"
+        },
+        "hwpx": {
+          "section0Sha256": "03075b40dc10b84163bc592455b2c50056a402be50613e7b23ec79b15fbeab04",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 92070
+        }
+      }
+    },
+    "D": {
+      "documentType": "본청 기본계획",
+      "profile": "metropolitan-a",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "preflight",
+          "toc",
+          "summary",
+          "inner-cover",
+          "body",
+          "task",
+          "schedule",
+          "appendix"
+        ],
+        "expectedPages": 9,
+        "itemMarkers": [
+          "◈",
+          "□",
+          "❍",
+          "−",
+          "∙"
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-d.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-d.hwpx",
+          "pageCount": 9,
+          "expectedTableCount": 3,
+          "outputTableCount": 3,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 9,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 9,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "d04defcb0f2357a14c63a609619ff13589a2bdcb5980f17f9774795fd5cb22f2"
+        },
+        "hwpx": {
+          "section0Sha256": "691645ac55d4dd7ba4881ed8791f8085a9e2655cca39785266e07230ebfca8ad",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 96323
+        }
+      }
+    },
+    "E": {
+      "documentType": "본청 기본계획",
+      "profile": "metropolitan-a",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "toc",
+          "preflight",
+          "summary",
+          "summary",
+          "inner-cover",
+          "body",
+          "task",
+          "schedule",
+          "appendix"
+        ],
+        "expectedPages": 10,
+        "itemMarkers": [
+          "■",
+          "□",
+          "❍",
+          "−",
+          "·"
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-e.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-e.hwpx",
+          "pageCount": 10,
+          "expectedTableCount": 3,
+          "outputTableCount": 3,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 10,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 10,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "cd1c2914d066e34fca474013927599a7b175b9031286e4bf7c365a29bd547c93"
+        },
+        "hwpx": {
+          "section0Sha256": "3df7fa7d22df3c3cd95424a7f7c81df8114fc71373422101cbb0475ec5ff4798",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 97322
+        }
+      }
+    },
+    "F": {
+      "documentType": "직속기관 종합계획",
+      "profile": "direct-f",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "body",
+          "schedule"
+        ],
+        "expectedPages": 3,
+        "itemMarkers": [
+          "❍",
+          "−",
+          "ㆍ"
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-f.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-f.hwpx",
+          "pageCount": 3,
+          "expectedTableCount": 2,
+          "outputTableCount": 2,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "b23014d8a35d3662eb277b16af13686294ff48665d8b8e5591b5004003a4dd63"
+        },
+        "hwpx": {
+          "section0Sha256": "a852e99a193847734e8fef5bfa8eb5ca4217aaef9b5235b634e44033599d4b9e",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 86542
+        }
+      }
+    },
+    "G": {
+      "documentType": "직속기관 운영계획",
+      "profile": "direct-g",
+      "generate": {
+        "ok": true,
+        "exitCode": 0
+      },
+      "structure": {
+        "ok": true,
+        "pageSequence": [
+          "cover",
+          "inner-cover",
+          "body",
+          "schedule"
+        ],
+        "expectedPages": 4,
+        "itemMarkers": [
+          "◎",
+          "◦",
+          "−",
+          "1.",
+          "가."
+        ],
+        "previewEquivalence": {
+          "model": "test-data\\regression-corpus\\reference-g.model.json",
+          "hwpx": "test-data\\regression-corpus\\reference-g.hwpx",
+          "pageCount": 4,
+          "expectedTableCount": 2,
+          "outputTableCount": 2,
+          "passed": true,
+          "failures": []
+        }
+      },
+      "com": {
+        "expectedPages": 4,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 4,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "fingerprint": {
+        "model.json": {
+          "sha256": "65bfe1e19529581326a1382e41cefcde21b4d9268a30d837f1b32c4d38cd60f2"
+        },
+        "hwpx": {
+          "section0Sha256": "48ceeb27a1db29b6e8ed4bf248e7abd62dfa12e90e08dc875b5b68f6313096d3",
+          "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
+        },
+        "pdf": {
+          "bytes": 88629
+        }
+      }
+    }
+  }
+}

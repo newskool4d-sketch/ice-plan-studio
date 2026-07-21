@@ -1,0 +1,1311 @@
+{
+  "schemaVersion": "0.2",
+  "metadata": {
+    "title": "다중 페이지 표 검증",
+    "cover": {
+      "title": "다중 페이지 표 검증",
+      "date": "2026. 7.",
+      "displayName": "인천광역시교육청"
+    },
+    "layout": {
+      "coverProfile": "metropolitan-a"
+    },
+    "pages": [
+      {
+        "type": "cover"
+      },
+      {
+        "type": "body"
+      }
+    ]
+  },
+  "layout": {
+    "page": "A4",
+    "table": {
+      "treatAsChar": false,
+      "repeatHeader": true,
+      "splitAcrossPages": true,
+      "overflowStrategy": [
+        "semantic-width",
+        "wrap",
+        "shrink",
+        "split-proposal"
+      ]
+    }
+  },
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "2026 긴 표 레이아웃 검증",
+      "id": "legacy-block-0001",
+      "role": "heading",
+      "source": {
+        "format": "iceplan-v0.1",
+        "filePath": null,
+        "blockIndex": 0,
+        "original": "2026 긴 표 레이아웃 검증"
+      }
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "세부 추진 일정",
+      "id": "legacy-block-0002",
+      "role": "heading",
+      "source": {
+        "format": "iceplan-v0.1",
+        "filePath": null,
+        "blockIndex": 1,
+        "original": "세부 추진 일정"
+      }
+    },
+    {
+      "type": "table",
+      "header": [
+        "번호",
+        "추진 과제",
+        "세부 내용",
+        "담당 부서",
+        "협조 부서"
+      ],
+      "rows": [
+        [
+          "1",
+          "교육과정 개선",
+          "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+          "교육과정과",
+          "초등교육과"
+        ],
+        [
+          "2",
+          "학생 맞춤 지원",
+          "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+          "학생지원과",
+          "상담센터"
+        ],
+        [
+          "3",
+          "지역 협력",
+          "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+          "교육협력과",
+          "정책기획과"
+        ],
+        [
+          "4",
+          "성과 점검",
+          "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+          "정책기획과",
+          "전 부서"
+        ],
+        [
+          "5",
+          "안전 관리",
+          "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+          "안전총괄과",
+          "보건실"
+        ],
+        [
+          "6",
+          "교육과정 개선",
+          "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+          "교육과정과",
+          "초등교육과"
+        ],
+        [
+          "7",
+          "학생 맞춤 지원",
+          "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+          "학생지원과",
+          "상담센터"
+        ],
+        [
+          "8",
+          "지역 협력",
+          "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+          "교육협력과",
+          "정책기획과"
+        ],
+        [
+          "9",
+          "성과 점검",
+          "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+          "정책기획과",
+          "전 부서"
+        ],
+        [
+          "10",
+          "안전 관리",
+          "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+          "안전총괄과",
+          "보건실"
+        ],
+        [
+          "11",
+          "교육과정 개선",
+          "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+          "교육과정과",
+          "초등교육과"
+        ],
+        [
+          "12",
+          "학생 맞춤 지원",
+          "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+          "학생지원과",
+          "상담센터"
+        ],
+        [
+          "13",
+          "지역 협력",
+          "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+          "교육협력과",
+          "정책기획과"
+        ],
+        [
+          "14",
+          "성과 점검",
+          "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+          "정책기획과",
+          "전 부서"
+        ],
+        [
+          "15",
+          "안전 관리",
+          "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+          "안전총괄과",
+          "보건실"
+        ],
+        [
+          "16",
+          "교육과정 개선",
+          "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+          "교육과정과",
+          "초등교육과"
+        ],
+        [
+          "17",
+          "학생 맞춤 지원",
+          "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+          "학생지원과",
+          "상담센터"
+        ],
+        [
+          "18",
+          "지역 협력",
+          "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+          "교육협력과",
+          "정책기획과"
+        ],
+        [
+          "19",
+          "성과 점검",
+          "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+          "정책기획과",
+          "전 부서"
+        ],
+        [
+          "20",
+          "안전 관리",
+          "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+          "안전총괄과",
+          "보건실"
+        ],
+        [
+          "21",
+          "교육과정 개선",
+          "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+          "교육과정과",
+          "초등교육과"
+        ],
+        [
+          "22",
+          "학생 맞춤 지원",
+          "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+          "학생지원과",
+          "상담센터"
+        ],
+        [
+          "23",
+          "지역 협력",
+          "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+          "교육협력과",
+          "정책기획과"
+        ],
+        [
+          "24",
+          "성과 점검",
+          "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+          "정책기획과",
+          "전 부서"
+        ],
+        [
+          "25",
+          "안전 관리",
+          "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+          "안전총괄과",
+          "보건실"
+        ],
+        [
+          "26",
+          "교육과정 개선",
+          "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+          "교육과정과",
+          "초등교육과"
+        ],
+        [
+          "27",
+          "학생 맞춤 지원",
+          "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+          "학생지원과",
+          "상담센터"
+        ],
+        [
+          "28",
+          "지역 협력",
+          "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+          "교육협력과",
+          "정책기획과"
+        ],
+        [
+          "29",
+          "성과 점검",
+          "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+          "정책기획과",
+          "전 부서"
+        ],
+        [
+          "30",
+          "안전 관리",
+          "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+          "안전총괄과",
+          "보건실"
+        ]
+      ],
+      "layout": {
+        "repeatHeader": true,
+        "treatAsChar": false
+      },
+      "id": "legacy-block-0003",
+      "role": "table",
+      "source": {
+        "format": "iceplan-v0.1",
+        "filePath": null,
+        "blockIndex": 2,
+        "original": "번호|추진 과제|세부 내용|담당 부서|협조 부서\n1|교육과정 개선|학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.|교육과정과|초등교육과\n2|학생 맞춤 지원|기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.|학생지원과|상담센터\n3|지역 협력|지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.|교육협력과|정책기획과\n4|성과 점검|분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.|정책기획과|전 부서\n5|안전 관리|교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.|안전총괄과|보건실\n6|교육과정 개선|학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.|교육과정과|초등교육과\n7|학생 맞춤 지원|기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.|학생지원과|상담센터\n8|지역 협력|지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.|교육협력과|정책기획과\n9|성과 점검|분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.|정책기획과|전 부서\n10|안전 관리|교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.|안전총괄과|보건실\n11|교육과정 개선|학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.|교육과정과|초등교육과\n12|학생 맞춤 지원|기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.|학생지원과|상담센터\n13|지역 협력|지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.|교육협력과|정책기획과\n14|성과 점검|분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.|정책기획과|전 부서\n15|안전 관리|교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.|안전총괄과|보건실\n16|교육과정 개선|학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.|교육과정과|초등교육과\n17|학생 맞춤 지원|기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.|학생지원과|상담센터\n18|지역 협력|지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.|교육협력과|정책기획과\n19|성과 점검|분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.|정책기획과|전 부서\n20|안전 관리|교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.|안전총괄과|보건실\n21|교육과정 개선|학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.|교육과정과|초등교육과\n22|학생 맞춤 지원|기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.|학생지원과|상담센터\n23|지역 협력|지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.|교육협력과|정책기획과\n24|성과 점검|분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.|정책기획과|전 부서\n25|안전 관리|교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.|안전총괄과|보건실\n26|교육과정 개선|학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.|교육과정과|초등교육과\n27|학생 맞춤 지원|기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.|학생지원과|상담센터\n28|지역 협력|지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.|교육협력과|정책기획과\n29|성과 점검|분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.|정책기획과|전 부서\n30|안전 관리|교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.|안전총괄과|보건실"
+      },
+      "table": {
+        "rowCnt": 31,
+        "colCnt": 5,
+        "cells": [
+          [
+            {
+              "text": "번호",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": true
+            },
+            {
+              "text": "추진 과제",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": true
+            },
+            {
+              "text": "세부 내용",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": true
+            },
+            {
+              "text": "담당 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": true
+            },
+            {
+              "text": "협조 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": true
+            }
+          ],
+          [
+            {
+              "text": "1",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정 개선",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "초등교육과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "2",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생 맞춤 지원",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생지원과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "상담센터",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "3",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 협력",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육협력과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "4",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "성과 점검",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "전 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "5",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전 관리",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전총괄과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "보건실",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "6",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정 개선",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "초등교육과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "7",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생 맞춤 지원",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생지원과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "상담센터",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "8",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 협력",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육협력과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "9",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "성과 점검",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "전 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "10",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전 관리",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전총괄과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "보건실",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "11",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정 개선",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "초등교육과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "12",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생 맞춤 지원",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생지원과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "상담센터",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "13",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 협력",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육협력과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "14",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "성과 점검",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "전 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "15",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전 관리",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전총괄과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "보건실",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "16",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정 개선",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "초등교육과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "17",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생 맞춤 지원",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생지원과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "상담센터",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "18",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 협력",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육협력과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "19",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "성과 점검",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "전 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "20",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전 관리",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전총괄과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "보건실",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "21",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정 개선",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "초등교육과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "22",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생 맞춤 지원",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생지원과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "상담센터",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "23",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 협력",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육협력과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "24",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "성과 점검",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "전 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "25",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전 관리",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전총괄과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "보건실",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "26",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정 개선",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학교별 교육과정 운영 여건을 분석하고 학생·교사 의견을 반영한 실행 계획을 수립한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육과정과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "초등교육과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "27",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생 맞춤 지원",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "기초학력, 진로, 심리·정서 지원을 연계해 학생별 지원 이력을 관리한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "학생지원과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "상담센터",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "28",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 협력",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "지역 기관과 협약을 체결하고 학교 현장에서 활용 가능한 교육 자원을 공동 개발한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육협력과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "29",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "성과 점검",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "분기별 운영 자료를 수집하고 학교별 개선 의견을 다음 운영 계획에 반영한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "정책기획과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "전 부서",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ],
+          [
+            {
+              "text": "30",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전 관리",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "교육 활동별 위험 요소를 사전에 점검하고 사고 예방 교육과 대응 절차를 정비한다.",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "안전총괄과",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            },
+            {
+              "text": "보건실",
+              "rowSpan": 1,
+              "colSpan": 1,
+              "isHeader": false
+            }
+          ]
+        ],
+        "repeatHeader": true,
+        "treatAsChar": false
+      }
+    }
+  ],
+  "kind": "plan-ir",
+  "source": {
+    "format": "iceplan-v0.1",
+    "filePath": null
+  },
+  "approval": {
+    "status": "unapproved"
+  },
+  "pageTypes": [
+    "cover",
+    "body"
+  ],
+  "diagnostics": []
+}

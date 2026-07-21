@@ -10,6 +10,9 @@
     "verify:plan-ir": "node scripts/verify-plan-ir.cjs",
     "verify:preview-equivalence": "node scripts/verify-preview-equivalence.mjs",
     "verify:rules": "node scripts/verify-rule-engine.mjs",
+    "verify:workspace-packages": "node scripts/verify-workspace-packages.cjs",
+    "regenerate:migrated-fixtures": "node scripts/regenerate-migrated-fixtures.cjs",
+    "regenerate:regression": "py test-data/regression-corpus/regenerate.py",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
     "dist:win": "npm run build && electron-builder --win --dir",
@@ -17,6 +20,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",
+    "adm-zip": "0.5.16",
     "kordoc": "4.1.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
@@ -39,7 +43,14 @@
       "scripts/**/*",
       "hwpx-toolkit/**/*",
       "!scripts/__pycache__",
-      "!hwpx-toolkit/scripts/__pycache__"
+      "!hwpx-toolkit/scripts/__pycache__",
+      "!**/node_modules/onnxruntime-node/**",
+      "!**/node_modules/@huggingface/**",
+      "!**/node_modules/sharp/**",
+      "!**/node_modules/@img/**",
+      "!**/node_modules/pdfjs-dist/**",
+      "!**/node_modules/@napi-rs/**",
+      "!**/node_modules/@hyzyla/**"
     ],
     "win": {
       "target": [

@@ -279,6 +279,11 @@ kbd { border: 1px solid rgb(255 255 255 / 35%); border-radius: 2px; padding: 2px
 .page-type-chips span { border: 1px solid #b9c8c1; border-radius: 999px; padding: 5px 8px; color: var(--green-dark); background: #f3faf7; font-size: 10px; }
 .workflow-field { display: grid; gap: 6px; color: var(--ink); font-size: 11px; font-weight: 700; }
 .workflow-field input, .workflow-field select { width: 100%; border: 1px solid var(--line-strong); border-radius: 3px; background: #fff; color: var(--ink); padding: 9px 10px; font: inherit; font-weight: 400; }
+.package-resume-card { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-soft); }
+.package-resume-card > p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.package-action-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.package-action-row button { min-height: 38px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.package-action-row button:first-child { grid-column: 1 / -1; border-color: var(--accent); color: var(--accent-dark); font-weight: 700; }
 .workflow-field input::placeholder { color: #9ba6ae; }
 .page-type-list { display: grid; gap: 8px; max-height: calc(100vh - 315px); overflow: auto; padding-right: 2px; }
 .page-type-row { display: grid; grid-template-columns: 46px minmax(0, 1fr) 54px; gap: 6px; align-items: center; border: 1px solid var(--line); padding: 7px; background: #fff; }
