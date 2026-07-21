@@ -9,6 +9,7 @@
     "build": "vite build",
     "verify:plan-ir": "node scripts/verify-plan-ir.cjs",
     "verify:preview-equivalence": "node scripts/verify-preview-equivalence.mjs",
+    "verify:rules": "node scripts/verify-rule-engine.mjs",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
     "dist:win": "npm run build && electron-builder --win --dir",

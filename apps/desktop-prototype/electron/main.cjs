@@ -3,6 +3,8 @@ const path = require('node:path');
 const fs = require('node:fs/promises');
 const os = require('node:os');
 const { spawn } = require('node:child_process');
+const { renderHwpxToSvg } = require('kordoc');
+const { kordocSmokeInfo, loadPlanInput } = require('./input-adapters.cjs');
 
 // 패키징(asar) 환경에서는 Python이 asar 내부를 읽지 못하므로 unpacked 경로로 치환한다.
 const scriptPath = (name) =>
@@ -53,9 +55,27 @@ const createWindow = () => {
   window.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
 };
 
-function runGenerator(modelPath, outputPath) {
-  return runPython([scriptPath('model_to_hwpx.py'), modelPath, outputPath]);
+function outputTemplate(model) {
+  return model?.metadata?.layout?.template === 'gonmun' ? 'gonmun' : 'boncheong';
 }
+
+function runGenerator(modelPath, outputPath, template) {
+  return runPython([scriptPath('model_to_hwpx.py'), modelPath, outputPath, '--template', template]);
+}
+
+ipcMain.handle('render-composition-preview', async (_event, model) => {
+  const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ice-plan-preview-'));
+  const modelPath = path.join(workDir, 'document.model.json');
+  const hwpxPath = path.join(workDir, 'document.hwpx');
+  try {
+    await fs.writeFile(modelPath, JSON.stringify(model), 'utf8');
+    await runGenerator(modelPath, hwpxPath, outputTemplate(model));
+    const rendered = await renderHwpxToSvg(await fs.readFile(hwpxPath), { reflow: true, reflowMode: 'keep' });
+    return { svg: rendered.svg, pageCount: rendered.pageCount, warnings: rendered.warnings, stats: rendered.stats };
+  } finally {
+    await fs.rm(workDir, { recursive: true, force: true });
+  }
+});
 
 ipcMain.handle('export-hwpx', async (_event, model) => {
   // metadata.title은 원본 파일명(예: "계획안.md")을 그대로 담고 있을 수 있어
@@ -71,7 +91,7 @@ ipcMain.handle('export-hwpx', async (_event, model) => {
   const modelPath = path.join(workDir, 'document.model.json');
   await fs.writeFile(modelPath, JSON.stringify(model), 'utf8');
   try {
-    await runGenerator(modelPath, result.filePath);
+    await runGenerator(modelPath, result.filePath, outputTemplate(model));
     return { canceled: false, filePath: result.filePath };
   } finally {
     await fs.rm(workDir, { recursive: true, force: true });
@@ -128,6 +148,12 @@ ipcMain.handle('extract-hwpx', async (_event, filePath) => {
     onStdout: (chunk) => { stdout += chunk.toString(); },
   });
   return { text: stdout };
+});
+
+ipcMain.handle('load-plan-input', async (_event, filePath) => {
+  if (typeof filePath !== 'string' || !filePath) throw new Error('불러올 파일 경로가 필요합니다.');
+  const model = await loadPlanInput(filePath);
+  return { model, kordoc: kordocSmokeInfo() };
 });
 
 ipcMain.handle('save-project', async (_event, project) => {
