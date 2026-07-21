@@ -21,7 +21,8 @@ PROFILES = {
     'metropolitan-a': {'name': '인천광역시교육청', 'english': None, 'titleBox': True, 'bannerImage': True},
     'direct-b': {'name': '인천광역시교육청 학생교육원', 'english': 'Incheon Student Education Institute', 'titleBox': False, 'bannerImage': False},
     'direct-f': {'name': '인천광역시교육청 평생학습관', 'english': 'Incheon Lifelong Learning Center', 'titleBox': True, 'bannerImage': True},
-    'direct-g': {'name': '인천광역시교육청 학생교육원 교학과', 'english': 'Incheon Student Education Institute', 'titleBox': False, 'bannerImage': True},
+    # titleBox: 사용자 실물 검토(2026-07-21)에서 직속기관 G형도 제목 틀 사용 결정
+    'direct-g': {'name': '인천광역시교육청 학생교육원 교학과', 'english': 'Incheon Student Education Institute', 'titleBox': True, 'bannerImage': True},
 }
 
 
@@ -75,7 +76,8 @@ def structure_check(path: Path, profile_id: str) -> dict:
     # The fixed reference anchor is reused, so an exact generated size is stricter than §9.2's ±0.5 mm (141 HWPUNIT).
     if expected['bannerImage']:
         assert '<hp:curSz width="23799" height="5769"/>' in section, 'banner anchor size drifted'
-    assert '<hp:curSz width="7370" height="7370"/>' in section, 'CI anchor size drifted'
+    # CI는 사용자 실물 검토(2026-07-21)로 26mm -> 36.4mm(1.4배) 확대, 날짜 위로 이동
+    assert '<hp:curSz width="10318" height="10318"/>' in section, 'CI anchor size drifted'
     if expected['titleBox']:
         assert '<hp:sz width="49039" widthRelTo="ABSOLUTE" height="9050"' in section, 'title-box anchor size drifted'
     else:

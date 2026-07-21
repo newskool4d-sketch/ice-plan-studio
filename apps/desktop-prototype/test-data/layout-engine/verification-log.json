@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T12:19:39Z",
+  "generatedAt": "2026-07-21T13:57:17Z",
   "fixtures": {
     "metropolitan-a": {
       "layout": {
@@ -44,11 +44,11 @@
           "sha256": "fc93004a9226509b79e8dcf3fb1d6e2864bdcd10d189b1aaedd35ebb187e1767"
         },
         "hwpx": {
-          "section0Sha256": "a7e6dc58abccb557b2d3ae1ab3ae94ed030e40e8bbd08d279e9984ddbd14e9f7",
+          "section0Sha256": "40f1941c3add460919e43d4c6b1cd88866cbb20ebf66d6a04618ae119e2c3d21",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 92550
+          "bytes": 92551
         }
       }
     },
@@ -95,11 +95,11 @@
           "sha256": "ffa716e1a49d0f5eb7822ad9cb1235694c280d10d68fd7d789622bf755bbc938"
         },
         "hwpx": {
-          "section0Sha256": "09a2edcd62f6636c81aa1296d4a94e5e723ac09da132b7ac5aa8440e9db7a51e",
+          "section0Sha256": "735e2091e7798d8c6ee27e22cfac77f3fb34ec742e7dda9504ec4bc605ddc71e",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 47731
+          "bytes": 47740
         }
       }
     },
@@ -146,11 +146,11 @@
           "sha256": "03a93dddea1ab4ffd0bdd137f99eecd59bb1f06f06b343bce0b400941e448324"
         },
         "hwpx": {
-          "section0Sha256": "1643ac19e8b9e08fae67571836057e6c4ff7e9a3917ca9c83d81f42800cf6fa8",
+          "section0Sha256": "cb026b4d7a1fd321693012203debad4a934f6a3f8b491471d65e0fa328167b94",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 77580
+          "bytes": 77581
         }
       }
     },
@@ -176,7 +176,7 @@
         "tableWidthHwpUnit": 48190,
         "anchorToleranceHwpUnit": 141,
         "bannerImage": true,
-        "titleBox": false,
+        "titleBox": true,
         "englishName": "Incheon Student Education Institute"
       },
       "typography": {
@@ -197,11 +197,11 @@
           "sha256": "e113b9f8a9e6c8c2142131e27e017110990b6c3a7710f1a4a5206b5c1f7f62d1"
         },
         "hwpx": {
-          "section0Sha256": "04d24a7704e6b523986a5b8b827f366ec9b86084acd356a2bec1ce3d9eabd0fe",
+          "section0Sha256": "fea3b2ee62f07b0a15d09c3bf9f28674a7b5969853a52c647dc0fef4f096e70e",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 82293
+          "bytes": 84451
         }
       }
     }

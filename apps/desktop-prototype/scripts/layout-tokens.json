@@ -39,6 +39,6 @@
     "metropolitan-a": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": null },
     "direct-b": { "titleBox": false, "bannerImage": false, "innerCover": false, "englishName": "Incheon Student Education Institute" },
     "direct-f": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": "Incheon Lifelong Learning Center" },
-    "direct-g": { "titleBox": false, "bannerImage": true, "innerCover": true, "englishName": "Incheon Student Education Institute" }
+    "direct-g": { "titleBox": true, "bannerImage": true, "innerCover": true, "englishName": "Incheon Student Education Institute" }
   }
 }
