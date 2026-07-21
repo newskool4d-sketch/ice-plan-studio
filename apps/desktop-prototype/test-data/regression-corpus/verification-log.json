@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.2",
-  "generatedAt": "2026-07-21T13:03:35Z",
+  "generatedAt": "2026-07-21T23:34:49Z",
   "references": {
     "A": {
       "documentType": "본청 기본계획",
@@ -36,24 +36,18 @@
         }
       },
       "com": {
-        "expectedPages": 4,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 4,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "34d5fa68ecff3d30b737a2147da4ce4006756e0a02633fc01bbc5e3e5cf243a2"
         },
         "hwpx": {
-          "section0Sha256": "066702f328bab98d9efae8030d2b791114815ede24032abd9e2b514d0af2f434",
+          "section0Sha256": "849cc1e9e73006cacc634272c1d799cab55059ce0a5efaf7b2333f0b69b3708f",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 82216
+          "bytes": 82210
         }
       }
     },
@@ -89,24 +83,18 @@
         }
       },
       "com": {
-        "expectedPages": 3,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 3,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "82c862023c1968dffcc31033155d6b223553739b30a6ecbce512da30e86c2cda"
         },
         "hwpx": {
-          "section0Sha256": "bb09f9f3cdbad3299a6e07bf8ee50ed86b40d2a919039b2f94d4d35d77be4f7f",
+          "section0Sha256": "ebef8a88c95a9953234741be4c68a651ff2adaf86306b46f17a0f499927df810",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 52000
+          "bytes": 52100
         }
       }
     },
@@ -146,24 +134,18 @@
         }
       },
       "com": {
-        "expectedPages": 7,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 7,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "7418a789c3638643cf360cf5ebb4c047f0cc8789182dd976089561a91e743a66"
         },
         "hwpx": {
-          "section0Sha256": "5eed515909b1b504dc8d019fa92e80b4e54b9c59b177f46546f58aca5295b15f",
+          "section0Sha256": "a5130724878162ac04d16a41d772856fc9bfcdf6eaa15f1943b420aa87e8f913",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 92074
+          "bytes": 92164
         }
       }
     },
@@ -206,24 +188,18 @@
         }
       },
       "com": {
-        "expectedPages": 9,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 9,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "d04defcb0f2357a14c63a609619ff13589a2bdcb5980f17f9774795fd5cb22f2"
         },
         "hwpx": {
-          "section0Sha256": "81d98c39a51a93b43d05c35ebbf7f8a3987a79214f20f75f0632d521329b1c8b",
+          "section0Sha256": "7ee712dcef8dbce056b5d1935adb2209b8ff0c253c5f46d331434369b1e05fc0",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 96328
+          "bytes": 96369
         }
       }
     },
@@ -267,24 +243,18 @@
         }
       },
       "com": {
-        "expectedPages": 10,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 10,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "cd1c2914d066e34fca474013927599a7b175b9031286e4bf7c365a29bd547c93"
         },
         "hwpx": {
-          "section0Sha256": "4a0aaca5f308f145235ab6fe3725481aed92c0b5643e0288d6cf82ad7686e371",
+          "section0Sha256": "0b40b4edc1757d9a2779f936730d5b83cc80c6a7f5c1f33d50c17521bb223065",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 97327
+          "bytes": 97316
         }
       }
     },
@@ -319,24 +289,18 @@
         }
       },
       "com": {
-        "expectedPages": 3,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 3,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "b23014d8a35d3662eb277b16af13686294ff48665d8b8e5591b5004003a4dd63"
         },
         "hwpx": {
-          "section0Sha256": "d307a8a250075495dbc67d73553b6293f2786758935df45a08712f75d0bbb7f3",
+          "section0Sha256": "efbc02ff3c460d4a8c180c00079cacf0d37e336acd7c60933b4f3aa752d9f32c",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 86547
+          "bytes": 86647
         }
       }
     },
@@ -374,24 +338,18 @@
         }
       },
       "com": {
-        "expectedPages": 4,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 4,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "65bfe1e19529581326a1382e41cefcde21b4d9268a30d837f1b32c4d38cd60f2"
         },
         "hwpx": {
-          "section0Sha256": "b2c7d552957ff63204c841e7480e4f504b9772bd016af99aa7bb3c74815937e3",
+          "section0Sha256": "6eca617928f6547e33b0ee5d0b2765e779fbdb0cb1e54aa33bc10c48f063e49b",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 91087
+          "bytes": 91219
         }
       }
     }

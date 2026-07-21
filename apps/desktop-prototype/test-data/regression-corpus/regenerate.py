@@ -112,6 +112,12 @@ def structural_checks(model: dict, hwpx: Path, spec: dict) -> dict:
         assert PAGE_LABELS[page_type] in section, f'{page_type} page label missing'
     if profile.english_name:
         assert profile.english_name in section, 'English organization name missing'
+    # 목록 기호가 실제 출력에 살아있는지 확인한다. 과거엔 생성기가 block.marker를
+    # 버리고 '- '로 하드코딩해, 모델의 markers[0](예: ■)가 출력에서 뭉개져도
+    # 하네스가 통과했다(marker 소실 버그). model_for가 markers[0]을 목록 블록에
+    # 넣으므로 그 기호가 목록 텍스트와 함께 나타나야 한다.
+    list_marker = spec['markers'][0]
+    assert f'{list_marker} 항목기호 계열 확인' in section, f'list marker not rendered: {list_marker!r}'
     return {
         'ok': True,
         'pageSequence': actual_sequence,

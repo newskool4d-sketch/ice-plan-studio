@@ -25,3 +25,6 @@ test-data/private/*
 *.iceplan.autosave
 *.iceplan.snapshot
 
+
+# fablize 멀티스토리 상태(로컬 전용)
+.fablize/

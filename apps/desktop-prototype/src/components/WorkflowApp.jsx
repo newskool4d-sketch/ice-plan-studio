@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PlanPreview } from "./PlanPreview.jsx";
-import { agencyProfiles, defaultAgencyProfile } from "../domain/agencyProfiles.js";
+import { agencyProfiles, agencyGroups, defaultAgencyProfile, resolveAgency } from "../domain/agencyProfiles.js";
 import { parseMarkdown } from "../domain/markdownParser.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
 import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules } from "../domain/ruleEngine.js";
@@ -33,6 +33,11 @@ function compositionModel(model, agency) {
         ...(model.metadata?.cover || {}),
         title: model.metadata?.cover?.title || model.metadata?.title,
         displayName: model.metadata?.cover?.displayName || agency.displayName,
+        // 표지 영문명은 기관 레지스트리 값으로 구동한다. 직속기관 10종이 같은
+        // coverProfile(direct-g)을 공유하므로, 프로필에 박힌 영문명을 그대로 쓰면
+        // 모든 기관이 학생교육원 영문명으로 출력된다. 레지스트리 값(없으면 null)을
+        // 넘겨 기관별로 정확히 반영하고, 영문명 없는 기관은 표지에서 생략한다.
+        englishName: agency.englishName ?? null,
       },
       layout: {
         ...(model.metadata?.layout || {}),
@@ -108,7 +113,7 @@ function WorkflowApp() {
   const [selectedRuleId, setSelectedRuleId] = useState(null);
   const [ruleHistory, setRuleHistory] = useState([]);
 
-  const agency = agencyProfiles[agencyId] || defaultAgencyProfile;
+  const agency = resolveAgency(agencyId);
   const outputModel = useMemo(() => compositionModel(model, agency), [model, agency]);
   const projection = useMemo(() => outputModel ? createPreviewProjection(outputModel) : null, [outputModel]);
   const current = projection?.pages[page - 1];
@@ -384,7 +389,7 @@ function WorkflowApp() {
       const view = snapshot.project?.view || {};
       const settings = snapshot.project?.settings || {};
       const requestedAgencyId = settings.agencyId || snapshot.profile?.profile?.baseAgencyId || defaultAgencyProfile.id;
-      const nextAgency = agencyProfiles[requestedAgencyId] || defaultAgencyProfile;
+      const nextAgency = resolveAgency(requestedAgencyId);
       const nextDrafts = Array.isArray(workflow.pageDrafts) && workflow.pageDrafts.length
         ? workflow.pageDrafts.map((item) => ({ ...item, confirmed: Boolean(item.confirmed) }))
         : pageDraftsFrom(nextModel, nextAgency);
@@ -442,7 +447,7 @@ function WorkflowApp() {
       const requested = imported?.baseAgencyId || imported?.id;
       const nextAgency = agencyProfiles[requested]
         || Object.values(agencyProfiles).find((item) => item.coverProfile === imported?.layout?.coverProfile)
-        || defaultAgencyProfile;
+        || resolveAgency(requested);
       setAgencyId(nextAgency.id);
       if (model) {
         setInfoConfirmed(false);
@@ -487,7 +492,7 @@ function WorkflowApp() {
       <span className="eyebrow">3단계 · 기본정보</span><h2>문서 기본정보를 확정하세요</h2>
       <label className="workflow-field"><span>문서 제목</span><input id="info-title" value={infoDraft.title} onChange={(event) => changeInfo("title", event.target.value)} /></label>
       <label className="workflow-field"><span>표지 연월</span><input id="info-date" value={infoDraft.date} placeholder="2026. 7." onChange={(event) => changeInfo("date", event.target.value)} /></label>
-      <label className="workflow-field"><span>기관</span><select value={agencyId} onChange={handleAgencyChange}>{Object.values(agencyProfiles).map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</select></label>
+      <label className="workflow-field"><span>기관</span><select value={agencyId} onChange={handleAgencyChange}>{agencyGroups.map((group) => <optgroup key={group.type} label={group.label}>{group.agencies.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</optgroup>)}</select></label>
       <button id="info-confirm" type="button" className="primary-action" disabled={!infoDraft.title.trim()} onClick={confirmInformation}>기본정보 확정</button>
     </div>;
 
@@ -547,7 +552,7 @@ function WorkflowApp() {
       <div className="brand-lockup"><span className="brand-name">ICE Plan Studio</span><span className="topbar-divider" /><strong>{workflowSteps[activeStep].label}</strong></div>
       <div className="topbar-actions">
         <span className="save-state"><span className="status-dot" />{completed.slice(0, 5).filter(Boolean).length}/5 확정</span>
-        <label className="profile-select">기관<select value={agencyId} onChange={handleAgencyChange}>{Object.values(agencyProfiles).map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</select></label>
+        <label className="profile-select">기관<select value={agencyId} onChange={handleAgencyChange}>{agencyGroups.map((group) => <optgroup key={group.type} label={group.label}>{group.agencies.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</optgroup>)}</select></label>
         <button id="workspace-save" type="button" className="topbar-button" disabled={!model} onClick={saveWorkspace}>작업 저장</button>
         <button id="workspace-load" type="button" className="topbar-button" onClick={loadWorkspace}>작업 열기</button>
         <label className="topbar-button file-load-button">파일 불러오기<input type="file" accept=".md,.txt,.hwp,.hwpx" onChange={load} /></label>

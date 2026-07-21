@@ -192,13 +192,19 @@ def boncheong_cover_paragraphs(model, profile):
         )
         if replaced != 1:
             raise RuntimeError('Could not replace the cover title-box anchor')
-    if profile.english_name:
+    # 영문 기관명은 기관 레지스트리 값(metadata.cover.englishName)을 우선한다.
+    # 직속기관 다수가 같은 coverProfile(direct-g)을 공유하므로 프로필에 박힌
+    # 영문명을 그대로 쓰면 전부 학생교육원 영문명으로 나온다. cover에 englishName
+    # 키가 있으면(빈 값 포함) 그 값을 쓰고, 키 자체가 없을 때만 프로필 기본값으로
+    # 폴백한다(단독 model_to_hwpx 호출 하위 호환).
+    english_name = cover['englishName'] if 'englishName' in cover else profile.english_name
+    if english_name:
         # 표지는 고정 레이아웃(결정사항 6)이므로 새 문단을 추가해 페이지 높이를
         # 늘리지 않는다 — 앵커에 이미 있는 빈 여분 문단(부서명 줄과 동일한
         # paraPr/charPr, 원본 문서의 미사용 여백 줄)을 재사용해 영문 기관명을 채운다.
         trailing_slot = '<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="15"/>'
         filled_slot = ('<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
-                        f'<hp:run charPrIDRef="15"><hp:t>{xml_escape(str(profile.english_name))}</hp:t></hp:run>')
+                        f'<hp:run charPrIDRef="15"><hp:t>{xml_escape(str(english_name))}</hp:t></hp:run>')
         if trailing_slot not in parts[0]:
             raise RuntimeError('Could not find the cover english-name anchor slot')
         parts[0] = parts[0].replace(trailing_slot, filled_slot, 1)
@@ -307,7 +313,12 @@ def render_blocks(blocks, styles, style):
             continue
         text = block.get('text', '')
         if block['type'] == 'listItem':
-            text = ('1. ' if block.get('ordered') else '- ') + text
+            # Plan IR이 담은 실제 기호(□·○·가.·1. 등)를 우선 사용한다.
+            # 과거엔 marker를 버리고 '- '/'1. '를 하드코딩해, React 빠른 미리보기(marker
+            # 사용)와 실조판·한글 출력이 어긋났다. React(PlanPreview.jsx)와 동일 규칙:
+            # marker가 있으면 그대로, 없으면 ordered 여부로 기본값.
+            marker = block.get('marker') or ('1.' if block.get('ordered') else '-')
+            text = f'{marker} {text}'
         if not text:
             continue
         if block['type'] == 'heading':
