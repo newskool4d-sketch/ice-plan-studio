@@ -98,7 +98,11 @@ function parseTextToPlanIR(input, { format, title = '', filePath = null } = {}) 
     if (list) {
       pushParagraph();
       const marker = list[1].trim();
-      blocks.push({ type: 'listItem', role: 'list', marker, ordered: /^\d+\.$/.test(marker), level: Math.floor(line.search(/\S/)) / 2, text: list[2].trim(), source: sourceOf(format, filePath, index, line) });
+      // 들여쓰기 2칸 = 1단계. floor를 나눗셈 밖에 두면(Math.floor(x)/2) 홀수
+      // 들여쓰기에서 1.5 같은 소수 레벨이 나와 위계 검증의 전제가 깨진다 —
+      // floor를 나눗셈 안으로(Math.floor(x/2)) 넣어 항상 정수 레벨을 만든다.
+      const indentLevel = Math.floor(line.search(/\S/) / 2);
+      blocks.push({ type: 'listItem', role: 'list', marker, ordered: /^\d+\.$/.test(marker), level: indentLevel, text: list[2].trim(), source: sourceOf(format, filePath, index, line) });
       continue;
     }
     if (!paragraph.length) paragraphStart = index;

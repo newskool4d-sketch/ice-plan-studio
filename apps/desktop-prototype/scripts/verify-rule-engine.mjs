@@ -51,6 +51,49 @@ assert.equal(implicitMarkerFinding.before, '-', 'missing marker must be presente
 const implicitMarkerApplied = applyRuleSuggestion(implicitMarkerModel, implicitMarkerFinding);
 assert.equal(implicitMarkerApplied.model.blocks[3].marker, '□', 'implicit marker suggestion must pass the source guard');
 
+// ── 8단계: 관용 장(근거·목적·방침·배경) 하위 최상위 목록 ○ 제안 ──────────
+const conventionModel = {
+  schemaVersion: '0.2', kind: 'plan-ir', metadata: {}, approval: { status: 'unapproved' },
+  blocks: [
+    { type: 'heading', level: 1, text: 'Ⅰ. 추진 근거' },
+    { type: 'listItem', level: 0, marker: '□', text: '근거 항목' },
+    { type: 'heading', level: 1, text: 'Ⅳ. 추진 내용' },
+    { type: 'listItem', level: 0, marker: '□', text: '내용 항목' },
+  ],
+};
+const conventionFindings = inspectDocumentRules(conventionModel);
+const conventionSuggestion = conventionFindings.find((item) => item.code === 'LIST-MARKER' && item.target?.blockIndex === 1);
+assert.ok(conventionSuggestion, '관용 장(근거) 하위 □ 항목은 ○ 제안이 있어야 함');
+assert.equal(conventionSuggestion.after, '○', '관용 장 최상위 목록 기대 기호는 ○');
+// 비관용 장(추진 내용)의 □는 팔레트 0단계(□)와 일치하므로 제안이 없어야 한다(공허성 배제).
+assert.ok(!conventionFindings.some((item) => item.code === 'LIST-MARKER' && item.target?.blockIndex === 3),
+  '비관용 장의 □ 항목에는 ○ 제안이 없어야 함');
+
+// ── 8단계: 위계 건너뜀(LIST-HIERARCHY) 검출 ───────────────────────────────
+const hierModel = {
+  schemaVersion: '0.2', kind: 'plan-ir', metadata: {}, approval: { status: 'unapproved' },
+  blocks: [
+    { type: 'heading', level: 1, text: 'Ⅳ. 추진 내용' },
+    { type: 'listItem', level: 0, marker: '□', text: 'a' },
+    { type: 'listItem', level: 2, marker: '·', text: 'b(건너뜀)' },
+  ],
+};
+const hierFinding = inspectDocumentRules(hierModel).find((item) => item.code === 'LIST-HIERARCHY');
+assert.ok(hierFinding, '0→2 위계 건너뜀은 LIST-HIERARCHY로 검출돼야 함');
+assert.equal(hierFinding.after, 1, '건너뜀 항목은 직전+1 단계로 제안');
+// 정상 위계(0→1→2)는 검출되지 않아야 한다(공허성 배제).
+const normalHier = {
+  ...hierModel,
+  blocks: [
+    { type: 'heading', level: 1, text: 'Ⅳ. 추진 내용' },
+    { type: 'listItem', level: 0, marker: '□', text: 'a' },
+    { type: 'listItem', level: 1, marker: '❍', text: 'b' },
+    { type: 'listItem', level: 2, marker: '-', text: 'c' },
+  ],
+};
+assert.ok(!inspectDocumentRules(normalHier).some((item) => item.code === 'LIST-HIERARCHY'),
+  '정상 위계(0→1→2)에는 LIST-HIERARCHY가 없어야 함');
+
 console.log(JSON.stringify({
   gate: 'rule-engine-approval',
   detectedCodes: [...new Set(findings.map((item) => item.code))],
@@ -58,5 +101,7 @@ console.log(JSON.stringify({
   appliedCount: all.edits.length,
   sourceUnchanged: JSON.stringify(model) === original,
   remainingSuggestions: inspectDocumentRules(all.model).filter((item) => item.kind === 'suggestion').length,
+  conventionMarker: conventionSuggestion.after,
+  hierarchySkipDetected: hierFinding.after,
   passed: true,
 }, null, 2));

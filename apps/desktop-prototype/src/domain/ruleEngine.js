@@ -111,15 +111,42 @@ function addTextSuggestions(model, findings) {
   }
 }
 
+// 관용 장 구조(사용자 실무 지침, 2026-07-21): 장 제목이 근거·목적·방침·배경
+// 계열이면 그 하위 최상위 목록의 관용 기본 기호는 ○다. 위치(Ⅰ~Ⅲ)가 아니라
+// 제목 내용으로 판정한다. 키워드는 조정 가능하도록 상수로 분리(계획 §B 키워드
+// 확정 절차) — '추진 근거'·'사업 목적' 등 접두/수식이 붙어도 포함 매칭.
+const CONVENTION_CHAPTER_KEYWORDS = ['근거', '목적', '방침', '배경'];
+const CONVENTION_TOP_MARKER = '○';
+
+function isConventionChapter(headingText) {
+  const text = String(headingText || '');
+  return CONVENTION_CHAPTER_KEYWORDS.some((keyword) => text.includes(keyword));
+}
+
 function addListSuggestions(model, findings) {
   const markers = Array.isArray(model?.metadata?.rules?.itemMarkers) && model.metadata.rules.itemMarkers.length
     ? model.metadata.rules.itemMarkers.slice(0, 8)
     : ITEM_MARKERS;
+  // 각 목록 항목을 지배하는 직전 heading이 관용 장인지, 직전 목록 항목의
+  // 정규화 레벨은 얼마인지 추적한다(위계 건너뜀 검출용). heading을 만나면
+  // 새 장이므로 위계 문맥을 초기화한다.
+  let underConventionChapter = false;
+  let prevListLevel = -1;
   for (const [blockIndex, block] of (model?.blocks || []).entries()) {
+    if (block.type === 'heading') {
+      underConventionChapter = isConventionChapter(block.text);
+      prevListLevel = -1;
+      continue;
+    }
     if (block.type !== 'listItem') continue;
     const level = Number(block.level ?? 0);
     const normalizedLevel = Math.min(7, Math.max(0, Number.isFinite(level) ? Math.round(level) : 0));
-    const expectedMarker = markers[normalizedLevel] || ITEM_MARKERS[normalizedLevel];
+    // 관용 장 하위의 최상위(level 0) 목록은 관용 기호 ○를 기본값으로 덮어쓴다.
+    // 팔레트 규칙과 별도 제안이 아니라 여기서 기대 기호만 바꿔, 한 항목에
+    // 상충하는 제안이 두 개 생기지 않게 한다(강제 아닌 suggestion — LIST-MARKER).
+    const expectedMarker = (underConventionChapter && normalizedLevel === 0)
+      ? CONVENTION_TOP_MARKER
+      : (markers[normalizedLevel] || ITEM_MARKERS[normalizedLevel]);
     if (block.marker !== expectedMarker) {
       findings.push(finding({
         code: 'LIST-MARKER',
@@ -143,6 +170,25 @@ function addListSuggestions(model, findings) {
         after: normalizedLevel,
         evidence: '교육청 계획안 자동서식 구현계획 §12.1',
       }));
+    }
+    // 위계 건너뜀: 직전 목록 항목보다 깊이가 2단계 이상 뛰면(예: 0단계 다음
+    // 바로 2단계) 위계가 어긋난 것 — 직전+1단계로 낮추도록 제안한다. 얕아지는
+    // 방향(레벨 감소)은 정상적인 목록 종료이므로 대상이 아니다.
+    if (prevListLevel >= 0 && normalizedLevel > prevListLevel + 1) {
+      const suggestedLevel = prevListLevel + 1;
+      findings.push(finding({
+        code: 'LIST-HIERARCHY',
+        title: '항목 위계 건너뜀',
+        message: `상위 항목이 없는데 ${normalizedLevel + 1}단계로 건너뛰었습니다. ${suggestedLevel + 1}단계로 맞춥니다.`,
+        kind: 'suggestion',
+        target: { kind: 'blockField', blockIndex, field: 'level' },
+        before: normalizedLevel,
+        after: suggestedLevel,
+        evidence: '공문서 항목 위계 · 8단계 항목기호',
+      }));
+      prevListLevel = suggestedLevel;
+    } else {
+      prevListLevel = normalizedLevel;
     }
   }
 }
