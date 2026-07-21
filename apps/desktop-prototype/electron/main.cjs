@@ -6,6 +6,7 @@ const { spawn } = require('node:child_process');
 const { renderHwpxToSvg } = require('kordoc');
 const { kordocSmokeInfo, loadPlanInput } = require('./input-adapters.cjs');
 const { createProfileArchive, createProjectArchive, readProfileArchive, readProjectArchive } = require('./workspace-packages.cjs');
+const { renderPagedPreview } = require('./preview-split.cjs');
 
 // 패키징(asar) 환경에서는 Python이 asar 내부를 읽지 못하므로 unpacked 경로로 치환한다.
 const scriptPath = (name) =>
@@ -71,7 +72,9 @@ ipcMain.handle('render-composition-preview', async (_event, model) => {
   try {
     await fs.writeFile(modelPath, JSON.stringify(model), 'utf8');
     await runGenerator(modelPath, hwpxPath, outputTemplate(model));
-    const rendered = await renderHwpxToSvg(await fs.readFile(hwpxPath), { reflow: true, reflowMode: 'keep' });
+    // kordoc reflow는 하드 쪽 나눔(pageBreak="1")을 무시하므로 쪽 나눔 경계로
+    // 분할 렌더한다 — preview-split.cjs 참조.
+    const rendered = await renderPagedPreview(await fs.readFile(hwpxPath), renderHwpxToSvg);
     return { svg: rendered.svg, pageCount: rendered.pageCount, warnings: rendered.warnings, stats: rendered.stats };
   } finally {
     await fs.rm(workDir, { recursive: true, force: true });
