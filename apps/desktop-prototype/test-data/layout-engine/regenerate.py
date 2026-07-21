@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import subprocess
@@ -16,6 +15,7 @@ HERE = Path(__file__).resolve().parent
 APP = HERE.parent.parent
 SCRIPTS = APP / 'scripts'
 sys.path.insert(0, str(SCRIPTS))
+from hwp_com_session import HwpSession, fingerprint
 from layout_engine import BODY_WIDTH_HWPUNIT, TOKENS, page_sequence, resolve_profile, table_column_widths, table_row_heights
 PROFILES = {
     'metropolitan-a': {'name': '인천광역시교육청', 'english': None, 'titleBox': True, 'bannerImage': True},
@@ -23,10 +23,6 @@ PROFILES = {
     'direct-f': {'name': '인천광역시교육청 평생학습관', 'english': 'Incheon Lifelong Learning Center', 'titleBox': True, 'bannerImage': True},
     'direct-g': {'name': '인천광역시교육청 학생교육원 교학과', 'english': 'Incheon Student Education Institute', 'titleBox': False, 'bannerImage': True},
 }
-
-
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def model_for(profile_id: str) -> dict:
@@ -142,62 +138,34 @@ def typography_check(hwpx_path: Path) -> dict:
     return {'ok': not mismatches, 'mismatches': mismatches}
 
 
-def com_verify(hwpx: Path, pdf: Path, expected_pages: int) -> dict:
-    try:
-        import pythoncom
-        import win32com.client
-    except ImportError as exc:
-        return {'ok': False, 'error': f'pywin32 unavailable: {exc}'}
-    result: dict = {'expectedPages': expected_pages}
-    pythoncom.CoInitialize()
-    try:
-        hwp = win32com.client.Dispatch('HWPFrame.HwpObject')
-        hwp.RegisterModule('FilePathCheckDLL', 'SecurityModule')
-        result['hwpVersion'] = str(hwp.Version)
-        result['open'] = bool(hwp.Open(str(hwpx), 'HWPX', 'lock:false;forceopen:true'))
-        if result['open']:
-            result['pages'] = int(hwp.PageCount)
-            result['pdfSaved'] = bool(hwp.SaveAs(str(pdf), 'PDF', '') and pdf.exists())
-            hwp.Clear(1)
-        # 라벨 텍스트 존재만 확인하던 이전 하네스는 페이지 유형이 병합되는
-        # 결함(쪽 나눔 누락)을 놓쳤다 — 실제 쪽수를 기대 페이지 유형 수와
-        # 직접 대조한다.
-        result['pagesMatchExpected'] = result.get('pages') == expected_pages
-        result['ok'] = bool(result.get('open') and result.get('pdfSaved') and result['pagesMatchExpected'])
-        hwp.Quit()
-    except Exception as exc:
-        result['ok'] = False
-        result['error'] = f'{type(exc).__name__}: {exc}'
-    finally:
-        pythoncom.CoUninitialize()
-    return result
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--com', action='store_true')
     args = parser.parse_args()
     log = {'generatedAt': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'), 'fixtures': {}}
-    for profile_id in PROFILES:
-        model_path = HERE / f'{profile_id}.model.json'
-        hwpx_path = HERE / f'{profile_id}.hwpx'
-        pdf_path = HERE / f'{profile_id}.pdf'
-        model = model_for(profile_id)
-        model_path.write_text(json.dumps(model, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        proc = subprocess.run([sys.executable, str(SCRIPTS / 'model_to_hwpx.py'), str(model_path), str(hwpx_path), '--template', 'boncheong'], capture_output=True, text=True, encoding='utf-8', errors='replace')
-        item = {'layout': layout_check(), 'generate': {'ok': proc.returncode == 0, 'exitCode': proc.returncode}}
-        if proc.returncode == 0:
-            try:
-                item['structure'] = structure_check(hwpx_path, profile_id)
-            except AssertionError as exc:
-                item['structure'] = {'ok': False, 'error': str(exc)}
-            item['typography'] = typography_check(hwpx_path)
-        if args.com and item.get('structure', {}).get('ok'):
-            item['com'] = com_verify(hwpx_path, pdf_path, expected_page_count(profile_id, model))
-        else:
-            item['com'] = {'skipped': not args.com}
-        item['sha256'] = {p.name: sha256(p) for p in (model_path, hwpx_path, pdf_path) if p.exists()}
-        log['fixtures'][profile_id] = item
+    # COM 세션은 전체 fixture에 걸쳐 하나만 연다(hwp_com_session.HwpSession 참조 —
+    # 파일별 Dispatch/Quit 반복은 -2146959355 일괄 실패·세그폴트를 유발한다).
+    with HwpSession() as session:
+        for profile_id in PROFILES:
+            model_path = HERE / f'{profile_id}.model.json'
+            hwpx_path = HERE / f'{profile_id}.hwpx'
+            pdf_path = HERE / f'{profile_id}.pdf'
+            model = model_for(profile_id)
+            model_path.write_text(json.dumps(model, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+            proc = subprocess.run([sys.executable, str(SCRIPTS / 'model_to_hwpx.py'), str(model_path), str(hwpx_path), '--template', 'boncheong'], capture_output=True, text=True, encoding='utf-8', errors='replace')
+            item = {'layout': layout_check(), 'generate': {'ok': proc.returncode == 0, 'exitCode': proc.returncode}}
+            if proc.returncode == 0:
+                try:
+                    item['structure'] = structure_check(hwpx_path, profile_id)
+                except AssertionError as exc:
+                    item['structure'] = {'ok': False, 'error': str(exc)}
+                item['typography'] = typography_check(hwpx_path)
+            if args.com and item.get('structure', {}).get('ok'):
+                item['com'] = session.verify(hwpx_path, pdf_path, expected_page_count(profile_id, model))
+            else:
+                item['com'] = {'skipped': not args.com}
+            item['fingerprint'] = fingerprint(model_path, hwpx_path, pdf_path)
+            log['fixtures'][profile_id] = item
     (HERE / 'verification-log.json').write_text(json.dumps(log, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     failed = [name for name, item in log['fixtures'].items() if not item.get('layout', {}).get('ok') or not item['generate']['ok'] or not item.get('structure', {}).get('ok') or not item.get('typography', {}).get('ok') or (args.com and not item['com'].get('ok'))]
     print(json.dumps({'fixtures': list(log['fixtures']), 'failed': failed}, ensure_ascii=False))
