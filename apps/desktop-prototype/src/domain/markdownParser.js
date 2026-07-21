@@ -1,7 +1,13 @@
 import { createDocumentModel, validateDocumentModel } from './documentModel.js';
 import { inspectDocumentRules } from './ruleEngine.js';
 
-const isTableSeparator = (line) => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+// `(...)+`(1회 이상)는 최소 2열을 요구해 1열 표 구분선(`| --- |`)을 인식하지
+// 못했다(electron/plan-ir.cjs에서 고친 것과 동일한 결함). `*`로 바꾸되, 파이프가
+// 전혀 없는 순수 "---"(수평선)를 표로 오인하지 않도록 파이프 포함을 별도 요구한다.
+const isTableSeparator = (line) => {
+  const trimmed = line.trim();
+  return trimmed.includes('|') && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(trimmed);
+};
 
 const splitCells = (line) => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => cell.trim());
 
