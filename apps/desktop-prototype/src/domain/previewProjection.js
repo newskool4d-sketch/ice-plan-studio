@@ -76,11 +76,17 @@ export function createPreviewProjection(model) {
     const title = page.title || (page.type === "body" ? metadata.title || "일반 본문" : layoutTokens.pageTypes[page.type]);
     return { id: `${page.type}-${index + 1}`, number: index + 1, type: page.type, label: layoutTokens.pageTypes[page.type], title, blocks };
   });
+  // 영문 기관명은 기관 레지스트리 값(cover.englishName)을 우선한다. 직속기관
+  // 다수가 같은 coverProfile(direct-g)을 공유하므로 프로필 토큰의 englishName을
+  // 그대로 쓰면 전부 학생교육원 영문명으로 나온다(HWPX 경로와 불일치). cover에
+  // englishName 키가 있으면(빈 값 포함) 그 값을, 없으면 프로필 기본값으로 폴백해
+  // 빠른 미리보기와 실조판·HWPX 출력을 일치시킨다.
+  const resolvedEnglishName = "englishName" in cover ? cover.englishName : profile.englishName;
   return {
     tokens: layoutTokens,
     title: metadata.title || cover.title || "제목 없음",
     cover,
-    profile: { id: profileId, ...profile },
+    profile: { id: profileId, ...profile, englishName: resolvedEnglishName },
     pages,
     bodyWidthMm: layoutTokens.page.bodyWidthHwpUnit / layoutTokens.page.hwpUnitPerMm,
   };
