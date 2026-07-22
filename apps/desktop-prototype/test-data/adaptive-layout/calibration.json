@@ -1,0 +1,1386 @@
+{
+  "generatedAt": "2026-07-22T20:55:37Z",
+  "purpose": "9단계 Phase 0 — kordoc reflow 측정치와 한글 COM 실측 쪽수의 일치 여부 확인",
+  "comChecked": true,
+  "fixtures": {
+    "sweep-p10": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 262.08,
+            "lastPageFillRatio": 0.2731103239444666,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 262.08,
+                "fillRatio": 0.2731103239444666
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "sweep-p25": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 550.08,
+            "lastPageFillRatio": 0.684468376849683,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 550.08,
+                "fillRatio": 0.684468376849683
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "sweep-p34": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 722.88,
+            "lastPageFillRatio": 0.9312832085928127,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 722.88,
+                "fillRatio": 0.9312832085928127
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "sweep-p36": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 2,
+            "overflowed": true,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 761.28,
+            "lastPageFillRatio": 0.9861309489801747,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 761.28,
+                "fillRatio": 0.9861309489801747
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "sweep-p40": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 3,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 2,
+            "effectivePageCount": 2,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 1707.76,
+            "renderedPages": 2,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 105.28,
+            "lastPageFillRatio": 0.049148717362737813,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 780.48,
+                "fillRatio": 1.013554819173856
+              },
+              {
+                "page": 2,
+                "contentBottomPt": 105.28,
+                "fillRatio": 0.049148717362737813
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "sweep-p55": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 3,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 2,
+            "effectivePageCount": 2,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 1707.76,
+            "renderedPages": 2,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 393.28,
+            "lastPageFillRatio": 0.460506770267954,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 780.48,
+                "fillRatio": 1.013554819173856
+              },
+              {
+                "page": 2,
+                "contentBottomPt": 393.28,
+                "fillRatio": 0.460506770267954
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "sweep-w08": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 530.88,
+            "lastPageFillRatio": 0.6570445066560018,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 530.88,
+                "fillRatio": 0.6570445066560018
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "sweep-w20": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 3,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 2,
+            "effectivePageCount": 2,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 1707.76,
+            "renderedPages": 2,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 508.48,
+            "lastPageFillRatio": 0.6250499914300406,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 761.28,
+                "fillRatio": 0.9861309489801747
+              },
+              {
+                "page": 2,
+                "contentBottomPt": 508.48,
+                "fillRatio": 0.6250499914300406
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "ladder-p40-150": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 2,
+            "overflowed": true,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 791.28,
+            "lastPageFillRatio": 1.0289807461578016,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 791.28,
+                "fillRatio": 1.0289807461578016
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "ladder-p40-140": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 2,
+            "overflowed": true,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 744.48,
+            "lastPageFillRatio": 0.9621350625607039,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 744.48,
+                "fillRatio": 0.9621350625607039
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "ladder-p40-135": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 721.08,
+            "lastPageFillRatio": 0.9287122207621551,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 721.08,
+                "fillRatio": 0.9287122207621551
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "table-r24": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 554.08,
+            "lastPageFillRatio": 0.6901816831400331,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 554.08,
+                "fillRatio": 0.6901816831400331
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "table-r32": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 706.08,
+            "lastPageFillRatio": 0.9072873221733417,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 706.08,
+                "fillRatio": 0.9072873221733417
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "table-r42": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 2,
+            "overflowed": true,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 896.08,
+            "lastPageFillRatio": 1.1786693709649774,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 896.08,
+                "fillRatio": 1.1786693709649774
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    },
+    "anchor-metropolitan-a": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 8,
+        "pageCount": 8,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 622.55,
+            "lastPageFillRatio": 0.7879792035651031,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 622.55,
+                "fillRatio": 0.7879792035651031
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 136.08,
+            "lastPageFillRatio": 0.09314117579843456,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 136.08,
+                "fillRatio": 0.09314117579843456
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 2,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 89.28,
+            "lastPageFillRatio": 0.02629549220133691,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 89.28,
+                "fillRatio": 0.02629549220133691
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 3,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 89.28,
+            "lastPageFillRatio": 0.02629549220133691,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 89.28,
+                "fillRatio": 0.02629549220133691
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 4,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 155.28,
+            "lastPageFillRatio": 0.12056504599211564,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 155.28,
+                "fillRatio": 0.12056504599211564
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 5,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 89.28,
+            "lastPageFillRatio": 0.02629549220133691,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 89.28,
+                "fillRatio": 0.02629549220133691
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 6,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 136.08,
+            "lastPageFillRatio": 0.09314117579843456,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 136.08,
+                "fillRatio": 0.09314117579843456
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 7,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 89.28,
+            "lastPageFillRatio": 0.02629549220133691,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 89.28,
+                "fillRatio": 0.02629549220133691
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 8,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 8,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 8
+    },
+    "anchor-direct-b": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 533.14,
+            "lastPageFillRatio": 0.6602725247100497,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 533.14,
+                "fillRatio": 0.6602725247100497
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 155.28,
+            "lastPageFillRatio": 0.12056504599211564,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 155.28,
+                "fillRatio": 0.12056504599211564
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "anchor-direct-f": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 2,
+        "pageCount": 2,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 657.75,
+            "lastPageFillRatio": 0.838256298920185,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 657.75,
+                "fillRatio": 0.838256298920185
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 155.28,
+            "lastPageFillRatio": 0.12056504599211564,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 155.28,
+                "fillRatio": 0.12056504599211564
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 2,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 2,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 2
+    },
+    "anchor-direct-g": {
+      "kordoc": {
+        "ok": true,
+        "rawPageCount": 3,
+        "pageCount": 3,
+        "confident": true,
+        "geometry": {
+          "pageHeightPt": 841.86,
+          "bodyTopPt": 70.87,
+          "bodyBottomPt": 770.99,
+          "bodyHeightPt": 700.12
+        },
+        "chunks": [
+          {
+            "index": 0,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.86,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 657.75,
+            "lastPageFillRatio": 0.838256298920185,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 657.75,
+                "fillRatio": 0.838256298920185
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 1,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 127.68,
+            "lastPageFillRatio": 0.08114323258869909,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 127.68,
+                "fillRatio": 0.08114323258869909
+              }
+            ],
+            "warnings": []
+          },
+          {
+            "index": 2,
+            "pageCount": 1,
+            "effectivePageCount": 1,
+            "overflowed": false,
+            "confident": true,
+            "canvasHeightPt": 841.88,
+            "renderedPages": 1,
+            "pageCountMatchesRendered": true,
+            "lastPageContentBottomPt": 155.28,
+            "lastPageFillRatio": 0.12056504599211564,
+            "pages": [
+              {
+                "page": 1,
+                "contentBottomPt": 155.28,
+                "fillRatio": 0.12056504599211564
+              }
+            ],
+            "warnings": []
+          }
+        ],
+        "warnings": []
+      },
+      "com": {
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
+      },
+      "agrees": true,
+      "comPages": 3
+    }
+  }
+}

@@ -15,10 +15,12 @@ SCRIPTS = TOOLKIT / "scripts"
 GONMUN_SECTION = TOOLKIT / "templates" / "gonmun" / "section0.xml"
 BONCHEONG_ANCHOR = TOOLKIT / "templates" / "boncheong" / "cover-anchor.xml"
 TEMPLATE_CHOICES = ("gonmun", "boncheong")
+TEMPLATE_HEADERS = {name: TOOLKIT / "templates" / name / "Contents" / "header.xml"
+                    for name in TEMPLATE_CHOICES}
 sys.path.insert(0, str(SCRIPTS))
 from hwpx_helpers import add_images_to_hwpx, make_image_para, next_id, reset_id, update_content_hpf, xml_escape  # noqa: E402
 from image_dimensions import image_dims_hwpunit  # noqa: E402
-from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, page_sequence, resolve_profile, table_column_widths, table_row_heights  # noqa: E402
+from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, TOKENS, page_sequence, resolve_profile, table_column_widths, table_row_heights  # noqa: E402
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
 
@@ -331,7 +333,46 @@ def render_blocks(blocks, styles, style):
     return paragraphs
 
 
-def build(model_path, output, template='gonmun'):
+def spacing_header(template, line_spacing_percent, para_next_hwpunit):
+    """9단계 적응 조판 — 본문 paraPr의 줄간격·문단 아래 간격만 바꾼 header.xml을 만든다.
+
+    이미 만든 HWPX를 후처리로 변조하지 않고 **매 pass 재생성**하는 경로다(멱등).
+    간격 조정은 본문 계열 paraPr 하나에만 적용한다. boncheong의 paraPr 73은
+    본문·목록·중제목이 공유하지만 표지 앵커(cover-anchor.xml)는 쓰지 않는 것을
+    확인했으므로(paraPr 1·22·23·25·26만 사용) 표지 조판에 영향이 없다.
+
+    gonmun은 대상이 아니다 — 본문 paraPr 0·14를 표지·표 문단도 함께 쓰기 때문에
+    같은 방식으로 조이면 표까지 눌린다.
+    """
+    tokens = TOKENS['adaptiveSpacing']
+    if template != tokens['template']:
+        raise ValueError(f'적응 조판은 {tokens["template"]} 템플릿에서만 지원합니다 (요청: {template}).')
+    source = TEMPLATE_HEADERS[template].read_text(encoding='utf-8')
+    target_id = tokens['targetParaPrId']
+    match = re.search(r'<hh:paraPr id="%s".*?</hh:paraPr>' % re.escape(target_id), source, flags=re.S)
+    if not match:
+        raise RuntimeError(f'header.xml에서 paraPr {target_id}을 찾지 못했습니다.')
+    original = match.group(0)
+    # paraPr 안의 hp:case·hp:default 두 분기를 모두 고쳐야 한다. 한쪽만 고치면
+    # 한글 버전에 따라 조정이 무시된다.
+    # 치환 결과가 원본과 같을 수 있다(사다리 0단 = 기본값 160%). 그것은 정상이므로
+    # 동일성이 아니라 **치환 횟수**로 검증한다 — 동일성으로 막으면 무보정 경로가 깨진다.
+    patched, spacing_hits = re.subn(r'(<hh:lineSpacing type="PERCENT" value=")\d+(")',
+                                    lambda m: f'{m.group(1)}{line_spacing_percent}{m.group(2)}', original)
+    patched, next_hits = re.subn(r'(<hc:next value=")-?\d+(")',
+                                 lambda m: f'{m.group(1)}{para_next_hwpunit}{m.group(2)}', patched)
+    # hp:case·hp:default 두 분기를 모두 고쳐야 한다. 한쪽만 잡히면 한글 버전에 따라
+    # 조정이 무시되므로 2건 미만이면 실패로 본다.
+    if spacing_hits < 2 or next_hits < 2:
+        raise RuntimeError(
+            f'paraPr {target_id} 간격 치환 실패 (lineSpacing {spacing_hits}건, next {next_hits}건 — 각 2건 필요).')
+    handle = tempfile.NamedTemporaryFile('w', suffix='.header.xml', delete=False, encoding='utf-8')
+    with handle:
+        handle.write(source.replace(original, patched, 1))
+    return Path(handle.name)
+
+
+def build(model_path, output, template='gonmun', line_spacing_percent=None, para_next_hwpunit=0):
     model = json.loads(Path(model_path).read_text(encoding='utf-8'))
     if template not in TEMPLATE_CHOICES:
         raise ValueError(f'Unsupported template: {template}')
@@ -358,12 +399,18 @@ def build(model_path, output, template='gonmun'):
                'xmlns:hc="http://www.hancom.co.kr/hwpml/2011/core">' + ''.join(paragraphs) + '</hs:sec>')
     section_path = Path(output).with_suffix('.section0.xml')
     section_path.write_text(section, encoding='utf-8')
+    header_path = (spacing_header(template, line_spacing_percent, para_next_hwpunit)
+                   if line_spacing_percent else None)
     try:
         # metadata.title은 원본 파일명(예: "계획안.md")을 그대로 담고 있을 수 있어
         # 확장자를 제거한다 (내부 문서 속성에 ".md"가 그대로 노출되는 것 방지).
         raw_title = model.get('metadata', {}).get('title') or ''
         doc_title = re.sub(r'\.(md|txt|hwpx?|iceplan)$', '', raw_title, flags=re.I) or 'ICE Plan Studio 문서'
-        subprocess.run([sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', template, '--section', str(section_path), '--title', doc_title, '--output', str(output)], check=True)
+        build_args = [sys.executable, str(SCRIPTS / 'build_hwpx.py'), '--template', template,
+                      '--section', str(section_path), '--title', doc_title, '--output', str(output)]
+        if header_path is not None:
+            build_args += ['--header', str(header_path)]
+        subprocess.run(build_args, check=True)
         if images:
             add_images_to_hwpx(output, images)
             update_content_hpf(output, images)
@@ -372,6 +419,8 @@ def build(model_path, output, template='gonmun'):
         subprocess.run([sys.executable, str(SCRIPTS / 'validate.py'), str(output)], check=True)
     finally:
         section_path.unlink(missing_ok=True)
+        if header_path is not None:
+            header_path.unlink(missing_ok=True)
         for image in images:
             Path(image['src_path']).unlink(missing_ok=True)
 
@@ -381,8 +430,13 @@ def main():
     parser.add_argument('model_path')
     parser.add_argument('output')
     parser.add_argument('--template', choices=TEMPLATE_CHOICES, default='gonmun')
+    parser.add_argument('--line-spacing', type=int, default=None,
+                        help='본문 줄간격(%%). 지정 시 적응 조판 간격으로 재생성한다(boncheong 전용).')
+    parser.add_argument('--para-next', type=int, default=0,
+                        help='본문 문단 아래 간격(HWPUNIT). --line-spacing과 함께 쓴다.')
     args = parser.parse_args()
-    build(args.model_path, args.output, args.template)
+    build(args.model_path, args.output, args.template,
+          line_spacing_percent=args.line_spacing, para_next_hwpunit=args.para_next)
 
 
 if __name__ == '__main__':

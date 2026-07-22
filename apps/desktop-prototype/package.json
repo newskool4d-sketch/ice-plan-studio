@@ -13,6 +13,8 @@
     "verify:workspace-packages": "node scripts/verify-workspace-packages.cjs",
     "regenerate:migrated-fixtures": "node scripts/regenerate-migrated-fixtures.cjs",
     "regenerate:regression": "py test-data/regression-corpus/regenerate.py",
+    "verify:adaptive-layout": "py test-data/adaptive-layout/gate.py --com",
+    "calibrate:layout-measure": "py test-data/adaptive-layout/calibrate.py --com",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
     "dist:win": "npm run build && electron-builder --win --dir",

@@ -54,4 +54,4 @@ async function renderPagedPreview(hwpxBuffer, renderHwpxToSvg) {
   return { svg, pageCount, warnings, stats };
 }
 
-module.exports = { renderPagedPreview, splitSection };
+module.exports = { renderPagedPreview, splitSection, chunkBuffers };

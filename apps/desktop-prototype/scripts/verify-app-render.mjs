@@ -88,17 +88,41 @@ try {
              { id: 'p', type: 'paragraph', role: 'body', text: '실조판 미리보기 동작 확인.' }],
   };
   const EXPECTED_PAGES = 2; // 표지 + 본문 (한글 COM 실측 기준)
-  report.ipcPreview = JSON.parse(await evaluate(`
+  const previewOf = async (target) => JSON.parse(await evaluate(`
     (async () => {
       try {
-        const r = await window.icePlan.renderCompositionPreview(${JSON.stringify(model)});
+        const r = await window.icePlan.renderCompositionPreview(${JSON.stringify(target)});
         const svg = Array.isArray(r.svg) ? r.svg.join('') : String(r.svg || '');
-        return JSON.stringify({ ok: svg.includes('<svg'), pageCount: r.pageCount });
+        return JSON.stringify({ ok: svg.includes('<svg'), pageCount: r.pageCount,
+                                adjustment: r.layoutAdjustment || null });
       } catch (e) { return JSON.stringify({ ok: false, error: String(e && e.message || e) }); }
     })()
   `) ?? '{"ok":false,"error":"no value"}');
+
+  report.ipcPreview = await previewOf(model);
   report.ipcPreview.expectedPages = EXPECTED_PAGES;
   report.ipcPreview.pagesMatch = report.ipcPreview.pageCount === EXPECTED_PAGES;
+  // 짧은 문서에는 보정이 걸리면 안 된다(과보정 감시).
+  report.ipcPreview.adjustmentSkipped = report.ipcPreview.adjustment?.applied === false;
+
+  // 적응 조판이 "실제로" 동작하는지 확인한다. 보정이 필요 없는 입력만 넣으면
+  // 하드코딩된 null과 정상 동작을 구분할 수 없다(memory: electron-cdp-verification —
+  // 위반 있는/없는 양쪽 입력을 모두 넣어야 정적 mock을 잡는다).
+  // 36문단은 기본 간격에서 한 쪽을 살짝 넘겨 3쪽이 되고, 조이면 2쪽으로 돌아온다
+  // (test-data/adaptive-layout/gate.py fixture A와 같은 분량).
+  const overflowing = {
+    ...model,
+    metadata: { ...model.metadata, title: '적응 조판 검증', cover: { ...model.metadata.cover, title: '적응 조판 검증' } },
+    blocks: [{ id: 'h', type: 'heading', role: 'heading', level: 1, text: 'Ⅰ. 검증' },
+             ...Array.from({ length: 36 }, (_value, index) => ({
+               id: `p${index}`, type: 'paragraph', role: 'body',
+               text: `${index + 1}. 조판 측정기 교정을 위한 본문 문단으로 분량 경계를 확인한다`,
+             }))],
+  };
+  report.ipcAdaptive = await previewOf(overflowing);
+  report.ipcAdaptive.adjustmentApplied = report.ipcAdaptive.adjustment?.applied === true;
+  report.ipcAdaptive.hasNotice = Boolean(report.ipcAdaptive.adjustment?.notice);
+  report.ipcAdaptive.pagesMatch = report.ipcAdaptive.pageCount === EXPECTED_PAGES;
 
   ws.close();
 } catch (error) {
@@ -109,6 +133,9 @@ try {
 
 report.passed = !report.fatal && report.exceptions.length === 0
   && report.rootChildren > 0 && report.hasIcePlanBridge === true
-  && report.ipcPreview?.ok === true && report.ipcPreview?.pagesMatch === true;
+  && report.ipcPreview?.ok === true && report.ipcPreview?.pagesMatch === true
+  && report.ipcPreview?.adjustmentSkipped === true
+  && report.ipcAdaptive?.ok === true && report.ipcAdaptive?.adjustmentApplied === true
+  && report.ipcAdaptive?.hasNotice === true && report.ipcAdaptive?.pagesMatch === true;
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.passed ? 0 : 1;

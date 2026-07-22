@@ -1,0 +1,255 @@
+{
+  "generatedAt": "2026-07-22T21:05:46Z",
+  "comChecked": true,
+  "cases": {
+    "A-overflow-rescuable": {
+      "why": "꼬리가 조금 넘쳐 쪽이 하나 늘어난 문서 — 조이면 원래 쪽수로 돌아온다.",
+      "expect": {
+        "applied": true,
+        "reason": "squeeze",
+        "basePages": 3,
+        "finalPages": 2
+      },
+      "fit": {
+        "applied": true,
+        "reason": "squeeze",
+        "notice": "간격 자동 조정됨 — 본문 줄간격 160% → 150% (3쪽 → 2쪽)",
+        "baseSpacing": 160,
+        "finalSpacing": 150,
+        "measuredBasePages": 3,
+        "measuredFinalPages": 2,
+        "attempts": [
+          {
+            "spacing": {
+              "lineSpacingPercent": 160,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 2,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.9861309489801747,
+            "overflowed": true,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 155,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 2,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.9561360909558361,
+            "overflowed": true,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 150,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 2,
+            "rawPageCount": 2,
+            "lastChunkPages": 1,
+            "lastPageFillRatio": 0.9261412329314974,
+            "overflowed": false,
+            "confident": true
+          }
+        ]
+      },
+      "com": {
+        "basePages": 3,
+        "finalPages": 2,
+        "baseError": null,
+        "finalError": null
+      }
+    },
+    "B-comfortable-noop": {
+      "why": "이미 적정하게 찬 문서 — 손대지 않아야 한다(과보정 차단).",
+      "expect": {
+        "applied": false,
+        "reason": "none",
+        "basePages": 2,
+        "finalPages": 2
+      },
+      "fit": {
+        "applied": false,
+        "reason": "none",
+        "notice": null,
+        "baseSpacing": 160,
+        "finalSpacing": 160,
+        "measuredBasePages": 2,
+        "measuredFinalPages": 2,
+        "attempts": [
+          {
+            "spacing": {
+              "lineSpacingPercent": 160,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 2,
+            "rawPageCount": 2,
+            "lastChunkPages": 1,
+            "lastPageFillRatio": 0.9312832085928127,
+            "overflowed": false,
+            "confident": true
+          }
+        ]
+      },
+      "com": {
+        "basePages": 2,
+        "finalPages": 2,
+        "baseError": null,
+        "finalError": null
+      }
+    },
+    "C-underfilled-loosen": {
+      "why": "마지막 쪽을 못 채운 문서 — 완화하되 쪽수는 늘리지 않는다.",
+      "expect": {
+        "applied": true,
+        "reason": "loosen",
+        "basePages": 3,
+        "finalPages": 3
+      },
+      "fit": {
+        "applied": true,
+        "reason": "loosen",
+        "notice": "간격 자동 조정됨 — 본문 줄간격 160% → 180% (마지막 쪽 채움 46% → 80%)",
+        "baseSpacing": 160,
+        "finalSpacing": 180,
+        "measuredBasePages": 3,
+        "measuredFinalPages": 3,
+        "attempts": [
+          {
+            "spacing": {
+              "lineSpacingPercent": 160,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 3,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.460506770267954,
+            "overflowed": false,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 170,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 3,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.5479203565103126,
+            "overflowed": false,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 180,
+              "paraNextHwpUnit": 200
+            },
+            "pageCount": 3,
+            "rawPageCount": 3,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.8033051476889675,
+            "overflowed": false,
+            "confident": true
+          }
+        ]
+      },
+      "com": {
+        "basePages": 3,
+        "finalPages": 3,
+        "baseError": null,
+        "finalError": null
+      }
+    },
+    "D-overflow-unrescuable": {
+      "why": "바닥값에서도 못 줄이는 분량 — 목표 쪽수를 강제하지 않고 정직하게 보고한다.",
+      "expect": {
+        "applied": false,
+        "reason": "squeeze-exhausted",
+        "basePages": 3,
+        "finalPages": 3
+      },
+      "fit": {
+        "applied": false,
+        "reason": "squeeze-exhausted",
+        "notice": null,
+        "baseSpacing": 160,
+        "finalSpacing": 160,
+        "measuredBasePages": 3,
+        "measuredFinalPages": 3,
+        "attempts": [
+          {
+            "spacing": {
+              "lineSpacingPercent": 160,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 3,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.049148717362737813,
+            "overflowed": false,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 155,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 3,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.0208678512255042,
+            "overflowed": false,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 150,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 2,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 1.0289807461578016,
+            "overflowed": true,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 145,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 2,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.9955579043592527,
+            "overflowed": true,
+            "confident": true
+          },
+          {
+            "spacing": {
+              "lineSpacingPercent": 140,
+              "paraNextHwpUnit": 0
+            },
+            "pageCount": 3,
+            "rawPageCount": 2,
+            "lastChunkPages": 2,
+            "lastPageFillRatio": 0.9621350625607039,
+            "overflowed": true,
+            "confident": true
+          }
+        ]
+      },
+      "com": {
+        "basePages": 3,
+        "finalPages": 3,
+        "baseError": null,
+        "finalError": null
+      }
+    }
+  },
+  "failures": []
+}

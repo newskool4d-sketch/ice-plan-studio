@@ -24,6 +24,34 @@
     "tableHeader": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "307", "charSpacingPercent": -15 },
     "tableBody": { "font": "맑은 고딕", "sizePt": 10, "charPrId": "417", "charSpacingPercent": -11 }
   },
+  "adaptiveSpacing": {
+    "_note": "9단계 적응 조판. boncheong 템플릿 한정 — gonmun의 본문 paraPr 0·14는 표지·표와 공용이라 건드리면 회귀한다.",
+    "template": "boncheong",
+    "targetParaPrId": "73",
+    "_safeFillNote": "kordoc reflow는 한글보다 줄높이를 4~6% 작게 잡고, 표 넘침은 아예 쪽으로 나누지 않는다(둘 다 COM 대조 실측). 그래서 '채움률 1.0 이하 = 들어감'으로 보면 한글에서 쪽이 늘어난다. COM 실측 경계: 0.9313=들어감 / 0.9621=안 들어감. 임계는 이 간극 중앙에 둔다 — 낮추면 멀쩡한 문서를 조이고, 높이면 조이기 '성공'이 한글에서 거짓이 된다. 본문 12pt 함초롬바탕 기준이며 글꼴·크기를 바꾸면 재교정 대상. 근거 표본: test-data/adaptive-layout/calibration.json.",
+    "safeFillThreshold": 0.945,
+    "_unboundedNote": "채움률이 이 값을 넘으면 넘침 정도가 커서 +1 보정으로도 실제 쪽수를 맞춘다고 보장할 수 없다(kordoc이 표 넘침을 전혀 나누지 않기 때문). 이때는 측정 신뢰도를 낮음으로 표시한다.",
+    "unboundedOverflowFill": 2.0,
+    "baseLineSpacingPercent": 160,
+    "_ladderNote": "조이기 사다리는 줄간격만 쓴다. 레퍼런스 paraPr 73의 문단 아래 간격(hc:next)은 이미 0이라 줄일 여지가 없음(실측).",
+    "squeezeLadder": [
+      { "lineSpacingPercent": 160, "paraNextHwpUnit": 0 },
+      { "lineSpacingPercent": 155, "paraNextHwpUnit": 0 },
+      { "lineSpacingPercent": 150, "paraNextHwpUnit": 0 },
+      { "lineSpacingPercent": 145, "paraNextHwpUnit": 0 },
+      { "lineSpacingPercent": 140, "paraNextHwpUnit": 0 }
+    ],
+    "loosenLadder": [
+      { "lineSpacingPercent": 160, "paraNextHwpUnit": 0 },
+      { "lineSpacingPercent": 170, "paraNextHwpUnit": 0 },
+      { "lineSpacingPercent": 180, "paraNextHwpUnit": 200 }
+    ],
+    "_thresholdNote": "채움률은 마지막 쪽 본문 영역 기준. squeeze는 마지막 쪽이 거의 비었을 때만(꼬리 몇 줄이 넘친 경우), loosen은 한 쪽을 너무 못 채웠을 때.",
+    "squeezeMaxLastPageFill": 0.15,
+    "underfillThreshold": 0.85,
+    "_gainNote": "완화는 쪽수를 못 줄이므로 이득이 작으면 조판만 흔들고 사용자에게 무의미한 고지를 띄운다. 채움률이 이만큼 오르지 않으면 무보정으로 둔다(실측: 27%->33% 같은 무의미 보정 차단).",
+    "minLoosenFillGain": 0.1
+  },
   "pageTypes": {
     "cover": "표지",
     "inner-cover": "속표지",

@@ -7,6 +7,12 @@ const { renderHwpxToSvg } = require('kordoc');
 const { kordocSmokeInfo, loadPlanInput } = require('./input-adapters.cjs');
 const { createProfileArchive, createProjectArchive, readProfileArchive, readProjectArchive } = require('./workspace-packages.cjs');
 const { renderPagedPreview } = require('./preview-split.cjs');
+const { fitLayout } = require('./layout-fit.cjs');
+
+const LAYOUT_TOKENS = JSON.parse(
+  require('node:fs').readFileSync(
+    path.join(__dirname, '..', 'scripts', 'layout-tokens.json').replace('app.asar', 'app.asar.unpacked'),
+    'utf8'));
 
 // 패키징(asar) 환경에서는 Python이 asar 내부를 읽지 못하므로 unpacked 경로로 치환한다.
 const scriptPath = (name) =>
@@ -61,8 +67,55 @@ function outputTemplate(model) {
   return model?.metadata?.layout?.template === 'gonmun' ? 'gonmun' : 'boncheong';
 }
 
-function runGenerator(modelPath, outputPath, template) {
-  return runPython([scriptPath('model_to_hwpx.py'), modelPath, outputPath, '--template', template]);
+function runGenerator(modelPath, outputPath, template, spacing) {
+  const args = [scriptPath('model_to_hwpx.py'), modelPath, outputPath, '--template', template];
+  if (spacing) {
+    args.push('--line-spacing', String(spacing.lineSpacingPercent),
+              '--para-next', String(spacing.paraNextHwpUnit));
+  }
+  return runPython(args);
+}
+
+/**
+ * 9단계 적응 조판 — 분량에 따라 본문 간격을 조정해 생성한다.
+ *
+ * 미리보기와 내보내기가 **같은 간격**을 써야 한다. 한쪽만 보정하면 화면과 출력이
+ * 갈라진다. 그래서 두 IPC 핸들러가 이 함수 하나를 공유한다.
+ *
+ * 보정 루프는 후보를 여러 번 생성하므로(최대 사다리 길이만큼) 무보정 경로보다 느리다.
+ * 적응 조판 대상이 아닌 템플릿은 예전처럼 한 번만 생성한다.
+ */
+async function generateFitted(model, workDir, modelPath, outputPath) {
+  const template = outputTemplate(model);
+  const tokens = LAYOUT_TOKENS.adaptiveSpacing;
+  if (template !== tokens.template) {
+    await runGenerator(modelPath, outputPath, template);
+    return null;
+  }
+  let candidateIndex = 0;
+  const regenerate = async (spacing) => {
+    const candidate = path.join(workDir, `candidate-${candidateIndex += 1}.hwpx`);
+    await runGenerator(modelPath, candidate, template, spacing);
+    return fs.readFile(candidate);
+  };
+  const report = await fitLayout(regenerate, tokens);
+  // 채택된 간격으로 산출물을 확정 생성한다(중간 후보 파일을 그대로 쓰지 않는다).
+  await runGenerator(modelPath, outputPath, template, report.final.spacing);
+  return report;
+}
+
+/** 렌더러에 넘길 조정 고지. 묵시 변경 금지 — 조정했으면 반드시 사용자에게 보인다. */
+function adjustmentPayload(report) {
+  if (!report) return null;
+  return {
+    applied: report.applied,
+    reason: report.reason,
+    notice: report.notice,
+    baseLineSpacingPercent: report.base.spacing.lineSpacingPercent,
+    finalLineSpacingPercent: report.final.spacing.lineSpacingPercent,
+    basePageCount: report.base.pageCount,
+    finalPageCount: report.final.pageCount,
+  };
 }
 
 ipcMain.handle('render-composition-preview', async (_event, model) => {
@@ -71,11 +124,17 @@ ipcMain.handle('render-composition-preview', async (_event, model) => {
   const hwpxPath = path.join(workDir, 'document.hwpx');
   try {
     await fs.writeFile(modelPath, JSON.stringify(model), 'utf8');
-    await runGenerator(modelPath, hwpxPath, outputTemplate(model));
+    const fitted = await generateFitted(model, workDir, modelPath, hwpxPath);
     // kordoc reflow는 하드 쪽 나눔(pageBreak="1")을 무시하므로 쪽 나눔 경계로
     // 분할 렌더한다 — preview-split.cjs 참조.
     const rendered = await renderPagedPreview(await fs.readFile(hwpxPath), renderHwpxToSvg);
-    return { svg: rendered.svg, pageCount: rendered.pageCount, warnings: rendered.warnings, stats: rendered.stats };
+    return {
+      svg: rendered.svg,
+      pageCount: rendered.pageCount,
+      warnings: rendered.warnings,
+      stats: rendered.stats,
+      layoutAdjustment: adjustmentPayload(fitted),
+    };
   } finally {
     await fs.rm(workDir, { recursive: true, force: true });
   }
@@ -95,8 +154,9 @@ ipcMain.handle('export-hwpx', async (_event, model) => {
   const modelPath = path.join(workDir, 'document.model.json');
   await fs.writeFile(modelPath, JSON.stringify(model), 'utf8');
   try {
-    await runGenerator(modelPath, result.filePath, outputTemplate(model));
-    return { canceled: false, filePath: result.filePath };
+    // 미리보기와 같은 보정 경로를 쓴다 — 한쪽만 보정하면 화면과 출력이 갈라진다.
+    const fitted = await generateFitted(model, workDir, modelPath, result.filePath);
+    return { canceled: false, filePath: result.filePath, layoutAdjustment: adjustmentPayload(fitted) };
   } finally {
     await fs.rm(workDir, { recursive: true, force: true });
   }
