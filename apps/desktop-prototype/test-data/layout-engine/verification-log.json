@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T21:12:16Z",
+  "generatedAt": "2026-07-22T23:22:59Z",
   "fixtures": {
     "metropolitan-a": {
       "layout": {
@@ -39,16 +39,60 @@
         "pagesMatchExpected": true,
         "ok": true
       },
+      "anchors": {
+        "ok": true,
+        "toleranceMm": 0.5,
+        "pdfChecked": true,
+        "drifts": [],
+        "anchors": {
+          "render": [
+            {
+              "role": "ci",
+              "xMm": 86.801,
+              "yMm": 145.094,
+              "widthMm": 36.4,
+              "heightMm": 36.4,
+              "centerOffsetMm": 0
+            },
+            {
+              "role": "slogan",
+              "xMm": 106.045,
+              "yMm": 41.935,
+              "widthMm": 83.958,
+              "heightMm": 20.352,
+              "centerOffsetMm": 43.023
+            }
+          ],
+          "pdf": [
+            {
+              "role": "ci",
+              "xMm": 86.737,
+              "yMm": 154.602,
+              "widthMm": 36.387,
+              "heightMm": 36.367,
+              "centerOffsetMm": -0.021
+            },
+            {
+              "role": "slogan",
+              "xMm": 105.946,
+              "yMm": 41.906,
+              "widthMm": 83.902,
+              "heightMm": 20.34,
+              "centerOffsetMm": 42.945
+            }
+          ]
+        }
+      },
       "fingerprint": {
         "model.json": {
           "sha256": "fc93004a9226509b79e8dcf3fb1d6e2864bdcd10d189b1aaedd35ebb187e1767"
         },
         "hwpx": {
-          "section0Sha256": "40f1941c3add460919e43d4c6b1cd88866cbb20ebf66d6a04618ae119e2c3d21",
+          "section0Sha256": "ef0069f2667333e917b246f6db48febd83b6ab105d3b4b440479dc4c3e423174",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 92551
+          "bytes": 92552
         }
       }
     },
@@ -90,16 +134,44 @@
         "pagesMatchExpected": true,
         "ok": true
       },
+      "anchors": {
+        "ok": true,
+        "toleranceMm": 0.5,
+        "pdfChecked": true,
+        "drifts": [],
+        "anchors": {
+          "render": [
+            {
+              "role": "ci",
+              "xMm": 86.801,
+              "yMm": 101.134,
+              "widthMm": 36.4,
+              "heightMm": 36.4,
+              "centerOffsetMm": 0
+            }
+          ],
+          "pdf": [
+            {
+              "role": "ci",
+              "xMm": 86.737,
+              "yMm": 110.708,
+              "widthMm": 36.387,
+              "heightMm": 36.367,
+              "centerOffsetMm": -0.021
+            }
+          ]
+        }
+      },
       "fingerprint": {
         "model.json": {
           "sha256": "ffa716e1a49d0f5eb7822ad9cb1235694c280d10d68fd7d789622bf755bbc938"
         },
         "hwpx": {
-          "section0Sha256": "735e2091e7798d8c6ee27e22cfac77f3fb34ec742e7dda9504ec4bc605ddc71e",
+          "section0Sha256": "a143441af746635036a683971b5ff6f3cb6948eeed7947b95233256160d3df0d",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 47740
+          "bytes": 47739
         }
       }
     },
@@ -141,16 +213,60 @@
         "pagesMatchExpected": true,
         "ok": true
       },
+      "anchors": {
+        "ok": true,
+        "toleranceMm": 0.5,
+        "pdfChecked": true,
+        "drifts": [],
+        "anchors": {
+          "render": [
+            {
+              "role": "ci",
+              "xMm": 86.801,
+              "yMm": 145.094,
+              "widthMm": 36.4,
+              "heightMm": 36.4,
+              "centerOffsetMm": 0
+            },
+            {
+              "role": "slogan",
+              "xMm": 106.045,
+              "yMm": 41.935,
+              "widthMm": 83.958,
+              "heightMm": 20.352,
+              "centerOffsetMm": 43.023
+            }
+          ],
+          "pdf": [
+            {
+              "role": "ci",
+              "xMm": 86.737,
+              "yMm": 154.602,
+              "widthMm": 36.387,
+              "heightMm": 36.367,
+              "centerOffsetMm": -0.021
+            },
+            {
+              "role": "slogan",
+              "xMm": 105.946,
+              "yMm": 41.906,
+              "widthMm": 83.902,
+              "heightMm": 20.34,
+              "centerOffsetMm": 42.945
+            }
+          ]
+        }
+      },
       "fingerprint": {
         "model.json": {
           "sha256": "03a93dddea1ab4ffd0bdd137f99eecd59bb1f06f06b343bce0b400941e448324"
         },
         "hwpx": {
-          "section0Sha256": "cb026b4d7a1fd321693012203debad4a934f6a3f8b491471d65e0fa328167b94",
+          "section0Sha256": "d378dcc7fb53528813375ac914ceff533d5e2e22ae273d1e6cd7ce808fd21596",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 77581
+          "bytes": 77583
         }
       }
     },
@@ -192,16 +308,60 @@
         "pagesMatchExpected": true,
         "ok": true
       },
+      "anchors": {
+        "ok": true,
+        "toleranceMm": 0.5,
+        "pdfChecked": true,
+        "drifts": [],
+        "anchors": {
+          "render": [
+            {
+              "role": "ci",
+              "xMm": 86.801,
+              "yMm": 145.094,
+              "widthMm": 36.4,
+              "heightMm": 36.4,
+              "centerOffsetMm": 0
+            },
+            {
+              "role": "slogan",
+              "xMm": 106.045,
+              "yMm": 41.935,
+              "widthMm": 83.958,
+              "heightMm": 20.352,
+              "centerOffsetMm": 43.023
+            }
+          ],
+          "pdf": [
+            {
+              "role": "ci",
+              "xMm": 86.737,
+              "yMm": 154.602,
+              "widthMm": 36.387,
+              "heightMm": 36.367,
+              "centerOffsetMm": -0.021
+            },
+            {
+              "role": "slogan",
+              "xMm": 105.946,
+              "yMm": 41.906,
+              "widthMm": 83.902,
+              "heightMm": 20.34,
+              "centerOffsetMm": 42.945
+            }
+          ]
+        }
+      },
       "fingerprint": {
         "model.json": {
           "sha256": "e113b9f8a9e6c8c2142131e27e017110990b6c3a7710f1a4a5206b5c1f7f62d1"
         },
         "hwpx": {
-          "section0Sha256": "fea3b2ee62f07b0a15d09c3bf9f28674a7b5969853a52c647dc0fef4f096e70e",
+          "section0Sha256": "936a13d0abf7ae700565534f302b0855de09b4f5bf90b03c73e134f03f7c7e7f",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
-          "bytes": 84451
+          "bytes": 84452
         }
       }
     }

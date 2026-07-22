@@ -73,6 +73,12 @@ try {
   report.rootChildren = await evaluate("document.getElementById('root')?.childElementCount ?? -1");
   report.title = await evaluate('document.title');
   report.hasIcePlanBridge = await evaluate('Boolean(window.icePlan)');
+  // 설치본 식별용 버전 배지. 화면에 실제로 그려졌는지까지 본다 — IPC만 확인하면
+  // 배지가 사라져도 통과한다.
+  report.appVersionIpc = await evaluate('window.icePlan?.appVersion?.()');
+  report.brandVersionText = await evaluate("document.querySelector('.brand-version')?.textContent ?? null");
+  report.versionShown = typeof report.appVersionIpc === 'string'
+    && report.brandVersionText === `v${report.appVersionIpc}`;
 
   const model = {
     schemaVersion: '0.2', kind: 'plan-ir',
@@ -132,7 +138,7 @@ try {
 }
 
 report.passed = !report.fatal && report.exceptions.length === 0
-  && report.rootChildren > 0 && report.hasIcePlanBridge === true
+  && report.rootChildren > 0 && report.hasIcePlanBridge === true && report.versionShown === true
   && report.ipcPreview?.ok === true && report.ipcPreview?.pagesMatch === true
   && report.ipcPreview?.adjustmentSkipped === true
   && report.ipcAdaptive?.ok === true && report.ipcAdaptive?.adjustmentApplied === true

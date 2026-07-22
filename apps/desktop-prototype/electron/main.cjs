@@ -118,6 +118,8 @@ function adjustmentPayload(report) {
   };
 }
 
+ipcMain.handle('app-version', () => app.getVersion());
+
 ipcMain.handle('render-composition-preview', async (_event, model) => {
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ice-plan-preview-'));
   const modelPath = path.join(workDir, 'document.model.json');

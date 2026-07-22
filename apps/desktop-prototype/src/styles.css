@@ -96,6 +96,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .tool-button:hover, .view-button:hover, .tool-button.is-pressed, .view-button.is-active { border-color: #b5c1c9; background: #f1f4f6; color: var(--navy); }
 .preview-toolbar select { border: 1px solid var(--line); background: #fff; border-radius: 4px; padding: 7px 9px; color: var(--ink); font-size: 11px; }
 .toolbar-view-group { border-left: 1px solid var(--line); padding-left: 12px; }
+.brand-version { color: var(--muted); font-size: 10px; margin-left: 6px; }
 /* 분량 적응 조판이 간격을 바꿨을 때의 고지. 사용자 모르게 조판을 바꾸지 않는다. */
 .layout-adjust-banner { background: #fff6e0; border-bottom: 1px solid #e5cf9a; color: #6b4c07; font-size: 11px; padding: 8px 16px; }
 .canvas-scroll { overflow: auto; display: grid; place-items: start center; padding: 34px 30px 54px; background: #dfe4e8; }

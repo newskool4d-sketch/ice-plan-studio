@@ -103,6 +103,8 @@ function WorkflowApp() {
   const [agencyId, setAgencyId] = useState(defaultAgencyProfile.id);
   const [previewMode, setPreviewMode] = useState("react");
   const [realPreview, setRealPreview] = useState(null);
+  // 설치본이 어느 빌드인지 화면에서 바로 확인하기 위한 표시(Electron에서만 채워진다).
+  const [appVersion, setAppVersion] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [analysisConfirmed, setAnalysisConfirmed] = useState(false);
   const [infoDraft, setInfoDraft] = useState({ title: "", date: "" });
@@ -132,6 +134,10 @@ function WorkflowApp() {
     Boolean(model && analysisConfirmed && infoConfirmed && structureConfirmed && rulesConfirmed),
   ];
   const completed = [Boolean(model), analysisConfirmed, infoConfirmed, structureConfirmed, rulesConfirmed, false];
+
+  useEffect(() => {
+    window.icePlan?.appVersion?.().then(setAppVersion).catch(() => setAppVersion(null));
+  }, []);
 
   useEffect(() => {
     if (projection) setPage((value) => Math.min(Math.max(value, 1), projection.pages.length));
@@ -580,7 +586,7 @@ function WorkflowApp() {
 
   return <main className="app-shell" data-active-step={workflowSteps[activeStep].key} data-pending-rules={visibleFindings.length}>
     <header className="app-topbar">
-      <div className="brand-lockup"><span className="brand-name">ICE Plan Studio</span><span className="topbar-divider" /><strong>{workflowSteps[activeStep].label}</strong></div>
+      <div className="brand-lockup"><span className="brand-name">ICE Plan Studio</span>{appVersion ? <span className="brand-version">v{appVersion}</span> : null}<span className="topbar-divider" /><strong>{workflowSteps[activeStep].label}</strong></div>
       <div className="topbar-actions">
         <span className="save-state"><span className="status-dot" />{completed.slice(0, 5).filter(Boolean).length}/5 확정</span>
         <label className="profile-select">기관<select value={agencyId} onChange={handleAgencyChange}>{agencyGroups.map((group) => <optgroup key={group.type} label={group.label}>{group.agencies.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</optgroup>)}</select></label>

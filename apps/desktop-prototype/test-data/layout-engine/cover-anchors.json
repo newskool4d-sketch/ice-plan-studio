@@ -1,0 +1,138 @@
+{
+  "metropolitan-a": {
+    "render": [
+      {
+        "role": "ci",
+        "xMm": 86.801,
+        "yMm": 145.094,
+        "widthMm": 36.4,
+        "heightMm": 36.4,
+        "centerOffsetMm": 0
+      },
+      {
+        "role": "slogan",
+        "xMm": 106.045,
+        "yMm": 41.935,
+        "widthMm": 83.958,
+        "heightMm": 20.352,
+        "centerOffsetMm": 43.023
+      }
+    ],
+    "pdf": [
+      {
+        "role": "ci",
+        "xMm": 86.737,
+        "yMm": 154.602,
+        "widthMm": 36.387,
+        "heightMm": 36.367,
+        "centerOffsetMm": -0.021
+      },
+      {
+        "role": "slogan",
+        "xMm": 105.946,
+        "yMm": 41.906,
+        "widthMm": 83.902,
+        "heightMm": 20.34,
+        "centerOffsetMm": 42.945
+      }
+    ]
+  },
+  "direct-b": {
+    "render": [
+      {
+        "role": "ci",
+        "xMm": 86.801,
+        "yMm": 101.134,
+        "widthMm": 36.4,
+        "heightMm": 36.4,
+        "centerOffsetMm": 0
+      }
+    ],
+    "pdf": [
+      {
+        "role": "ci",
+        "xMm": 86.737,
+        "yMm": 110.708,
+        "widthMm": 36.387,
+        "heightMm": 36.367,
+        "centerOffsetMm": -0.021
+      }
+    ]
+  },
+  "direct-f": {
+    "render": [
+      {
+        "role": "ci",
+        "xMm": 86.801,
+        "yMm": 145.094,
+        "widthMm": 36.4,
+        "heightMm": 36.4,
+        "centerOffsetMm": 0
+      },
+      {
+        "role": "slogan",
+        "xMm": 106.045,
+        "yMm": 41.935,
+        "widthMm": 83.958,
+        "heightMm": 20.352,
+        "centerOffsetMm": 43.023
+      }
+    ],
+    "pdf": [
+      {
+        "role": "ci",
+        "xMm": 86.737,
+        "yMm": 154.602,
+        "widthMm": 36.387,
+        "heightMm": 36.367,
+        "centerOffsetMm": -0.021
+      },
+      {
+        "role": "slogan",
+        "xMm": 105.946,
+        "yMm": 41.906,
+        "widthMm": 83.902,
+        "heightMm": 20.34,
+        "centerOffsetMm": 42.945
+      }
+    ]
+  },
+  "direct-g": {
+    "render": [
+      {
+        "role": "ci",
+        "xMm": 86.801,
+        "yMm": 145.094,
+        "widthMm": 36.4,
+        "heightMm": 36.4,
+        "centerOffsetMm": 0
+      },
+      {
+        "role": "slogan",
+        "xMm": 106.045,
+        "yMm": 41.935,
+        "widthMm": 83.958,
+        "heightMm": 20.352,
+        "centerOffsetMm": 43.023
+      }
+    ],
+    "pdf": [
+      {
+        "role": "ci",
+        "xMm": 86.737,
+        "yMm": 154.602,
+        "widthMm": 36.387,
+        "heightMm": 36.367,
+        "centerOffsetMm": -0.021
+      },
+      {
+        "role": "slogan",
+        "xMm": 105.946,
+        "yMm": 41.906,
+        "widthMm": 83.902,
+        "heightMm": 20.34,
+        "centerOffsetMm": 42.945
+      }
+    ]
+  }
+}
