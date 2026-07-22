@@ -3,7 +3,7 @@ import { PlanPreview } from "./PlanPreview.jsx";
 import { agencyProfiles, agencyGroups, defaultAgencyProfile, resolveAgency } from "../domain/agencyProfiles.js";
 import { parseMarkdown } from "../domain/markdownParser.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
-import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules } from "../domain/ruleEngine.js";
+import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from "../domain/ruleEngine.js";
 
 const workflowSteps = [
   { key: "start", label: "시작", detail: "문서 불러오기" },
@@ -267,6 +267,29 @@ function WorkflowApp() {
     setRulesConfirmed(false);
   };
 
+  const currentPaletteId = useMemo(() => {
+    const markers = model?.metadata?.rules?.itemMarkers;
+    if (!Array.isArray(markers)) return "default";
+    const match = BULLET_PALETTES.find((palette) => palette.markers.join("|") === markers.join("|"));
+    return match ? match.id : "custom";
+  }, [model]);
+
+  const changeMarkerPalette = (paletteId) => {
+    const palette = BULLET_PALETTES.find((item) => item.id === paletteId);
+    if (!palette || !model) return;
+    // 문서 마커 계열을 metadata.rules.itemMarkers에 저장한다. 규칙 엔진이 이 값을
+    // 소비해 LIST-MARKER 제안 계열을 바꾸므로, 규칙 재검수가 필요하다(확정 해제).
+    setModel({
+      ...model,
+      metadata: {
+        ...model.metadata,
+        rules: { ...(model.metadata?.rules || {}), itemMarkers: [...palette.markers] },
+      },
+    });
+    setRulesConfirmed(false);
+    setNotice(`항목기호 계열을 '${palette.label}'(으)로 바꿨습니다. 규칙검수를 다시 확인해 주세요.`);
+  };
+
   const selectRule = (ruleFinding) => {
     setSelectedRuleId(ruleFinding.id);
     setPreviewMode("react");
@@ -499,6 +522,12 @@ function WorkflowApp() {
     if (activeStep === 3) return <div className="workflow-panel" data-panel="structure">
       <span className="eyebrow">4단계 · 구조편집</span><h2>페이지 유형을 확정하세요</h2>
       <p>자동 추정값을 검토하고 페이지마다 직접 확정해야 다음 단계가 열립니다.</p>
+      <label className="workflow-field bullet-palette-field"><span>항목기호 계열</span>
+        <select value={currentPaletteId} onChange={(event) => changeMarkerPalette(event.target.value)}>
+          {currentPaletteId === "custom" && <option value="custom" disabled>사용자 지정 계열</option>}
+          {BULLET_PALETTES.map((palette) => <option value={palette.id} key={palette.id}>{palette.label}</option>)}
+        </select>
+      </label>
       <div className="page-type-list">
         {pageDrafts.map((item, index) => <div className={`page-type-row${item.confirmed ? " is-confirmed" : ""}`} data-confirmed={item.confirmed} key={item.id}>
           <button type="button" className="page-jump" onClick={() => setPage(index + 1)}>{index + 1}쪽</button>

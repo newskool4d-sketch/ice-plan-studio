@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
-import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules } from '../src/domain/ruleEngine.js';
+import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from '../src/domain/ruleEngine.js';
 
 const model = {
   schemaVersion: '0.2',
@@ -94,9 +94,34 @@ const normalHier = {
 assert.ok(!inspectDocumentRules(normalHier).some((item) => item.code === 'LIST-HIERARCHY'),
   '정상 위계(0→1→2)에는 LIST-HIERARCHY가 없어야 함');
 
+// ── 8단계: 불릿 팔레트가 LIST-MARKER 제안 계열을 바꾸는지 ─────────────────
+assert.ok(BULLET_PALETTES.length >= 2, '팔레트는 최소 2종 이상이어야 함');
+assert.ok(BULLET_PALETTES.every((palette) => Array.isArray(palette.markers) && palette.markers.length === 8),
+  '모든 팔레트는 8단계 마커 배열이어야 함');
+const diamond = BULLET_PALETTES.find((palette) => palette.id === 'diamond-d');
+assert.ok(diamond, 'diamond-d 팔레트가 있어야 함');
+const paletteModel = {
+  schemaVersion: '0.2', kind: 'plan-ir',
+  metadata: { rules: { itemMarkers: [...diamond.markers] } },
+  approval: { status: 'unapproved' },
+  blocks: [
+    { type: 'heading', level: 1, text: 'Ⅳ. 추진 내용' },
+    { type: 'listItem', level: 0, marker: '□', text: 'a' },
+  ],
+};
+const paletteSuggestion = inspectDocumentRules(paletteModel).find((item) => item.code === 'LIST-MARKER' && item.target?.blockIndex === 1);
+assert.ok(paletteSuggestion, '팔레트 적용 시 계열 불일치 항목에 LIST-MARKER 제안이 있어야 함');
+assert.equal(paletteSuggestion.after, diamond.markers[0], '팔레트의 0단계 기호가 기대 마커가 돼야 함');
+// 기본 팔레트에서는 □(기본 0단계)에 제안이 없어야 한다(공허성 배제).
+const defaultPaletteModel = { ...paletteModel, metadata: {} };
+assert.ok(!inspectDocumentRules(defaultPaletteModel).some((item) => item.code === 'LIST-MARKER' && item.target?.blockIndex === 1),
+  '기본 팔레트에서 □ level0 항목에는 제안이 없어야 함');
+
 console.log(JSON.stringify({
   gate: 'rule-engine-approval',
   detectedCodes: [...new Set(findings.map((item) => item.code))],
+  paletteCount: BULLET_PALETTES.length,
+  paletteMarker: paletteSuggestion.after,
   suggestionCount: findings.filter((item) => item.kind === 'suggestion').length,
   appliedCount: all.edits.length,
   sourceUnchanged: JSON.stringify(model) === original,

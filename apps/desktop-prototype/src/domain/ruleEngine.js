@@ -312,4 +312,17 @@ export function applyAllRuleSuggestions(model, { excludeIds = [] } = {}) {
   throw new Error('규칙 제안 적용 횟수가 안전 한도를 초과했습니다.');
 }
 
-export { ITEM_MARKERS };
+// 불릿 팔레트 (8단계) — 구조편집 단계에서 문서 마커 계열을 선택하면
+// metadata.rules.itemMarkers로 저장돼 addListSuggestions가 소비한다.
+// markers 배열은 1단계(level 0)부터 순서대로 최대 8단계. 기본형을 뺀
+// 나머지는 회귀 corpus(reference A~G)에서 실제 관측된 계열을 근거로 한다
+// (BASELINE_ANALYSIS·regression-corpus). 임의 창작 아님.
+const BULLET_PALETTES = [
+  { id: 'default', label: '기본형 (□ ❍ - ·)', markers: [...ITEM_MARKERS] },
+  { id: 'square-a', label: '네모형 A (■ □ ❍ − ·)', markers: ['■', '□', '❍', '−', '·', '가.', '1)', '가)'] },
+  { id: 'circle-conv', label: '원형 (❍ − ㆍ)', markers: ['❍', '−', 'ㆍ', '·', '1.', '가.', '1)', '가)'] },
+  { id: 'diamond-d', label: '마름모형 (◈ □ ❍ − ∙)', markers: ['◈', '□', '❍', '−', '∙', '가.', '1)', '가)'] },
+  { id: 'double-g', label: '겹동그라미형 (◎ ◦ − 1. 가.)', markers: ['◎', '◦', '−', '1.', '가.', '1)', '가)', '(1)'] },
+];
+
+export { ITEM_MARKERS, BULLET_PALETTES };
