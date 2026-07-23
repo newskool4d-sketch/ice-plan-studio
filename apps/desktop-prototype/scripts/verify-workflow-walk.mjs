@@ -141,6 +141,11 @@ try {
   report.themeToggle = await evaluate(`(async () => {
     const button = document.querySelector('#theme-toggle');
     if (!button) return { present: false };
+    // 직전 실행이 남긴 localStorage 테마에 의존하지 않도록 기준 상태(라이트)를 강제한다.
+    if (document.documentElement.dataset.theme === 'dark') {
+      button.click();
+      await new Promise((r) => setTimeout(r, 300));
+    }
     button.click();
     await new Promise((r) => setTimeout(r, 300));
     const dark = document.documentElement.dataset.theme === 'dark';
@@ -171,6 +176,47 @@ try {
     const quick = Boolean(document.querySelector('.compare-pane .a4-page'));
     return { present: true, enabled: true, panes, svg, quick, ok: panes === 2 && svg && quick };
   })()`);
+  // ── 3분할 스플리터: 키보드 조절이 실제 폭을 바꾸고, 검수 패널 폭이 %기반이라
+  // 창 크기가 변해도 비례가 유지되는지 본다(2026-07-23 실사용 지적 회귀 방지).
+  report.splitter = await evaluate(`(async () => {
+    const sep = document.querySelector('.pane-splitter');
+    if (!sep) return { present: false };
+    const inspector = document.querySelector('.rule-inspector');
+    const workspace = document.querySelector('.review-workspace');
+    const before = inspector.getBoundingClientRect().width;
+    const ratioBefore = before / workspace.getBoundingClientRect().width;
+    sep.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    sep.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    const wider = inspector.getBoundingClientRect().width;
+    sep.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    await new Promise((r) => setTimeout(r, 300));
+    const reset = inspector.getBoundingClientRect().width;
+    return { present: true, before, wider, reset, ratioBefore,
+             ok: wider > before + 10 && Math.abs(reset - before) < 10 };
+  })()`);
+  // 창을 줄였을 때 검수 패널이 같은 비율로 함께 줄어드는지 — 고정폭 회귀 감지
+  report.proportional = await evaluate(`(async () => {
+    const inspector = document.querySelector('.rule-inspector');
+    const workspace = document.querySelector('.review-workspace');
+    const ratioAt = () => inspector.getBoundingClientRect().width / workspace.getBoundingClientRect().width;
+    const wide = ratioAt();
+    return { wideRatio: wide };
+  })()`);
+  // 페이지 세션에서는 Browser.setWindowBounds를 쓸 수 없으므로 뷰포트 에뮬레이션으로
+  // 좁은 창을 재현한다 — %폭·미디어 쿼리 모두 레이아웃 뷰포트에 반응한다.
+  await send('Emulation.setDeviceMetricsOverride', { width: 1000, height: 800, deviceScaleFactor: 0, mobile: false });
+  await sleep(800);
+  report.proportional.narrowRatio = await evaluate(`(() => {
+    const inspector = document.querySelector('.rule-inspector');
+    const workspace = document.querySelector('.review-workspace');
+    return inspector.getBoundingClientRect().width / workspace.getBoundingClientRect().width;
+  })()`);
+  await send('Emulation.clearDeviceMetricsOverride');
+  await sleep(500);
+  // 좁힌 창에서도 검수 패널 비율 이탈이 5%p 이내면 비례 유지로 본다
+  report.proportional.ok = Math.abs(report.proportional.wideRatio - report.proportional.narrowRatio) < 0.05;
+
   // 드래그&드롭 — DataTransfer로 실제 drop 이벤트를 만들어 로더가 도는지 본다.
   // 문서를 다시 불러 미리보기 상태가 초기화되므로 **반드시 마지막**에 수행한다.
   report.dropLoad = await evaluate(`(async () => {
@@ -197,6 +243,7 @@ report.passed = !report.fatal && report.exceptions.length === 0 && report.allSix
   && report.agencyCards?.count === 26 && report.agencyCards?.synced === true
   && report.microInteractions?.showInFolderBridge === true
   && report.microInteractions?.eyebrowColor === 'rgb(104, 120, 138)'
-  && report.dropLoad?.ok === true;
+  && report.dropLoad?.ok === true
+  && report.splitter?.ok === true && report.proportional?.ok === true;
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.passed ? 0 : 1;

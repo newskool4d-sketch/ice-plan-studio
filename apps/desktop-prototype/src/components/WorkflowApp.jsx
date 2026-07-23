@@ -1,7 +1,7 @@
 // 화면 조립과 상태·핸들러만 담당한다. 단계 패널·레일·상단바·캔버스는
 // components/workflow/ 아래로 분리했다(11단계 선행 리팩터링) — 시각 리디자인이
 // 워크플로 로직을 건드리지 않게 하려는 분리이며, 이 파일의 동작은 바뀌지 않았다.
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { agencyProfiles, defaultAgencyProfile, resolveAgency } from "../domain/agencyProfiles.js";
 import { parseMarkdown } from "../domain/markdownParser.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
@@ -41,6 +41,39 @@ function WorkflowApp() {
   const [dragActive, setDragActive] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [lastExport, setLastExport] = useState(null);
+  // 검수 패널 폭(작업 영역 대비 %). 비율이라 창 크기가 변해도 3분할 비례가 유지된다.
+  const [inspectorPct, setInspectorPct] = useState(() => {
+    const stored = Number(localStorage.getItem("ice-inspector-pct"));
+    return Number.isFinite(stored) && stored >= 16 && stored <= 46 ? stored : 25;
+  });
+  const workspaceRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem("ice-inspector-pct", String(inspectorPct));
+  }, [inspectorPct]);
+
+  const clampInspector = (value) => Math.min(46, Math.max(16, value));
+
+  const startSplitDrag = (event) => {
+    event.preventDefault();
+    const rect = workspaceRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const move = (pointer) => setInspectorPct(clampInspector(((rect.right - pointer.clientX) / rect.width) * 100));
+    const stop = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", stop);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", stop);
+  };
+
+  const splitterKeyDown = (event) => {
+    if (event.key === "ArrowLeft") setInspectorPct((value) => clampInspector(value + 2));
+    else if (event.key === "ArrowRight") setInspectorPct((value) => clampInspector(value - 2));
+    else if (event.key === "Home") setInspectorPct(25);
+    else return;
+    event.preventDefault();
+  };
 
   const agency = resolveAgency(agencyId);
   const outputModel = useMemo(() => compositionModel(model, agency), [model, agency]);
@@ -479,13 +512,26 @@ function WorkflowApp() {
     />
     <div className="app-body">
       <WorkflowRail activeStep={activeStep} available={available} completed={completed} onSelect={setActiveStep} />
-      <section className="review-workspace">
+      <section className="review-workspace" ref={workspaceRef} style={{ "--inspector-size": `${inspectorPct}%` }}>
         <ThumbnailRail projection={projection} page={page} onSelectPage={setPage} issueCountByPage={issueCountByPage} />
         <DocumentStage
           previewMode={previewMode} onPreviewMode={setPreviewMode} realPreview={realPreview}
           zoom={zoom} onZoom={setZoom} projection={projection} current={current}
           agencyName={agency.displayName}
           highlightBlockIndex={activeStep === 4 ? selectedFinding?.target?.blockIndex : null}
+        />
+        <button
+          type="button"
+          className="pane-splitter"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="검수 패널 너비 조절 (좌우 화살표, Home=기본값)"
+          aria-valuenow={Math.round(inspectorPct)}
+          aria-valuemin={16}
+          aria-valuemax={46}
+          onPointerDown={startSplitDrag}
+          onKeyDown={splitterKeyDown}
+          onDoubleClick={() => setInspectorPct(25)}
         />
         <aside className="rule-inspector">{stepPanels[activeStep]}</aside>
       </section>
