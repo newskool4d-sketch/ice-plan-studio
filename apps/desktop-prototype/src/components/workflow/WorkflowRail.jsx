@@ -6,7 +6,7 @@ export function WorkflowRail({ activeStep, available, completed, onSelect }) {
     <nav>
       {workflowSteps.map((step, index) => <button
         type="button"
-        className={`workflow-step${activeStep === index ? " is-current" : ""}${completed[index] ? " is-done" : ""}`}
+        className={`workflow-step${activeStep === index ? " is-current" : ""}${completed[index] ? " is-done" : ""}${!available[index] ? " is-locked" : ""}`}
         data-step-key={step.key}
         disabled={!available[index]}
         aria-current={activeStep === index ? "step" : undefined}
@@ -17,6 +17,11 @@ export function WorkflowRail({ activeStep, available, completed, onSelect }) {
         <span className="step-copy"><strong>{step.label}</strong><small>{step.detail}</small></span>
       </button>)}
     </nav>
-    <div className="rail-bottom"><span className="workflow-progress">필수 확정 {completed.slice(0, 5).filter(Boolean).length}/5</span></div>
+    <div className="rail-bottom">
+      <span className="workflow-progress">필수 확정 {completed.slice(0, 5).filter(Boolean).length}/5</span>
+      <span className="workflow-progress-track" role="progressbar" aria-label="필수 확정 진행률" aria-valuemin={0} aria-valuemax={5} aria-valuenow={completed.slice(0, 5).filter(Boolean).length}>
+        <span className="workflow-progress-fill" style={{ width: `${completed.slice(0, 5).filter(Boolean).length * 20}%` }} />
+      </span>
+    </div>
   </aside>;
 }

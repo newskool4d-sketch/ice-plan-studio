@@ -94,6 +94,11 @@ try {
     report.steps.push({ step: label, clicked, panel: await panelNow() });
   };
 
+  // 규칙검수 진입 전, 검토 항목 배지가 썸네일에 뜨는지 본다(11단계 미리보기 강화).
+  // 이 시점은 규칙 무시 전이라 항목이 남아 있어야 배지 부재=회귀로 판정할 수 있다.
+  report.thumbIssueBadge = await evaluate(
+    "document.querySelector('.thumb-issue-badge')?.textContent ?? null");
+
   await clickAndRead('#analysis-confirm', 'information');
   await clickAndRead('#info-confirm', 'structure');
   // 구조편집: 모든 쪽 확정 버튼 누르기
@@ -108,12 +113,48 @@ try {
   report.panelsSeen = [...new Set(report.steps.map((s) => s.panel).filter(Boolean))];
   report.allSixSeen = ['start', 'analysis', 'information', 'structure', 'rules', 'export']
     .every((p) => report.panelsSeen.includes(p));
+
+  // ── 11단계 UI 검증: 진행률 바 / 다크 테마 실적용 / 나란히 비교 모드 ──
+  report.progressBar = await evaluate(`(() => {
+    const fill = document.querySelector('.workflow-progress-fill');
+    return fill ? fill.style.width : null;
+  })()`);
+  report.themeToggle = await evaluate(`(async () => {
+    const button = document.querySelector('#theme-toggle');
+    if (!button) return { present: false };
+    button.click();
+    await new Promise((r) => setTimeout(r, 300));
+    const dark = document.documentElement.dataset.theme === 'dark';
+    // 토큰이 실제로 화면 색을 바꿨는지 계산값으로 확인 — 속성만 바뀌고 CSS가
+    // 안 먹는 회귀(토큰 오타 등)를 잡는다.
+    const surface = getComputedStyle(document.querySelector('.app-topbar')).backgroundColor;
+    button.click();
+    await new Promise((r) => setTimeout(r, 300));
+    const restored = document.documentElement.dataset.theme === 'light';
+    return { present: true, dark, darkSurface: surface, restored,
+             darkApplied: dark && surface !== 'rgb(255, 255, 255)' };
+  })()`);
+  report.compareMode = await evaluate(`(async () => {
+    const button = document.querySelector('#preview-compare');
+    if (!button) return { present: false };
+    if (button.disabled) return { present: true, enabled: false };
+    button.click();
+    await new Promise((r) => setTimeout(r, 500));
+    const panes = document.querySelectorAll('.compare-pane').length;
+    const svg = Boolean(document.querySelector('.compare-pane .composition-svg'));
+    const quick = Boolean(document.querySelector('.compare-pane .a4-page'));
+    return { present: true, enabled: true, panes, svg, quick, ok: panes === 2 && svg && quick };
+  })()`);
   ws.close();
 } catch (error) {
   report.fatal = `${error.name}: ${error.message}`;
 } finally {
   try { child.kill(); } catch { /* noop */ }
 }
-report.passed = !report.fatal && report.exceptions.length === 0 && report.allSixSeen === true;
+report.passed = !report.fatal && report.exceptions.length === 0 && report.allSixSeen === true
+  && report.thumbIssueBadge !== null
+  && report.progressBar === '100%'
+  && report.themeToggle?.darkApplied === true && report.themeToggle?.restored === true
+  && report.compareMode?.ok === true;
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.passed ? 0 : 1;

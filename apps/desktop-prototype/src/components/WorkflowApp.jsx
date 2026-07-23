@@ -49,6 +49,12 @@ function WorkflowApp() {
   const suggestionCount = visibleFindings.filter((item) => item.kind === "suggestion").length;
   const approvalCount = model?.approval?.edits?.length || 0;
   const structureConfirmed = pageDrafts.length > 0 && pageDrafts.every((item) => item.confirmed);
+  // 규칙 검토 항목이 있는 쪽에 썸네일 배지를 단다. 블록 대상 규칙은 본문 쪽 소속이다.
+  const issueCountByPage = useMemo(() => {
+    if (!projection || !visibleFindings.length) return {};
+    const bodyPage = projection.pages.find((item) => item.type === "body");
+    return bodyPage ? { [bodyPage.number]: visibleFindings.length } : {};
+  }, [projection, visibleFindings]);
   const available = [
     true,
     Boolean(model),
@@ -434,7 +440,7 @@ function WorkflowApp() {
     <div className="app-body">
       <WorkflowRail activeStep={activeStep} available={available} completed={completed} onSelect={setActiveStep} />
       <section className="review-workspace">
-        <ThumbnailRail projection={projection} page={page} onSelectPage={setPage} />
+        <ThumbnailRail projection={projection} page={page} onSelectPage={setPage} issueCountByPage={issueCountByPage} />
         <DocumentStage
           previewMode={previewMode} onPreviewMode={setPreviewMode} realPreview={realPreview}
           zoom={zoom} onZoom={setZoom} projection={projection} current={current}
