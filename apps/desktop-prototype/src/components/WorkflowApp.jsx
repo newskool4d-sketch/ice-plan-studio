@@ -38,6 +38,9 @@ function WorkflowApp() {
   const [ignoredRuleIds, setIgnoredRuleIds] = useState([]);
   const [selectedRuleId, setSelectedRuleId] = useState(null);
   const [ruleHistory, setRuleHistory] = useState([]);
+  const [dragActive, setDragActive] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [lastExport, setLastExport] = useState(null);
 
   const agency = resolveAgency(agencyId);
   const outputModel = useMemo(() => compositionModel(model, agency), [model, agency]);
@@ -90,8 +93,7 @@ function WorkflowApp() {
     return () => { cancelled = true; };
   }, [outputModel]);
 
-  const load = async (event) => {
-    const input = event.target.files?.[0];
+  const loadFile = async (input) => {
     if (!input) return;
     try {
       const parsed = window.icePlan?.loadPlanInput && input.path
@@ -123,11 +125,29 @@ function WorkflowApp() {
     } catch (error) {
       setNotice(`파일을 읽지 못했습니다: ${error.message}`);
     }
+  };
+
+  const load = async (event) => {
+    await loadFile(event.target.files?.[0]);
     event.target.value = "";
   };
 
-  const handleAgencyChange = (event) => {
-    setAgencyId(event.target.value);
+  // 드래그&드롭 입력 — 파일 선택 버튼과 같은 경로(loadFile)를 탄다.
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setDragActive(false);
+    loadFile(event.dataTransfer?.files?.[0]);
+  };
+
+  const handleDragOver = (event) => {
+    if (!event.dataTransfer?.types?.includes("Files")) return;
+    event.preventDefault();
+    setDragActive(true);
+  };
+
+  // 카드 선택기(기본정보 패널)와 상단바 드롭다운이 같은 로직을 공유한다.
+  const selectAgency = (nextId) => {
+    setAgencyId(nextId);
     if (model) {
       setInfoConfirmed(false);
       setRulesConfirmed(false);
@@ -135,6 +155,8 @@ function WorkflowApp() {
       setNotice("기관이 변경되어 기본정보를 다시 확정해야 합니다.");
     }
   };
+
+  const handleAgencyChange = (event) => selectAgency(event.target.value);
 
   const confirmAnalysis = () => {
     setAnalysisConfirmed(true);
@@ -299,14 +321,24 @@ function WorkflowApp() {
       setNotice(outputModel ? "HWPX 내보내기는 모든 선행 단계를 확정한 Electron에서 사용할 수 있습니다." : "먼저 문서를 불러와 주세요.");
       return;
     }
+    setExporting(true);
     try {
       const result = await window.icePlan.exportHwpx(outputModel);
       // 간격이 자동 조정됐으면 내보내기 결과에도 알린다 — 묵시 변경 금지.
       const adjusted = result.layoutAdjustment?.applied ? ` (${result.layoutAdjustment.notice})` : "";
-      if (!result.canceled) setNotice(`HWPX로 내보냈습니다: ${result.filePath}${adjusted}`);
+      if (!result.canceled) {
+        setLastExport({ filePath: result.filePath });
+        setNotice(`HWPX로 내보냈습니다: ${result.filePath}${adjusted}`);
+      }
     } catch (error) {
       setNotice(`HWPX 내보내기 실패: ${error.message}`);
+    } finally {
+      setExporting(false);
     }
+  };
+
+  const showLastExport = () => {
+    if (lastExport?.filePath) window.icePlan?.showInFolder?.(lastExport.filePath).catch((error) => setNotice(`폴더 열기 실패: ${error.message}`));
   };
 
   const saveWorkspace = async () => {
@@ -424,13 +456,21 @@ function WorkflowApp() {
   const stepPanels = [
     <StartPanel onLoadFile={load} onLoadWorkspace={loadWorkspace} onLoadProfile={loadAgencyProfile} onSaveProfile={saveAgencyProfile} />,
     <AnalysisPanel model={model} projection={projection} findings={findings} file={file} onConfirm={confirmAnalysis} />,
-    <InformationPanel infoDraft={infoDraft} agencyId={agencyId} onChangeInfo={changeInfo} onAgencyChange={handleAgencyChange} onConfirm={confirmInformation} />,
+    <InformationPanel infoDraft={infoDraft} agencyId={agencyId} onChangeInfo={changeInfo} onSelectAgency={selectAgency} onConfirm={confirmInformation} />,
     <StructurePanel currentPaletteId={currentPaletteId} onChangeMarkerPalette={changeMarkerPalette} pageDrafts={pageDrafts} onSelectPage={setPage} onChangePageType={changePageType} onConfirmPageType={confirmPageType} structureConfirmed={structureConfirmed} onNext={() => setActiveStep(4)} />,
     <RulesPanel visibleFindings={visibleFindings} selectedFinding={selectedFinding} suggestionCount={suggestionCount} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} ruleHistory={ruleHistory} onSelectRule={selectRule} onApplySelected={applySelectedRule} onIgnoreSelected={ignoreSelectedRule} onApplyAll={applyAllRules} onIgnoreAll={ignoreAllRules} onUndo={undoLastRule} onConfirm={confirmRules} />,
-    <ExportPanel infoDraft={infoDraft} agency={agency} pageDrafts={pageDrafts} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} onExport={exportHwpx} />,
+    <ExportPanel infoDraft={infoDraft} agency={agency} pageDrafts={pageDrafts} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} onExport={exportHwpx} exporting={exporting} lastExport={lastExport} onShowInFolder={showLastExport} />,
   ];
 
-  return <main className="app-shell" data-active-step={workflowSteps[activeStep].key} data-pending-rules={visibleFindings.length}>
+  return <main
+    className="app-shell"
+    data-active-step={workflowSteps[activeStep].key}
+    data-pending-rules={visibleFindings.length}
+    onDragOver={handleDragOver}
+    onDragLeave={() => setDragActive(false)}
+    onDrop={handleDrop}
+  >
+    {dragActive ? <div className="drop-overlay" aria-hidden="true"><strong>놓으면 문서를 불러옵니다</strong><span>MD · TXT · HWP · HWPX</span></div> : null}
     <AppTopbar
       activeStep={activeStep} appVersion={appVersion} completed={completed} agencyId={agencyId}
       model={model} available={available} onAgencyChange={handleAgencyChange}

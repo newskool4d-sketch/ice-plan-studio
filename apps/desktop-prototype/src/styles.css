@@ -8,7 +8,9 @@
   --navy: #12263c;
   --ink: #17202b;
   --muted: #657382;
-  --faint: #81909d;
+  /* 소형 라벨(눈썹·캡션)에도 쓰이므로 WCAG AA 4.5:1을 흰 표면 기준으로 충족해야 한다
+     (#81909d는 3.4:1로 미달이었음) */
+  --faint: #68788a;
   --soft: #f3f5f6;
   --canvas: #dfe4e8;
   --workspace: #e5e9ec;
@@ -45,7 +47,7 @@
   --navy: #c8d8e8;
   --ink: #e2e8ee;
   --muted: #94a2b0;
-  --faint: #74828f;
+  --faint: #8b99a6;
   --soft: #202a34;
   --canvas: #10161d;
   --workspace: #151c24;
@@ -408,6 +410,33 @@ kbd { border: 1px solid rgb(255 255 255 / 35%); border-radius: 2px; padding: 2px
 /* ── 11단계: 썸네일 규칙 위반 배지 ── */
 .page-thumbnail { position: relative; }
 .thumb-issue-badge { position: absolute; top: -2px; right: -2px; z-index: 1; min-width: 18px; height: 18px; display: grid; place-items: center; border-radius: 999px; padding: 0 4px; background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; }
+
+/* ── 11단계: 카드형 기관 선택기 ── */
+.agency-card-picker { display: grid; gap: 14px; max-height: calc(100vh - 430px); min-height: 180px; overflow: auto; padding-right: 2px; }
+.agency-card-group { display: grid; gap: 7px; }
+.agency-card-group h3 { margin: 0; color: var(--faint); font-size: 10px; font-weight: 700; letter-spacing: .05em; }
+.agency-card-grid { display: grid; gap: 6px; }
+.agency-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 9px; align-items: center; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); padding: 7px 9px; color: var(--ink); text-align: left; transition: border-color 180ms ease-out, background-color 180ms ease-out; }
+.agency-card:hover { border-color: var(--accent-line); }
+.agency-card.is-selected { border-color: var(--green); background: var(--accent-softer); }
+.agency-card-ci { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 4px; background: #fff; overflow: hidden; }
+.agency-card-ci img { width: 28px; height: 28px; object-fit: contain; }
+.agency-card-copy { display: grid; gap: 1px; min-width: 0; }
+.agency-card-copy strong { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agency-card-copy small { color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agency-card-pending { color: var(--warning); font-size: 9px; font-style: normal; font-weight: 700; }
+
+/* ── 11단계: 마이크로 인터랙션 ── */
+.drop-overlay { position: fixed; inset: 0; z-index: 20; display: grid; place-content: center; gap: 6px; text-align: center; background: rgb(18 38 60 / 55%); color: #fff; pointer-events: none; }
+.drop-overlay strong { font-size: 20px; }
+.drop-overlay span { font-size: 12px; opacity: .85; }
+.primary-action.is-busy { justify-content: center; gap: 8px; }
+.busy-spinner { width: 14px; height: 14px; border: 2px solid rgb(255 255 255 / 40%); border-top-color: #fff; border-radius: 50%; animation: busy-spin 700ms linear infinite; }
+@keyframes busy-spin { to { transform: rotate(360deg); } }
+.export-done-card { display: grid; gap: 7px; border: 1px solid var(--accent-line); border-radius: 5px; background: var(--accent-softer); padding: 12px; }
+.export-done-card strong { color: var(--accent-text); font-size: 12px; }
+.export-done-path { color: var(--muted); font-size: 10px; word-break: break-all; }
+.export-done-card .secondary-action { min-height: 32px; }
 
 /* ── 테마 토글 ── */
 .theme-toggle { border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--muted); padding: 6px 9px; font-size: 11px; }

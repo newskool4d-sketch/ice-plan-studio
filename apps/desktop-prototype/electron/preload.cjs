@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('icePlan', {
   // 뜯어 마커를 찾아야 했다(2026-07-23 실사용 확인 과정).
   appVersion: () => ipcRenderer.invoke('app-version'),
   exportHwpx: (model) => ipcRenderer.invoke('export-hwpx', model),
+  showInFolder: (filePath) => ipcRenderer.invoke('show-in-folder', filePath),
   renderCompositionPreview: (model) => ipcRenderer.invoke('render-composition-preview', model),
   saveProfile: (profile) => ipcRenderer.invoke('save-profile', profile),
   loadProfile: () => ipcRenderer.invoke('load-profile'),

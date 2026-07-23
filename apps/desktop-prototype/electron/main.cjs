@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, dialog, ipcMain, shell } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs/promises');
 const os = require('node:os');
@@ -119,6 +119,13 @@ function adjustmentPayload(report) {
 }
 
 ipcMain.handle('app-version', () => app.getVersion());
+
+// 내보내기 성공 후 "폴더 열기" — 탐색기에서 방금 만든 파일을 선택한 상태로 연다.
+ipcMain.handle('show-in-folder', (_event, filePath) => {
+  if (typeof filePath !== 'string' || !filePath) throw new Error('파일 경로가 필요합니다.');
+  shell.showItemInFolder(filePath);
+  return true;
+});
 
 ipcMain.handle('render-composition-preview', async (_event, model) => {
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ice-plan-preview-'));

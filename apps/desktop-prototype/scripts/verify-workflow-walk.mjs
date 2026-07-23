@@ -100,6 +100,25 @@ try {
     "document.querySelector('.thumb-issue-badge')?.textContent ?? null");
 
   await clickAndRead('#analysis-confirm', 'information');
+
+  // ── 11단계 4: 카드형 기관 선택기 — 26개 기관 카드가 뜨고, 카드 클릭이
+  // 상단바 드롭다운과 같은 상태를 움직이는지(공용 selectAgency) 확인한다.
+  report.agencyCards = await evaluate(`(async () => {
+    const cards = document.querySelectorAll('.agency-card');
+    if (!cards.length) return { count: 0 };
+    const district = document.querySelector('[data-agency-id="district-nambu"]');
+    if (!district) return { count: cards.length, districtCard: false };
+    district.click();
+    await new Promise((r) => setTimeout(r, 400));
+    const topbarValue = document.querySelector('.profile-select select')?.value;
+    const selected = document.querySelector('.agency-card.is-selected')?.dataset.agencyId;
+    // 본청으로 되돌려 이후 단계 진행(직속 G 프로필 쪽수 차이 방지)
+    document.querySelector('[data-agency-id="metropolitan"]')?.click();
+    await new Promise((r) => setTimeout(r, 400));
+    return { count: cards.length, districtCard: true, topbarValue, selected,
+             synced: topbarValue === 'district-nambu' && selected === 'district-nambu' };
+  })()`);
+
   await clickAndRead('#info-confirm', 'structure');
   // 구조편집: 모든 쪽 확정 버튼 누르기
   await evaluate("document.querySelectorAll('.page-type-confirm').forEach((b) => { if (!b.disabled) b.click(); })");
@@ -134,6 +153,13 @@ try {
     return { present: true, dark, darkSurface: surface, restored,
              darkApplied: dark && surface !== 'rgb(255, 255, 255)' };
   })()`);
+  // ── 11단계 5·6: 폴더 열기 브리지 / 내보내기 진행 UI 마크업 / faint 대비 토큰 ──
+  report.microInteractions = await evaluate(`(() => ({
+    showInFolderBridge: typeof window.icePlan?.showInFolder === 'function',
+    exportButton: Boolean(document.querySelector('#export-hwpx')),
+    // AA 대비용으로 올린 --faint(#68788a)가 실제 계산값에 반영됐는지
+    eyebrowColor: getComputedStyle(document.querySelector('.eyebrow')).color,
+  }))()`);
   report.compareMode = await evaluate(`(async () => {
     const button = document.querySelector('#preview-compare');
     if (!button) return { present: false };
@@ -145,6 +171,18 @@ try {
     const quick = Boolean(document.querySelector('.compare-pane .a4-page'));
     return { present: true, enabled: true, panes, svg, quick, ok: panes === 2 && svg && quick };
   })()`);
+  // 드래그&드롭 — DataTransfer로 실제 drop 이벤트를 만들어 로더가 도는지 본다.
+  // 문서를 다시 불러 미리보기 상태가 초기화되므로 **반드시 마지막**에 수행한다.
+  report.dropLoad = await evaluate(`(async () => {
+    const dt = new DataTransfer();
+    dt.items.add(new File(['# 드롭 검증\\n\\n- 드롭 항목'], 'drop-test.md', { type: 'text/markdown' }));
+    const shell = document.querySelector('.app-shell');
+    shell.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
+    await new Promise((r) => setTimeout(r, 2500));
+    const panel = document.querySelector('[data-panel]')?.dataset.panel;
+    const fileLabel = document.querySelector('.app-statusbar span')?.textContent || '';
+    return { panel, fileLabel, ok: panel === 'analysis' && fileLabel.includes('drop-test.md') };
+  })()`);
   ws.close();
 } catch (error) {
   report.fatal = `${error.name}: ${error.message}`;
@@ -155,6 +193,10 @@ report.passed = !report.fatal && report.exceptions.length === 0 && report.allSix
   && report.thumbIssueBadge !== null
   && report.progressBar === '100%'
   && report.themeToggle?.darkApplied === true && report.themeToggle?.restored === true
-  && report.compareMode?.ok === true;
+  && report.compareMode?.ok === true
+  && report.agencyCards?.count === 26 && report.agencyCards?.synced === true
+  && report.microInteractions?.showInFolderBridge === true
+  && report.microInteractions?.eyebrowColor === 'rgb(104, 120, 138)'
+  && report.dropLoad?.ok === true;
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.passed ? 0 : 1;
