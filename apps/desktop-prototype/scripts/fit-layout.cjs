@@ -48,11 +48,9 @@ async function main() {
   };
 
   try {
-    const report = await fitLayout(regenerate, TOKENS.adaptiveSpacing);
-    // 최종 채택 간격으로 산출물을 한 번 더 생성한다(중간 후보를 그대로 쓰지 않음).
-    python([generator, modelPath, outputPath, '--template', template,
-            '--line-spacing', String(report.final.spacing.lineSpacingPercent),
-            '--para-next', String(report.final.spacing.paraNextHwpUnit)]);
+    const { finalBuffer, ...report } = await fitLayout(regenerate, TOKENS.adaptiveSpacing);
+    // 생성이 결정적이므로 채택 간격의 후보 바이트가 곧 최종 산출물이다 — 재생성하지 않는다.
+    fs.writeFileSync(outputPath, finalBuffer);
     console.log(JSON.stringify(report, null, 2));
   } finally {
     fs.rmSync(workDir, { recursive: true, force: true });

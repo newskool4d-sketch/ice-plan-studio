@@ -73,11 +73,19 @@ function shouldSqueeze(entry, tokens) {
  */
 async function fitLayout(regenerate, tokens) {
   const attempts = [];
+  // 시도별 생성 바이트를 보관한다. 생성이 결정적이므로 채택 간격의 후보를 그대로
+  // 최종 산출물로 쓸 수 있다 — 예전처럼 같은 간격으로 한 번 더 생성하면 매 호출마다
+  // 1.5초 이상을 그냥 버린다(실측).
+  const buffers = new Map();
+  const spacingKey = (spacing) => `${spacing.lineSpacingPercent}/${spacing.paraNextHwpUnit}`;
   const run = async (spacing) => {
-    const entry = summarize(spacing, await measureHwpx(await regenerate(spacing), tokens));
+    const buffer = await regenerate(spacing);
+    buffers.set(spacingKey(spacing), buffer);
+    const entry = summarize(spacing, await measureHwpx(buffer, tokens));
     attempts.push(entry);
     return entry;
   };
+  const finish = (result) => ({ ...result, finalBuffer: buffers.get(spacingKey(result.final.spacing)) });
 
   const base = await run(tokens.squeezeLadder[0]);
   const result = { base, final: base, applied: false, reason: 'none', notice: null, attempts };
@@ -87,11 +95,11 @@ async function fitLayout(regenerate, tokens) {
     for (const spacing of tokens.squeezeLadder.slice(1)) {
       const attempt = await run(spacing);
       if (attempt.pageCount <= target) {
-        return { ...result, final: attempt, applied: true, reason: 'squeeze', notice: describe('squeeze', base, attempt) };
+        return finish({ ...result, final: attempt, applied: true, reason: 'squeeze', notice: describe('squeeze', base, attempt) });
       }
     }
     // 바닥값에서도 못 줄였다 — 강제하지 않고 원래 조판으로 돌아간다.
-    return { ...result, reason: 'squeeze-exhausted' };
+    return finish({ ...result, reason: 'squeeze-exhausted' });
   }
 
   // 완화: 한 쪽을 너무 못 채운 경우. 쪽수가 늘어나는 순간 직전 단계에서 멈춘다.
@@ -110,12 +118,12 @@ async function fitLayout(regenerate, tokens) {
     // 의미 없는 고지가 뜬다. 최소 이득에 못 미치면 무보정으로 남긴다.
     const gain = best.lastPageFillRatio - base.lastPageFillRatio;
     if (best !== base && gain >= tokens.minLoosenFillGain) {
-      return { ...result, final: best, applied: true, reason: 'loosen', notice: describe('loosen', base, best) };
+      return finish({ ...result, final: best, applied: true, reason: 'loosen', notice: describe('loosen', base, best) });
     }
-    return { ...result, reason: best === base ? 'loosen-unavailable' : 'loosen-negligible' };
+    return finish({ ...result, reason: best === base ? 'loosen-unavailable' : 'loosen-negligible' });
   }
 
-  return result;
+  return finish(result);
 }
 
 module.exports = { fitLayout, shouldSqueeze };

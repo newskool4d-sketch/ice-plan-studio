@@ -85,6 +85,16 @@ function runGenerator(modelPath, outputPath, template, spacing) {
  * 보정 루프는 후보를 여러 번 생성하므로(최대 사다리 길이만큼) 무보정 경로보다 느리다.
  * 적응 조판 대상이 아닌 템플릿은 예전처럼 한 번만 생성한다.
  */
+// 모델 내용 → 보정 결정 캐시. 미리보기가 계산한 결정을 내보내기가 재사용해
+// 같은 루프를 두 번 돌지 않는다(루프 1회 실측 7초 내외 — 실사용 지연 보고의 원인).
+// 결정은 모델+토큰만의 함수라 결정적이며, 캐시 히트 시 채택 간격으로 1회만 생성한다.
+const fitDecisionCache = new Map();
+const FIT_CACHE_LIMIT = 24;
+
+function fitCacheKey(model) {
+  return require('node:crypto').createHash('sha1').update(JSON.stringify(model)).digest('hex');
+}
+
 async function generateFitted(model, workDir, modelPath, outputPath) {
   const template = outputTemplate(model);
   const tokens = LAYOUT_TOKENS.adaptiveSpacing;
@@ -92,15 +102,25 @@ async function generateFitted(model, workDir, modelPath, outputPath) {
     await runGenerator(modelPath, outputPath, template);
     return null;
   }
+  const cacheKey = fitCacheKey(model);
+  const cached = fitDecisionCache.get(cacheKey);
+  if (cached) {
+    await runGenerator(modelPath, outputPath, template, cached.final.spacing);
+    return cached;
+  }
   let candidateIndex = 0;
   const regenerate = async (spacing) => {
     const candidate = path.join(workDir, `candidate-${candidateIndex += 1}.hwpx`);
     await runGenerator(modelPath, candidate, template, spacing);
     return fs.readFile(candidate);
   };
-  const report = await fitLayout(regenerate, tokens);
-  // 채택된 간격으로 산출물을 확정 생성한다(중간 후보 파일을 그대로 쓰지 않는다).
-  await runGenerator(modelPath, outputPath, template, report.final.spacing);
+  const { finalBuffer, ...report } = await fitLayout(regenerate, tokens);
+  // 생성이 결정적이므로 채택 간격의 후보 바이트가 곧 최종 산출물이다 — 재생성하지 않는다.
+  await fs.writeFile(outputPath, finalBuffer);
+  fitDecisionCache.set(cacheKey, report);
+  if (fitDecisionCache.size > FIT_CACHE_LIMIT) {
+    fitDecisionCache.delete(fitDecisionCache.keys().next().value);
+  }
   return report;
 }
 

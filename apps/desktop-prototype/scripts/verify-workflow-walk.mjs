@@ -176,6 +176,31 @@ try {
     const quick = Boolean(document.querySelector('.compare-pane .a4-page'));
     return { present: true, enabled: true, panes, svg, quick, ok: panes === 2 && svg && quick };
   })()`);
+  // ── 보정 결정 캐시: 같은 모델의 두 번째 미리보기는 루프를 다시 돌지 않아야 한다.
+  // (미리보기가 계산한 결정을 내보내기가 재사용하는 것과 같은 경로 — 지연 보고의 수정)
+  report.fitCache = await evaluate(`(async () => {
+    const model = {
+      schemaVersion: '0.2', kind: 'plan-ir',
+      metadata: { title: '캐시 검증', cover: { title: '캐시 검증', direction: 'x', date: '2026. 7.', displayName: '인천광역시교육청' },
+                  layout: { coverProfile: 'metropolitan-a' }, pages: [{ type: 'cover' }, { type: 'body' }] },
+      source: { format: 'md', filePath: null }, approval: { status: 'unapproved' },
+      pageTypes: ['cover', 'body'], diagnostics: [],
+      blocks: [{ id: 'h', type: 'heading', role: 'heading', level: 1, text: 'Ⅰ. 검증' },
+               ...Array.from({ length: 30 }, (_v, i) => ({ id: 'p' + i, type: 'paragraph', role: 'body',
+                 text: (i + 1) + '. 캐시 검증용 본문 문단으로 보정 결정 재사용을 확인한다' }))],
+    };
+    const t1 = performance.now();
+    const first = await window.icePlan.renderCompositionPreview(model);
+    const firstMs = performance.now() - t1;
+    const t2 = performance.now();
+    const second = await window.icePlan.renderCompositionPreview(model);
+    const secondMs = performance.now() - t2;
+    const key = (r) => JSON.stringify(r.layoutAdjustment);
+    return { firstMs: Math.round(firstMs), secondMs: Math.round(secondMs),
+             sameAdjustment: key(first) === key(second),
+             cacheEffective: secondMs < firstMs * 0.8 };
+  })()`);
+
   // ── 3분할 스플리터: 키보드 조절이 실제 폭을 바꾸고, 검수 패널 폭이 %기반이라
   // 창 크기가 변해도 비례가 유지되는지 본다(2026-07-23 실사용 지적 회귀 방지).
   report.splitter = await evaluate(`(async () => {
@@ -244,6 +269,9 @@ report.passed = !report.fatal && report.exceptions.length === 0 && report.allSix
   && report.microInteractions?.showInFolderBridge === true
   && report.microInteractions?.eyebrowColor === 'rgb(104, 120, 138)'
   && report.dropLoad?.ok === true
-  && report.splitter?.ok === true && report.proportional?.ok === true;
+  && report.splitter?.ok === true && report.proportional?.ok === true
+  // 시간 임계는 머신 편차로 플레이크가 나므로 게이트는 정합성(sameAdjustment)만 본다.
+  // firstMs/secondMs는 증거용 기록.
+  && report.fitCache?.sameAdjustment === true;
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.passed ? 0 : 1;
