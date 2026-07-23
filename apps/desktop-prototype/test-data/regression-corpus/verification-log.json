@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.2",
-  "generatedAt": "2026-07-23T00:01:17Z",
+  "generatedAt": "2026-07-23T00:19:27Z",
   "references": {
     "A": {
       "documentType": "본청 기본계획",
@@ -38,7 +38,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 4,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 4,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {
@@ -87,7 +93,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {
@@ -140,7 +152,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 7,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 7,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {
@@ -196,7 +214,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 9,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 9,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {
@@ -253,7 +277,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 10,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 10,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {
@@ -301,7 +331,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 3,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 3,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {
@@ -352,7 +388,13 @@
         }
       },
       "com": {
-        "skipped": true
+        "expectedPages": 4,
+        "hwpVersion": "11, 0, 0, 9136",
+        "open": true,
+        "pages": 4,
+        "pdfSaved": true,
+        "pagesMatchExpected": true,
+        "ok": true
       },
       "fingerprint": {
         "model.json": {

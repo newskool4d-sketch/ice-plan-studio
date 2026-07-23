@@ -1,98 +1,22 @@
+// 화면 조립과 상태·핸들러만 담당한다. 단계 패널·레일·상단바·캔버스는
+// components/workflow/ 아래로 분리했다(11단계 선행 리팩터링) — 시각 리디자인이
+// 워크플로 로직을 건드리지 않게 하려는 분리이며, 이 파일의 동작은 바뀌지 않았다.
 import { useEffect, useMemo, useState } from "react";
-import { PlanPreview } from "./PlanPreview.jsx";
-import { agencyProfiles, agencyGroups, defaultAgencyProfile, resolveAgency } from "../domain/agencyProfiles.js";
+import { agencyProfiles, defaultAgencyProfile, resolveAgency } from "../domain/agencyProfiles.js";
 import { parseMarkdown } from "../domain/markdownParser.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
 import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from "../domain/ruleEngine.js";
-
-const workflowSteps = [
-  { key: "start", label: "시작", detail: "문서 불러오기" },
-  { key: "analysis", label: "분석", detail: "입력 구조 확인" },
-  { key: "information", label: "기본정보", detail: "제목·기관 확정" },
-  { key: "structure", label: "구조편집", detail: "페이지 유형 확정" },
-  { key: "rules", label: "규칙검수", detail: "검수 결과 확인" },
-  { key: "export", label: "내보내기", detail: "HWPX 생성" },
-];
-
-const pageTypeOptions = Object.entries(layoutTokens.pageTypes).map(([value, label]) => ({ value, label }));
-
-function modelTitle(model, fallback) {
-  return model?.blocks?.find((block) => block.type === "heading" && block.level === 1)?.text
-    || model?.metadata?.cover?.title
-    || model?.metadata?.title
-    || fallback.replace(/\.(md|txt|hwpx?|iceplan)$/i, "");
-}
-
-function compositionModel(model, agency) {
-  if (!model) return null;
-  return {
-    ...model,
-    metadata: {
-      ...model.metadata,
-      cover: {
-        ...(model.metadata?.cover || {}),
-        title: model.metadata?.cover?.title || model.metadata?.title,
-        displayName: model.metadata?.cover?.displayName || agency.displayName,
-        // 표지 영문명은 기관 레지스트리 값으로 구동한다. 직속기관 10종이 같은
-        // coverProfile(direct-g)을 공유하므로, 프로필에 박힌 영문명을 그대로 쓰면
-        // 모든 기관이 학생교육원 영문명으로 출력된다. 레지스트리 값(없으면 null)을
-        // 넘겨 기관별로 정확히 반영하고, 영문명 없는 기관은 표지에서 생략한다.
-        englishName: agency.englishName ?? null,
-      },
-      layout: {
-        ...(model.metadata?.layout || {}),
-        template: "boncheong",
-        coverProfile: agency.coverProfile,
-      },
-    },
-  };
-}
-
-function profilePackage(agency) {
-  return {
-    schemaVersion: "0.2",
-    kind: "iceprofile",
-    profile: {
-      id: agency.id,
-      label: agency.label,
-      baseAgencyId: agency.id,
-      organization: { displayName: agency.displayName, department: null },
-      branding: { slogan: agency.slogan, ci: agency.ci, sloganAsset: agency.sloganAsset, customByAgency: {} },
-      layout: { coverProfile: agency.coverProfile },
-      extensions: {},
-    },
-  };
-}
-
-function pageDraftsFrom(model, agency) {
-  return createPreviewProjection(compositionModel(model, agency)).pages.map((page) => ({
-    id: page.id,
-    type: page.type,
-    title: page.title,
-    confirmed: false,
-  }));
-}
-
-function WorkflowRail({ activeStep, available, completed, onSelect }) {
-  return <aside className="workflow-rail" aria-label="문서 작업 단계">
-    <div className="rail-header">문서 워크플로</div>
-    <nav>
-      {workflowSteps.map((step, index) => <button
-        type="button"
-        className={`workflow-step${activeStep === index ? " is-current" : ""}${completed[index] ? " is-done" : ""}`}
-        data-step-key={step.key}
-        disabled={!available[index]}
-        aria-current={activeStep === index ? "step" : undefined}
-        onClick={() => onSelect(index)}
-        key={step.key}
-      >
-        <span className="step-number">{completed[index] ? "✓" : index + 1}</span>
-        <span className="step-copy"><strong>{step.label}</strong><small>{step.detail}</small></span>
-      </button>)}
-    </nav>
-    <div className="rail-bottom"><span className="workflow-progress">필수 확정 {completed.slice(0, 5).filter(Boolean).length}/5</span></div>
-  </aside>;
-}
+import { compositionModel, modelTitle, pageDraftsFrom, profilePackage } from "../domain/workflowModel.js";
+import { AnalysisPanel } from "./workflow/AnalysisPanel.jsx";
+import { AppTopbar } from "./workflow/AppTopbar.jsx";
+import { DocumentStage, ThumbnailRail } from "./workflow/DocumentStage.jsx";
+import { ExportPanel } from "./workflow/ExportPanel.jsx";
+import { InformationPanel } from "./workflow/InformationPanel.jsx";
+import { RulesPanel } from "./workflow/RulesPanel.jsx";
+import { StartPanel } from "./workflow/StartPanel.jsx";
+import { StructurePanel } from "./workflow/StructurePanel.jsx";
+import { workflowSteps } from "./workflow/steps.js";
+import { WorkflowRail } from "./workflow/WorkflowRail.jsx";
 
 function WorkflowApp() {
   const [model, setModel] = useState(null);
@@ -491,125 +415,33 @@ function WorkflowApp() {
     }
   };
 
-  const renderStepPanel = () => {
-    if (activeStep === 0) return <div className="workflow-panel" data-panel="start">
-      <span className="eyebrow">1단계 · 시작</span><h2>계획안 원본을 불러오세요</h2>
-      <p>MD·TXT·HWP·HWPX를 Plan IR로 변환한 뒤 분석 단계가 열립니다.</p>
-      <label className="primary-action file-load-button">문서 선택<input type="file" accept=".md,.txt,.hwp,.hwpx" onChange={load} /></label>
-      <div className="package-resume-card">
-        <strong>기존 작업 재개</strong>
-        <p>v0.1 평면 JSON 프로젝트·프로필도 불러올 때 v0.2로 자동 승격합니다.</p>
-        <div className="package-action-row">
-          <button id="start-project-load" type="button" onClick={loadWorkspace}>프로젝트 불러오기</button>
-          <button id="start-profile-load" type="button" onClick={loadAgencyProfile}>프로필 불러오기</button>
-          <button id="start-profile-save" type="button" onClick={saveAgencyProfile}>현재 프로필 저장</button>
-        </div>
-      </div>
-    </div>;
-
-    if (activeStep === 1) return <div className="workflow-panel" data-panel="analysis">
-      <span className="eyebrow">2단계 · 분석</span><h2>입력 구조를 확인하세요</h2>
-      <div className="workflow-summary-grid">
-        <div><strong>{model?.blocks?.length || 0}</strong><span>Plan IR 블록</span></div>
-        <div><strong>{projection?.pages.length || 0}</strong><span>예상 조판 단위</span></div>
-        <div><strong>{findings.length}</strong><span>규칙 검토 항목</span></div>
-      </div>
-      <p className="workflow-source">원본: <strong>{file}</strong></p>
-      <div className="page-type-chips">{projection?.pages.map((item) => <span key={item.id}>{item.label}</span>)}</div>
-      <button id="analysis-confirm" type="button" className="primary-action" onClick={confirmAnalysis}>분석 결과 확정</button>
-    </div>;
-
-    if (activeStep === 2) return <div className="workflow-panel" data-panel="information">
-      <span className="eyebrow">3단계 · 기본정보</span><h2>문서 기본정보를 확정하세요</h2>
-      <label className="workflow-field"><span>문서 제목</span><input id="info-title" value={infoDraft.title} onChange={(event) => changeInfo("title", event.target.value)} /></label>
-      <label className="workflow-field"><span>표지 연월</span><input id="info-date" value={infoDraft.date} placeholder="2026. 7." onChange={(event) => changeInfo("date", event.target.value)} /></label>
-      <label className="workflow-field"><span>기관</span><select value={agencyId} onChange={handleAgencyChange}>{agencyGroups.map((group) => <optgroup key={group.type} label={group.label}>{group.agencies.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</optgroup>)}</select></label>
-      <button id="info-confirm" type="button" className="primary-action" disabled={!infoDraft.title.trim()} onClick={confirmInformation}>기본정보 확정</button>
-    </div>;
-
-    if (activeStep === 3) return <div className="workflow-panel" data-panel="structure">
-      <span className="eyebrow">4단계 · 구조편집</span><h2>페이지 유형을 확정하세요</h2>
-      <p>자동 추정값을 검토하고 페이지마다 직접 확정해야 다음 단계가 열립니다.</p>
-      <label className="workflow-field bullet-palette-field"><span>항목기호 계열</span>
-        <select value={currentPaletteId} onChange={(event) => changeMarkerPalette(event.target.value)}>
-          {currentPaletteId === "custom" && <option value="custom" disabled>사용자 지정 계열</option>}
-          {BULLET_PALETTES.map((palette) => <option value={palette.id} key={palette.id}>{palette.label}</option>)}
-        </select>
-      </label>
-      <div className="page-type-list">
-        {pageDrafts.map((item, index) => <div className={`page-type-row${item.confirmed ? " is-confirmed" : ""}`} data-confirmed={item.confirmed} key={item.id}>
-          <button type="button" className="page-jump" onClick={() => setPage(index + 1)}>{index + 1}쪽</button>
-          <select className="page-type-select" aria-label={`${index + 1}쪽 페이지 유형`} value={item.type} onChange={(event) => changePageType(index, event.target.value)}>{pageTypeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}</select>
-          <button type="button" className="page-type-confirm" disabled={item.confirmed} onClick={() => confirmPageType(index)}>{item.confirmed ? "확정됨" : "확정"}</button>
-        </div>)}
-      </div>
-      <button id="structure-next" type="button" className="primary-action" disabled={!structureConfirmed} onClick={() => setActiveStep(4)}>규칙검수로 이동</button>
-    </div>;
-
-    if (activeStep === 4) return <div className="workflow-panel rule-review-panel" data-panel="rules" data-pending-rules={visibleFindings.length}>
-      <div className="rule-review-heading"><span><span className="eyebrow">5단계 · 규칙검수</span><h2>승인형 수정 검토</h2></span><strong>{visibleFindings.length}건</strong></div>
-      {visibleFindings.length ? <>
-        <div className="rule-review-list" role="listbox" aria-label="규칙 검토 항목">
-          {visibleFindings.map((ruleFinding, index) => <button type="button" role="option" aria-selected={selectedFinding?.id === ruleFinding.id} className={`rule-review-item${selectedFinding?.id === ruleFinding.id ? " is-selected" : ""}`} data-rule-id={ruleFinding.id} data-rule-kind={ruleFinding.kind} onClick={() => selectRule(ruleFinding)} key={ruleFinding.id}>
-            <span>{index + 1}</span><span><strong>{ruleFinding.title}</strong><small>{ruleFinding.code} · {ruleFinding.kind === "suggestion" ? "수정 제안" : "확인 필요"}</small></span>
-          </button>)}
-        </div>
-        {selectedFinding ? <div className="rule-diff-card" aria-live="polite">
-          <div className="rule-diff-title"><span className={`finding-dot is-${selectedFinding.severity}`}>{selectedFinding.kind === "suggestion" ? "제안" : "경고"}</span><strong>{selectedFinding.title}</strong></div>
-          <p>{selectedFinding.message}</p>
-          {selectedFinding.kind === "suggestion" ? <div className="rule-diff">
-            <div><span>원문</span><pre className="rule-before">{String(selectedFinding.before)}</pre></div>
-            <div><span>수정안</span><pre className="rule-after">{String(selectedFinding.after)}</pre></div>
-          </div> : <div className="rule-warning-copy">{String(selectedFinding.before || "사실관계와 문서 맥락을 직접 확인해야 합니다.")}</div>}
-          <details><summary>규칙 근거</summary><p>{selectedFinding.evidence}</p></details>
-        </div> : null}
-        <div className="rule-action-row">
-          <button id="rule-apply" type="button" className="primary-action" disabled={selectedFinding?.kind !== "suggestion"} onClick={applySelectedRule}>선택 적용</button>
-          <button id="rule-ignore" type="button" className="secondary-action" onClick={ignoreSelectedRule}>선택 무시</button>
-        </div>
-        <div className="rule-bulk-actions">
-          <button id="rule-apply-all" type="button" disabled={!suggestionCount} onClick={applyAllRules}>제안 전체 적용 ({suggestionCount})</button>
-          <button id="rule-ignore-all" type="button" onClick={ignoreAllRules}>남은 항목 모두 무시</button>
-          <button id="rule-undo" type="button" disabled={!ruleHistory.length} onClick={undoLastRule}>마지막 적용 되돌리기</button>
-        </div>
-        <p className="approval-safety-note">적용 버튼을 누르기 전에는 Plan IR 원문을 변경하지 않습니다.</p>
-      </> : <div className="workflow-empty-result"><strong>검토할 항목이 없습니다.</strong><span>적용 {approvalCount}건 · 무시 {ignoredRuleIds.length}건</span></div>}
-      <button id="rules-confirm" type="button" className="primary-action" disabled={visibleFindings.length > 0} onClick={confirmRules}>규칙검수 완료</button>
-    </div>;
-
-    return <div className="workflow-panel" data-panel="export">
-      <span className="eyebrow">6단계 · 내보내기</span><h2>HWPX 생성 준비 완료</h2>
-      <dl className="export-summary"><div><dt>문서</dt><dd>{infoDraft.title}</dd></div><div><dt>기관</dt><dd>{agency.displayName}</dd></div><div><dt>페이지 유형</dt><dd>{pageDrafts.length}개 확정</dd></div><div><dt>규칙 결과</dt><dd>{approvalCount}건 적용 · {ignoredRuleIds.length}건 무시</dd></div></dl>
-      <button id="export-hwpx" type="button" className="primary-action" onClick={exportHwpx}>HWPX 내보내기</button>
-    </div>;
-  };
+  const stepPanels = [
+    <StartPanel onLoadFile={load} onLoadWorkspace={loadWorkspace} onLoadProfile={loadAgencyProfile} onSaveProfile={saveAgencyProfile} />,
+    <AnalysisPanel model={model} projection={projection} findings={findings} file={file} onConfirm={confirmAnalysis} />,
+    <InformationPanel infoDraft={infoDraft} agencyId={agencyId} onChangeInfo={changeInfo} onAgencyChange={handleAgencyChange} onConfirm={confirmInformation} />,
+    <StructurePanel currentPaletteId={currentPaletteId} onChangeMarkerPalette={changeMarkerPalette} pageDrafts={pageDrafts} onSelectPage={setPage} onChangePageType={changePageType} onConfirmPageType={confirmPageType} structureConfirmed={structureConfirmed} onNext={() => setActiveStep(4)} />,
+    <RulesPanel visibleFindings={visibleFindings} selectedFinding={selectedFinding} suggestionCount={suggestionCount} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} ruleHistory={ruleHistory} onSelectRule={selectRule} onApplySelected={applySelectedRule} onIgnoreSelected={ignoreSelectedRule} onApplyAll={applyAllRules} onIgnoreAll={ignoreAllRules} onUndo={undoLastRule} onConfirm={confirmRules} />,
+    <ExportPanel infoDraft={infoDraft} agency={agency} pageDrafts={pageDrafts} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} onExport={exportHwpx} />,
+  ];
 
   return <main className="app-shell" data-active-step={workflowSteps[activeStep].key} data-pending-rules={visibleFindings.length}>
-    <header className="app-topbar">
-      <div className="brand-lockup"><span className="brand-name">ICE Plan Studio</span>{appVersion ? <span className="brand-version">v{appVersion}</span> : null}<span className="topbar-divider" /><strong>{workflowSteps[activeStep].label}</strong></div>
-      <div className="topbar-actions">
-        <span className="save-state"><span className="status-dot" />{completed.slice(0, 5).filter(Boolean).length}/5 확정</span>
-        <label className="profile-select">기관<select value={agencyId} onChange={handleAgencyChange}>{agencyGroups.map((group) => <optgroup key={group.type} label={group.label}>{group.agencies.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}</optgroup>)}</select></label>
-        <button id="workspace-save" type="button" className="topbar-button" disabled={!model} onClick={saveWorkspace}>작업 저장</button>
-        <button id="workspace-load" type="button" className="topbar-button" onClick={loadWorkspace}>작업 열기</button>
-        <label className="topbar-button file-load-button">파일 불러오기<input type="file" accept=".md,.txt,.hwp,.hwpx" onChange={load} /></label>
-        <button type="button" className="topbar-button" disabled={!available[5]} onClick={() => setActiveStep(5)}>내보내기 단계</button>
-      </div>
-    </header>
+    <AppTopbar
+      activeStep={activeStep} appVersion={appVersion} completed={completed} agencyId={agencyId}
+      model={model} available={available} onAgencyChange={handleAgencyChange}
+      onSaveWorkspace={saveWorkspace} onLoadWorkspace={loadWorkspace} onLoadFile={load}
+      onGoExport={() => setActiveStep(5)}
+    />
     <div className="app-body">
       <WorkflowRail activeStep={activeStep} available={available} completed={completed} onSelect={setActiveStep} />
       <section className="review-workspace">
-        <aside className="thumbnail-rail">
-          <div className="thumbnail-heading"><strong>페이지</strong><span>{projection?.pages.length || 0}</span></div>
-          <div className="thumbnail-list">{projection ? projection.pages.map((item) => <button type="button" className={`page-thumbnail${page === item.number ? " is-selected" : ""}`} aria-current={page === item.number ? "page" : undefined} key={item.id} onClick={() => setPage(item.number)}><span className="thumb-paper"><span className="thumb-title">{item.label}</span>{item.blocks.some((block) => block.type === "table") ? <span className="thumb-table" /> : <span className="thumb-line" />}</span><span className="thumb-caption">{item.number}</span></button>) : <p className="thumbnail-note">문서를 불러오면 Plan IR에서 페이지 유형을 구성합니다.</p>}</div>
-        </aside>
-        <section className="document-stage">
-          <div className="preview-toolbar"><div className="toolbar-group"><button type="button" className={`view-button${previewMode === "react" ? " is-active" : ""}`} onClick={() => setPreviewMode("react")}>빠른 미리보기</button><button type="button" className={`view-button${previewMode === "rendered" ? " is-active" : ""}`} disabled={!realPreview} onClick={() => setPreviewMode("rendered")}>실조판 SVG</button><button type="button" className="tool-button" onClick={() => setZoom((value) => Math.min(125, value + 10))}>확대</button><select aria-label="미리보기 확대율" value={zoom} onChange={(event) => setZoom(Number(event.target.value))}>{[50, 60, 75, 90, 100, 125].map((value) => <option key={value} value={value}>{value}%</option>)}</select><button type="button" className="tool-button" onClick={() => setZoom((value) => Math.max(50, value - 10))}>축소</button></div><span>{current ? `${current.number}쪽 · ${current.label}` : "입력 대기"}</span></div>
-          {realPreview?.layoutAdjustment?.applied ? <div className="layout-adjust-banner" role="status">{realPreview.layoutAdjustment.notice}</div> : null}
-          <div className="canvas-scroll">{previewMode === "rendered" && realPreview ? <div className="paper-wrap composition-svg-wrap" style={{ transform: `scale(${zoom / 75})` }}><img className="composition-svg" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(realPreview.svg)}`} alt={`생성 HWPX 실조판 ${realPreview.pageCount}쪽`} /></div> : projection && current ? <div className="paper-wrap" style={{ transform: `scale(${zoom / 75})` }}><PlanPreview projection={projection} page={current} agencyName={agency.displayName} highlightBlockIndex={activeStep === 4 ? selectedFinding?.target?.blockIndex : null} /></div> : <div className="preview-empty-state"><h1>문서를 불러와 조판을 시작하세요</h1><p>6단계 워크플로가 실제 확정 상태에 따라 순서대로 열립니다.</p></div>}</div>
-          <div className="viewport-footer"><span>A4 {layoutTokens.page.widthMm} × {layoutTokens.page.heightMm}mm</span><span>본문폭 {projection ? `${projection.bodyWidthMm.toFixed(0)}mm` : "—"}</span><span>확대 {zoom}%</span></div>
-        </section>
-        <aside className="rule-inspector">{renderStepPanel()}</aside>
+        <ThumbnailRail projection={projection} page={page} onSelectPage={setPage} />
+        <DocumentStage
+          previewMode={previewMode} onPreviewMode={setPreviewMode} realPreview={realPreview}
+          zoom={zoom} onZoom={setZoom} projection={projection} current={current}
+          agencyName={agency.displayName}
+          highlightBlockIndex={activeStep === 4 ? selectedFinding?.target?.blockIndex : null}
+        />
+        <aside className="rule-inspector">{stepPanels[activeStep]}</aside>
       </section>
     </div>
     <footer className="app-statusbar"><span>문서: {file || "입력 대기"}</span><span>{projection ? `페이지 ${page}/${projection.pages.length}` : "페이지 —"}</span><span>현재 단계: {workflowSteps[activeStep].label}</span><span className="status-summary">다음 게이트: {available[Math.min(activeStep + 1, 5)] ? "사용 가능" : "확정 필요"}</span></footer>

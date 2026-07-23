@@ -14,11 +14,12 @@
     "regenerate:migrated-fixtures": "node scripts/regenerate-migrated-fixtures.cjs",
     "regenerate:regression": "py test-data/regression-corpus/regenerate.py",
     "verify:app-render": "node scripts/verify-app-render.mjs \"release/win-unpacked/ICE Plan Studio.exe\"",
+    "verify:workflow-walk": "node scripts/verify-workflow-walk.mjs \"release/win-unpacked/ICE Plan Studio.exe\"",
     "verify:adaptive-layout": "py test-data/adaptive-layout/gate.py --com",
     "calibrate:layout-measure": "py test-data/adaptive-layout/calibrate.py --com",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
-    "dist:win": "npm run build && electron-builder --win --dir && npm run verify:app-render",
+    "dist:win": "npm run build && electron-builder --win --dir && npm run verify:app-render && npm run verify:workflow-walk",
     "dist:installer": "npm run dist:win && electron-builder --win nsis"
   },
   "dependencies": {
