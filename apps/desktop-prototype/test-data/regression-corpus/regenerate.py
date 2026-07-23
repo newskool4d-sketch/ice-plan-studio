@@ -118,10 +118,22 @@ def structural_checks(model: dict, hwpx: Path, spec: dict) -> dict:
     # 넣으므로 그 기호가 목록 텍스트와 함께 나타나야 한다.
     list_marker = spec['markers'][0]
     assert f'{list_marker} 항목기호 계열 확인' in section, f'list marker not rendered: {list_marker!r}'
+    # 실제 조판 쪽수가 의도한 페이지 시퀀스와 같은지 본다(과제 G). 구조 검사는
+    # "어떤 페이지 유형을 넣었는가"만 보므로, 내용이 넘쳐 쪽이 늘어나도 통과한다.
+    # COM 없이도 도는 검사여야 하므로 kordoc 측정기를 쓴다 — 채움률 안전 임계로
+    # 보정된 값이라 한글 실측과 맞는다(test-data/adaptive-layout/calibration.json).
+    measured = run(['node', str(SCRIPTS / 'measure-layout.mjs'), str(hwpx)])
+    assert measured.returncode == 0, measured.stdout + measured.stderr
+    measured_report = json.loads(measured.stdout)
+    assert measured_report['pageCount'] == len(actual_sequence), (
+        f'조판 쪽수 {measured_report["pageCount"]} != 의도 쪽수 {len(actual_sequence)} '
+        f'(kordoc 원값 {measured_report["rawPageCount"]})')
     return {
         'ok': True,
         'pageSequence': actual_sequence,
         'expectedPages': len(actual_sequence),
+        'measuredPages': measured_report['pageCount'],
+        'measuredRawPages': measured_report['rawPageCount'],
         'itemMarkers': spec['markers'],
         'previewEquivalence': preview_report,
     }
