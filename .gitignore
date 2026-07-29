@@ -17,6 +17,9 @@ __pycache__/
 Thumbs.db
 .DS_Store
 
+# 검증 산출물 임시 폴더 (HWPX·PDF·COM 로그)
+tmp/
+
 # 회귀시험 문서는 내부 자료이므로 로컬에서만 사용한다.
 test-data/private/*
 !test-data/private/README.md

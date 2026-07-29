@@ -11,7 +11,9 @@ const modelPath = process.argv[2] || path.join(appRoot, "test-data/layout-engine
 const hwpxPath = process.argv[3] || path.join(appRoot, "test-data/layout-engine/metropolitan-a.hwpx");
 const model = JSON.parse(fs.readFileSync(modelPath, "utf8"));
 const preview = createPreviewProjection(model);
-const inspected = JSON.parse(execFileSync(process.platform === "win32" ? "py" : "python3", [path.join(here, "inspect_hwpx_layout.py"), hwpxPath], { encoding: "utf8", env: { ...process.env, PYTHONIOENCODING: "utf-8" } }));
+const python = process.platform === "win32" ? "py" : "python3";
+const pythonArgs = process.platform === "win32" ? ["-3"] : [];
+const inspected = JSON.parse(execFileSync(python, [...pythonArgs, path.join(here, "inspect_hwpx_layout.py"), hwpxPath], { encoding: "utf8", env: { ...process.env, PYTHONIOENCODING: "utf-8" } }));
 const expectedTables = preview.pages.flatMap((page) => page.blocks).filter((block) => block.type === "table");
 const outputTables = inspected.tables.filter((table) => table.widthHwpUnit === preview.tokens.page.bodyWidthHwpUnit);
 const failures = [];

@@ -24,8 +24,8 @@ function runPython(args, { onStdout } = {}) {
     let settled = false;
     const settle = (fn, value) => { if (!settled) { settled = true; fn(value); } };
     const tryLaunch = (candidates) => {
-      const [command, ...rest] = candidates;
-      const child = spawn(command, args, { windowsHide: true });
+      const [[command, ...prefixArgs], ...rest] = candidates;
+      const child = spawn(command, [...prefixArgs, ...args], { windowsHide: true });
       let stderr = '';
       child.stderr.on('data', (chunk) => { stderr += chunk.toString(); });
       if (onStdout) child.stdout.on('data', onStdout);
@@ -39,10 +39,11 @@ function runPython(args, { onStdout } = {}) {
       });
       child.on('close', (code) => {
         if (code === 0) settle(resolve);
+        else if (rest.length && /WindowsApps|Unable to create process/i.test(stderr)) tryLaunch(rest);
         else settle(reject, new Error(stderr || `변환 실패 (${code})`));
       });
     };
-    tryLaunch(['py', 'python']);
+    tryLaunch(process.platform === 'win32' ? [['py', '-3'], ['python']] : [['python3'], ['python']]);
   });
 }
 

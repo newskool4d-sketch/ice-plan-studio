@@ -43,8 +43,15 @@ try {
   });
   let id = 0;
   const pending = new Map();
-  ws.addEventListener('message', (event) => {
-    const msg = JSON.parse(typeof event.data === 'string' ? event.data : String(event.data));
+  ws.addEventListener('message', async (event) => {
+    const raw = typeof event.data === 'string'
+      ? event.data
+      : event.data instanceof ArrayBuffer
+        ? new TextDecoder().decode(event.data)
+        : ArrayBuffer.isView(event.data)
+          ? new TextDecoder().decode(event.data)
+          : await event.data.text();
+    const msg = JSON.parse(raw);
     if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg); pending.delete(msg.id); return; }
     if (msg.method === 'Runtime.exceptionThrown') {
       const d = msg.params.exceptionDetails;
@@ -55,15 +62,17 @@ try {
     }
     if (msg.method === 'Network.loadingFailed') report.failedRequests.push(msg.params.errorText);
   });
-  const send = (method, params = {}) => new Promise((res) => {
-    const n = ++id; pending.set(n, res);
+  const send = (method, params = {}) => new Promise((resolve, reject) => {
+    const n = ++id;
+    const timeout = setTimeout(() => {
+      pending.delete(n);
+      reject(new Error(`CDP ${method} 응답 시간 초과`));
+    }, 10_000);
+    pending.set(n, (message) => { clearTimeout(timeout); resolve(message); });
     ws.send(JSON.stringify({ id: n, method, params }));
   });
 
   await send('Runtime.enable');
-  await send('Page.enable');
-  await send('Network.enable');
-  await send('Page.reload', { ignoreCache: true });
   await sleep(5000);
 
   const evaluate = async (expression) => {

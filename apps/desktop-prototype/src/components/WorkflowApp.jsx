@@ -4,6 +4,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { agencyProfiles, defaultAgencyProfile, resolveAgency } from "../domain/agencyProfiles.js";
 import { parseMarkdown } from "../domain/markdownParser.js";
+import {
+  DOCUMENT_KINDS,
+  applyBulletDecision,
+  applyFrontMatterDecision,
+  ensurePlanDecisions,
+  insertPage,
+  movePage,
+  planDecisionGate,
+  removePage,
+} from "../domain/planDecisions.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
 import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from "../domain/ruleEngine.js";
 import { compositionModel, modelTitle, pageDraftsFrom, profilePackage } from "../domain/workflowModel.js";
@@ -17,6 +27,28 @@ import { StartPanel } from "./workflow/StartPanel.jsx";
 import { StructurePanel } from "./workflow/StructurePanel.jsx";
 import { workflowSteps } from "./workflow/steps.js";
 import { WorkflowRail } from "./workflow/WorkflowRail.jsx";
+
+const BLOCKING_LABELS = {
+  "document-kind": "문서 성격",
+  "toc-decision": "목차",
+  "summary-decision": "요약",
+};
+
+// 본문 계열 쪽 유형. previewProjection·model_to_hwpx와 같은 목록을 쓴다.
+const BODY_PAGE_TYPES = ["body", "body-opening", "body-continuation"];
+
+// 구조 패널이 보여주는 쪽 계획을 모델에 그대로 반영한다. 이 반영을 빠뜨리면
+// 구조 패널(목차·요약 포함)과 미리보기·내보내기(metadata.pages)가 어긋나
+// 결정한 앞부분 쪽이 산출물에서 조용히 빠진다.
+function withPagePlan(model, drafts) {
+  return {
+    ...model,
+    metadata: {
+      ...model.metadata,
+      pages: drafts.map(({ type, title, role, decisionMode, blocks, id }) => ({ type, title, role, decisionMode, blocks, id })),
+    },
+  };
+}
 
 function WorkflowApp() {
   const [model, setModel] = useState(null);
@@ -88,7 +120,7 @@ function WorkflowApp() {
   // 규칙 검토 항목이 있는 쪽에 썸네일 배지를 단다. 블록 대상 규칙은 본문 쪽 소속이다.
   const issueCountByPage = useMemo(() => {
     if (!projection || !visibleFindings.length) return {};
-    const bodyPage = projection.pages.find((item) => item.type === "body");
+    const bodyPage = projection.pages.find((item) => BODY_PAGE_TYPES.includes(item.type));
     return bodyPage ? { [bodyPage.number]: visibleFindings.length } : {};
   }, [projection, visibleFindings]);
   const available = [
@@ -132,19 +164,21 @@ function WorkflowApp() {
       const parsed = window.icePlan?.loadPlanInput && input.path
         ? (await window.icePlan.loadPlanInput(input.path)).model
         : parseMarkdown(await input.text(), { title: input.name });
-      const title = modelTitle(parsed, input.name);
+      const prepared = ensurePlanDecisions(parsed);
+      const title = modelTitle(prepared, input.name);
       const next = {
-        ...parsed,
+        ...prepared,
         metadata: {
-          ...parsed.metadata,
+          ...prepared.metadata,
           title,
-          cover: { ...(parsed.metadata?.cover || {}), title },
+          cover: { ...(prepared.metadata?.cover || {}), title },
         },
       };
+      const drafts = pageDraftsFrom(next, agency);
       setFile(input.name);
-      setModel(next);
+      setModel(withPagePlan(next, drafts));
       setInfoDraft({ title, date: next.metadata?.cover?.date || "" });
-      setPageDrafts(pageDraftsFrom(next, agency));
+      setPageDrafts(drafts);
       setAnalysisConfirmed(false);
       setInfoConfirmed(false);
       setRulesConfirmed(false);
@@ -191,7 +225,50 @@ function WorkflowApp() {
 
   const handleAgencyChange = (event) => selectAgency(event.target.value);
 
+  const changeDocumentKind = (documentKind) => {
+    const nextModel = ensurePlanDecisions(model, { documentKind });
+    const drafts = pageDraftsFrom(nextModel, agency);
+    setModel(withPagePlan(nextModel, drafts));
+    setPageDrafts(drafts);
+    setAnalysisConfirmed(false);
+    setRulesConfirmed(false);
+  };
+
+  const changeFrontMatterDecision = (field, mode, warningAcknowledged = false) => {
+    try {
+      const nextModel = applyFrontMatterDecision(model, field, {
+        mode,
+        userDecision: mode === "omitted" && field === "toc" ? "confirmed-with-warning" : "confirmed",
+        warningAcknowledged,
+      });
+      const drafts = pageDraftsFrom(nextModel, agency);
+      setModel(withPagePlan(nextModel, drafts));
+      setPageDrafts(drafts);
+      setAnalysisConfirmed(false);
+      setRulesConfirmed(false);
+      setNotice(`${field === "toc" ? "목차" : "요약"} 결정을 저장했습니다.`);
+    } catch (error) {
+      setNotice(error.message);
+    }
+  };
+
+  const changeBulletDecision = (userDecision, overrideReason) => {
+    try {
+      setModel((currentModel) => applyBulletDecision(currentModel, { userDecision, overrideReason }));
+      setRulesConfirmed(false);
+      setNotice("불릿 재량 결정을 저장했습니다.");
+    } catch (error) {
+      setNotice(error.message);
+    }
+  };
+
   const confirmAnalysis = () => {
+    const gate = planDecisionGate(model);
+    if (!gate.passed) {
+      const labels = gate.blocking.map((item) => BLOCKING_LABELS[item] || item);
+      setNotice(`분석 확정 전에 결정이 필요합니다: ${labels.join(", ")}`);
+      return;
+    }
     setAnalysisConfirmed(true);
     setActiveStep(2);
     setNotice("입력 분석을 확정했습니다. 기본정보를 확인해 주세요.");
@@ -232,13 +309,7 @@ function WorkflowApp() {
 
   const applyPages = (nextPages) => {
     setPageDrafts(nextPages);
-    setModel((currentModel) => ({
-      ...currentModel,
-      metadata: {
-        ...currentModel.metadata,
-        pages: nextPages.map(({ type, title }) => ({ type, title })),
-      },
-    }));
+    setModel((currentModel) => withPagePlan(currentModel, nextPages));
     setRulesConfirmed(false);
     setPreviewMode("react");
   };
@@ -252,9 +323,36 @@ function WorkflowApp() {
     setNotice(`${index + 1}쪽 유형을 ${layoutTokens.pageTypes[type]}(으)로 변경했습니다. 다시 확정해 주세요.`);
   };
 
+  const addPage = (index) => {
+    const nextPages = insertPage(pageDrafts, { type: "body", role: "body-continuation", title: layoutTokens.pageTypes.body }, index + 1);
+    applyPages(nextPages);
+    setPage(index + 2);
+    setNotice("본문 후속 쪽을 추가했습니다. 새 쪽 유형을 확인해 주세요.");
+  };
+
+  const deletePage = (index) => {
+    try {
+      const nextPages = removePage(pageDrafts, index);
+      applyPages(nextPages);
+      setPage(Math.min(index + 1, nextPages.length));
+      setNotice("쪽을 삭제했습니다. 쪽 순서를 다시 확인해 주세요.");
+    } catch (error) {
+      setNotice(error.message);
+    }
+  };
+
+  const reorderPage = (index, direction) => {
+    const nextPages = movePage(pageDrafts, index, direction);
+    applyPages(nextPages);
+    const offset = direction === "up" ? -1 : 1;
+    setPage(Math.max(1, Math.min(nextPages.length, index + 1 + offset)));
+  };
+
   const confirmPageType = (index) => {
     setPageDrafts((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, confirmed: true } : item));
-    setPage(index + 1);
+    // 미리보기 쪽 범위를 벗어나면 빠른 미리보기가 사라지고 나란히 비교가 계속 잠긴다.
+    // 125행 클램프는 projection이 바뀔 때만 돌기 때문에 여기서 직접 막아야 한다.
+    setPage(Math.min(index + 1, projection?.pages.length || index + 1));
     setRulesConfirmed(false);
   };
 
@@ -285,7 +383,7 @@ function WorkflowApp() {
     setSelectedRuleId(ruleFinding.id);
     setPreviewMode("react");
     if (Number.isInteger(ruleFinding.target?.blockIndex)) {
-      const bodyIndex = projection?.pages.findIndex((item) => item.type === "body") ?? -1;
+      const bodyIndex = projection?.pages.findIndex((item) => BODY_PAGE_TYPES.includes(item.type)) ?? -1;
       if (bodyIndex >= 0) setPage(bodyIndex + 1);
     }
   };
@@ -409,7 +507,7 @@ function WorkflowApp() {
       const result = await window.icePlan.loadProject();
       if (result.canceled) return;
       const snapshot = result.project;
-      const nextModel = snapshot.document;
+      const nextModel = ensurePlanDecisions(snapshot.document);
       if (!nextModel?.blocks) throw new Error("프로젝트에 Plan IR 문서가 없습니다.");
       const workflow = snapshot.project?.workflow || {};
       const view = snapshot.project?.view || {};
@@ -427,7 +525,7 @@ function WorkflowApp() {
       const nextRulesConfirmed = nextStructureConfirmed && Boolean(workflow.rulesConfirmed) && pendingRules.length === 0;
       const maxStep = nextRulesConfirmed ? 5 : nextStructureConfirmed ? 4 : nextInfoConfirmed ? 3 : nextAnalysisConfirmed ? 2 : 1;
       const restoredStep = Math.min(maxStep, Math.max(1, Number(workflow.activeStep) || 1));
-      setModel(nextModel);
+      setModel(withPagePlan(nextModel, nextDrafts));
       setFile(snapshot.project?.metadata?.loadedFile || result.filePath.split(/[\\/]/).pop());
       setAgencyId(nextAgency.id);
       setAnalysisConfirmed(nextAnalysisConfirmed);
@@ -488,9 +586,33 @@ function WorkflowApp() {
 
   const stepPanels = [
     <StartPanel onLoadFile={load} onLoadWorkspace={loadWorkspace} onLoadProfile={loadAgencyProfile} onSaveProfile={saveAgencyProfile} />,
-    <AnalysisPanel model={model} projection={projection} findings={findings} file={file} onConfirm={confirmAnalysis} />,
+    <AnalysisPanel
+      model={model}
+      projection={projection}
+      findings={findings}
+      file={file}
+      documentKinds={DOCUMENT_KINDS}
+      planDecisions={model?.metadata?.plan}
+      onChangeDocumentKind={changeDocumentKind}
+      onChangeFrontMatterDecision={changeFrontMatterDecision}
+      onConfirm={confirmAnalysis}
+    />,
     <InformationPanel infoDraft={infoDraft} agencyId={agencyId} onChangeInfo={changeInfo} onSelectAgency={selectAgency} onConfirm={confirmInformation} />,
-    <StructurePanel currentPaletteId={currentPaletteId} onChangeMarkerPalette={changeMarkerPalette} pageDrafts={pageDrafts} onSelectPage={setPage} onChangePageType={changePageType} onConfirmPageType={confirmPageType} structureConfirmed={structureConfirmed} onNext={() => setActiveStep(4)} />,
+    <StructurePanel
+      currentPaletteId={currentPaletteId}
+      onChangeMarkerPalette={changeMarkerPalette}
+      bulletDecision={model?.metadata?.plan?.bullet}
+      onChangeBulletDecision={changeBulletDecision}
+      pageDrafts={pageDrafts}
+      onSelectPage={setPage}
+      onChangePageType={changePageType}
+      onConfirmPageType={confirmPageType}
+      onAddPage={addPage}
+      onDeletePage={deletePage}
+      onMovePage={reorderPage}
+      structureConfirmed={structureConfirmed}
+      onNext={() => setActiveStep(4)}
+    />,
     <RulesPanel visibleFindings={visibleFindings} selectedFinding={selectedFinding} suggestionCount={suggestionCount} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} ruleHistory={ruleHistory} onSelectRule={selectRule} onApplySelected={applySelectedRule} onIgnoreSelected={ignoreSelectedRule} onApplyAll={applyAllRules} onIgnoreAll={ignoreAllRules} onUndo={undoLastRule} onConfirm={confirmRules} />,
     <ExportPanel infoDraft={infoDraft} agency={agency} pageDrafts={pageDrafts} approvalCount={approvalCount} ignoredRuleIds={ignoredRuleIds} onExport={exportHwpx} exporting={exporting} lastExport={lastExport} onShowInFolder={showLastExport} />,
   ];

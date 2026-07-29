@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "body-layout-v2.contract-fixture.1",
+  "suite": "body-layout-v2",
+  "documentKind": "school-guidance-basic-plan",
+  "sourcePolicy": "synthetic-only",
+  "fixtures": [
+    {
+      "id": "toc-source",
+      "purpose": "원문 목차를 전용 쪽으로 보존",
+      "source": {
+        "format": "markdown",
+        "text": "# 합성 기본계획\\n\\n## 목차\\n\\nⅠ. 추진 근거 ........ 1\\nⅡ. 추진 목적 ........ 2\\n[붙임] 연간 일정 ........ 8\\n\\n## Ⅰ. 추진 근거\\n\\n교육 목적을 확인한다."
+      },
+      "decision": { "toc": { "mode": "source", "contentGeneration": "none", "userDecision": "confirmed" }, "summary": { "mode": "omitted", "contentGeneration": "none", "userDecision": "confirmed" } },
+      "expected": {
+        "pageTypes": ["cover", "toc", "body-opening", "body-continuation"],
+        "tocPreserves": ["Ⅰ. 추진 근거 ........ 1", "Ⅱ. 추진 목적 ........ 2", "[붙임] 연간 일정 ........ 8"],
+        "forbiddenText": ["목차 항목 입력", "요약 내용 입력"]
+      },
+      "baseline": { "status": "expected-gap", "gap": "input parser does not classify source TOC as a dedicated page" }
+    },
+    {
+      "id": "toc-missing-template",
+      "purpose": "목차가 없는 학교 배포용 기본계획에 빈 목차 틀 제공",
+      "source": {
+        "format": "markdown",
+        "text": "# 합성 기본계획\\n\\n## Ⅰ. 추진 근거\\n\\n교육 목적을 확인한다."
+      },
+      "decision": { "toc": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" }, "summary": { "mode": "omitted", "contentGeneration": "none", "userDecision": "confirmed" } },
+      "expected": {
+        "pageTypes": ["cover", "toc", "body-opening"],
+        "templateOnly": ["toc"],
+        "forbiddenText": ["목차 항목 입력"]
+      },
+      "baseline": { "status": "expected-gap", "gap": "no user decision gate or blank TOC frame exists" }
+    },
+    {
+      "id": "toc-missing-omitted",
+      "purpose": "목차 제외를 명시적으로 기록하고 다음 단계로 진행",
+      "source": {
+        "format": "markdown",
+        "text": "# 합성 기본계획\\n\\n## Ⅰ. 추진 근거\\n\\n교육 목적을 확인한다."
+      },
+      "decision": { "toc": { "mode": "omitted", "contentGeneration": "none", "userDecision": "confirmed-with-warning" }, "summary": { "mode": "omitted", "contentGeneration": "none", "userDecision": "confirmed" } },
+      "expected": {
+        "pageTypes": ["cover", "body-opening"],
+        "warningRequired": "school-guidance-basic-plan-without-toc",
+        "forbiddenText": ["목차 항목 입력"]
+      },
+      "baseline": { "status": "expected-gap", "gap": "explicit TOC omission decision and warning are not represented" }
+    },
+    {
+      "id": "summary-missing-template",
+      "purpose": "요약이 없는 계획에 빈 요약 틀만 제공",
+      "source": {
+        "format": "markdown",
+        "text": "# 합성 기본계획\\n\\n## Ⅰ. 추진 근거\\n\\n교육 목적을 확인한다."
+      },
+      "decision": { "toc": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" }, "summary": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" } },
+      "expected": {
+        "pageTypes": ["cover", "toc", "summary", "body-opening"],
+        "templateOnly": ["toc", "summary"],
+        "forbiddenText": ["목차 항목 입력", "요약 내용 입력"]
+      },
+      "baseline": { "status": "expected-gap", "gap": "summary is a one-paragraph placeholder, not a structured blank frame" }
+    },
+    {
+      "id": "body-opening-continuation",
+      "purpose": "본문 시작 쪽의 제목 틀을 후속 쪽에 반복하지 않음",
+      "source": {
+        "format": "markdown",
+        "text": "# 합성 기본계획\\n\\n## Ⅰ. 추진 근거\\n\\n첫 장 본문.\\n\\n## Ⅱ. 추진 목적\\n\\n후속 장 본문."
+      },
+      "decision": { "toc": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" }, "summary": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" } },
+      "expected": {
+        "pageTypes": ["cover", "toc", "summary", "body-opening", "body-continuation"],
+        "openingHeaderCount": 1,
+        "continuationHeaderCount": 0,
+        "bodyFontSizePt": 14
+      },
+      "baseline": { "status": "expected-gap", "gap": "body-opening and body-continuation are not supported page types" }
+    },
+    {
+      "id": "bullet-override",
+      "purpose": "공문서 불릿 권고를 담당자가 무시한 결정을 왕복 보존",
+      "source": {
+        "format": "markdown",
+        "text": "# 합성 기본계획\\n\\n## 추진 근거\\n\\n- 원문 불릿을 유지한다.\\n  - 하위 항목도 원문 기호를 유지한다."
+      },
+      "decision": { "toc": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" }, "summary": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" }, "bullet": { "mode": "preserve-with-suggestions", "recommendation": "○", "userDecision": "keep-source-marker", "overrideReason": "담당자 서식 유지" } },
+      "expected": {
+        "pageTypes": ["cover", "toc", "summary", "body-opening"],
+        "sourceMarkers": ["-", "-"],
+        "sourceLevels": [0, 1],
+        "overrideRoundTrip": { "userDecision": "keep-source-marker", "overrideReason": "담당자 서식 유지" }
+      },
+      "baseline": { "status": "expected-gap", "gap": "explicit per-document override reason and visual indentation roundtrip are not a complete gate" }
+    },
+    {
+      "id": "layout-14pt-boundaries",
+      "purpose": "worldschool-2026 14pt 조판의 경계 분량을 별도 교정",
+      "source": {
+        "format": "synthetic-model",
+        "text": "본문 길이만 달라지는 합성 분량 경계 4종"
+      },
+      "decision": { "toc": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" }, "summary": { "mode": "template", "contentGeneration": "none", "userDecision": "confirmed" } },
+      "expected": {
+        "pageTypes": ["cover", "toc", "summary", "body-opening", "body-continuation"],
+        "layoutProfile": "worldschool-2026",
+        "bodyFontSizePt": 14,
+        "cases": ["overflow-rescuable", "comfortable-noop", "underfilled-loosen", "overflow-unrescuable"],
+        "boundaryCases": [
+          { "id": "overflow-rescuable", "expectedAdjustment": "squeeze", "expectedOutcome": "target-page-count-after-recalibration", "comComparisonRequired": true },
+          { "id": "comfortable-noop", "expectedAdjustment": "none", "expectedOutcome": "page-count-unchanged", "comComparisonRequired": true },
+          { "id": "underfilled-loosen", "expectedAdjustment": "loosen", "expectedOutcome": "page-count-unchanged", "comComparisonRequired": true },
+          { "id": "overflow-unrescuable", "expectedAdjustment": "report-unrescuable", "expectedOutcome": "do-not-force-target-page-count", "comComparisonRequired": true }
+        ],
+        "comComparisonRequired": true,
+        "existing12ptThresholdReusable": false
+      },
+      "baseline": { "status": "expected-gap", "gap": "current adaptive calibration is explicitly for 12pt 함초롬바탕" }
+    }
+  ]
+}

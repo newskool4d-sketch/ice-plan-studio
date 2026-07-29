@@ -59,9 +59,28 @@
     "toc": "목 차",
     "summary": "요약",
     "body": "일반 본문",
+    "body-opening": "본문 시작",
+    "body-continuation": "본문 계속",
     "task": "세부과제",
     "schedule": "일정·예산·성과표",
     "appendix": "부록·붙임"
+  },
+  "layoutProfiles": {
+    "worldschool-2026": {
+      "tocTitleSizePt": 20,
+      "tocEntrySizePt": 17,
+      "tocAppendixSizePt": 15,
+      "tocLeaderSizePt": 12,
+      "summaryTitleSizePt": 22,
+      "summaryBoxSizePt": 12,
+      "openingSloganSizePt": 16,
+      "openingTitleSizePt": 24,
+      "openingDepartmentSizePt": 15,
+      "chapterTitleSizePt": 18,
+      "bodySizePt": 14,
+      "noteSizePt": 11,
+      "pageNumberSizePt": 10
+    }
   },
   "coverProfiles": {
     "metropolitan-a": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": null },

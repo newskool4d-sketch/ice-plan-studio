@@ -32,6 +32,15 @@ function CoverPage({ page, projection, agencyName }) {
   </>;
 }
 
+function FrontMatterFrame({ page }) {
+  const rows = page.type === "toc"
+    ? ["Ⅰ.", "Ⅱ.", "Ⅲ.", "Ⅳ.", "[붙임]"]
+    : ["추진 배경", "비전·목표", "추진 과제", "추진 일정", "성과 관리"];
+  return <div className="front-matter-frame" aria-label={page.label + " 구성 틀"}>
+    {rows.map((label) => <div className="front-matter-row" key={label}><span>{label}</span><span className="front-matter-leader" /></div>)}
+  </div>;
+}
+
 export function PlanPreview({ projection, page, agencyName, highlightBlockIndex = null }) {
   if (!projection || !page) return null;
   return <article className={`a4-page composition-page page-type-${page.type}`} aria-label={`${page.number}쪽 ${page.label} 미리보기`}>
@@ -39,7 +48,8 @@ export function PlanPreview({ projection, page, agencyName, highlightBlockIndex 
       <header className="document-header"><span>{projection.title}</span><span className="document-meta">{page.label}</span></header>
       <div className="document-rule" />
       <div className="loaded-document-body">
-        {page.type !== "body" ? <h1>{page.title}</h1> : null}
+        {page.type !== "body" && page.type !== "body-opening" && page.type !== "body-continuation" ? <h1>{page.title}</h1> : null}
+        {(page.type === "toc" || page.type === "summary") && page.blocks.length === 0 ? <FrontMatterFrame page={page} /> : null}
         {page.blocks.map((block, index) => <PreviewBlock block={block} index={index} highlighted={index === highlightBlockIndex} key={`${page.id}-${index}`} />)}
       </div>
       <div className="page-number">- {page.number} -</div>

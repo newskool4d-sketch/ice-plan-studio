@@ -220,6 +220,8 @@ def page_placeholder_blocks(page_type):
         return [{'type': 'table', 'header': ['점검 항목', '검토완료', '해당없음'], 'rows': [['형식 점검', '□', '□'], ['내용 확인', '□', '□']]}]
     if page_type == 'schedule':
         return [{'type': 'table', 'header': ['구분', '내용'], 'rows': [['일정', '입력 대기']]}]
+    if page_type in ('toc', 'summary'):
+        return []
     label = {'toc': '목차 항목 입력', 'summary': '요약 내용 입력', 'task': '세부과제 내용 입력', 'appendix': '부록·붙임 내용 입력'}.get(page_type, '내용 입력 대기')
     return [{'type': 'paragraph', 'text': label}]
 
@@ -230,8 +232,12 @@ def page_type_paragraphs(page, model, profile, styles, style, starts_new_page=Tr
     metadata = model.get('metadata', {})
     if page_type == 'cover':
         return boncheong_cover_paragraphs(model, profile)
-    if page_type == 'body':
+    if page_type in ('body', 'body-opening', 'body-continuation'):
         parts = [page_break_para()] if starts_new_page else []
+        if page_type == 'body-opening':
+            parts.append(text_para(metadata.get('cover', {}).get('direction') or '인천을 품고 세계로 나아가는 글로벌 인재 양성', '15', '20', style))
+            parts.append(text_para(metadata.get('title') or '추진 계획', '9', '1', style))
+            parts.append(text_para(metadata.get('cover', {}).get('displayName') or '인천광역시교육청', '121', '73', style))
         parts.extend(render_blocks(page.get('blocks', model.get('blocks', [])), styles, style))
         return parts
     title = page.get('title') or PAGE_LABELS[page_type]

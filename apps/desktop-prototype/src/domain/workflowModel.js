@@ -3,6 +3,7 @@
 // WorkflowApp.jsx에서 분리했다(11단계 선행 리팩터링). 화면 상태에 의존하지 않는
 // 계산만 모아 두어야 시각 리디자인이 로직을 건드리지 않는다.
 import { createPreviewProjection } from "./previewProjection.js";
+import { ensurePlanDecisions, pagePlanFromDecisions } from "./planDecisions.js";
 
 export function modelTitle(model, fallback) {
   return model?.blocks?.find((block) => block.type === "heading" && block.level === 1)?.text
@@ -53,10 +54,19 @@ export function profilePackage(agency) {
 }
 
 export function pageDraftsFrom(model, agency) {
-  return createPreviewProjection(compositionModel(model, agency)).pages.map((page) => ({
+  const prepared = ensurePlanDecisions(model);
+  const planned = pagePlanFromDecisions(prepared);
+  const projectionModel = {
+    ...prepared,
+    metadata: { ...prepared.metadata, pages: planned },
+  };
+  return createPreviewProjection(compositionModel(projectionModel, agency)).pages.map((page, index) => ({
     id: page.id,
     type: page.type,
     title: page.title,
+    role: planned[index]?.role || page.type,
+    decisionMode: planned[index]?.decisionMode || null,
+    blocks: planned[index]?.blocks || [],
     confirmed: false,
   }));
 }

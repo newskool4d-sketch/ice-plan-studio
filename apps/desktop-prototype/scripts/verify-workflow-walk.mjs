@@ -53,25 +53,37 @@ try {
   });
   let id = 0;
   const pending = new Map();
-  ws.addEventListener('message', (event) => {
-    const msg = JSON.parse(typeof event.data === 'string' ? event.data : String(event.data));
+  ws.addEventListener('message', async (event) => {
+    const raw = typeof event.data === 'string'
+      ? event.data
+      : event.data instanceof ArrayBuffer
+        ? new TextDecoder().decode(event.data)
+        : ArrayBuffer.isView(event.data)
+          ? new TextDecoder().decode(event.data)
+          : await event.data.text();
+    const msg = JSON.parse(raw);
     if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg); pending.delete(msg.id); return; }
     if (msg.method === 'Runtime.exceptionThrown') {
       report.exceptions.push(msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text);
     }
   });
-  const send = (method, params = {}) => new Promise((res) => {
-    const n = ++id; pending.set(n, res); ws.send(JSON.stringify({ id: n, method, params }));
+  const send = (method, params = {}, timeoutMs = 10_000) => new Promise((resolve, reject) => {
+    const n = ++id;
+    const timeout = setTimeout(() => {
+      pending.delete(n);
+      reject(new Error(`CDP ${method} 응답 시간 초과`));
+    }, timeoutMs);
+    pending.set(n, (message) => { clearTimeout(timeout); resolve(message); });
+    ws.send(JSON.stringify({ id: n, method, params }));
   });
-  const evaluate = async (expression) => {
-    const r = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+  // 화면 안에서 조건을 기다리는 평가식은 기본 10초를 넘길 수 있으므로 호출별로 제한을 넓힌다.
+  const evaluate = async (expression, timeoutMs) => {
+    const r = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }, timeoutMs);
     return r.result?.result?.value;
   };
 
   await send('Runtime.enable');
-  await send('Page.enable');
   await send('DOM.enable');
-  await send('Page.reload', { ignoreCache: true });
   await sleep(5000);
 
   const panelNow = () => evaluate("document.querySelector('[data-panel]')?.dataset.panel ?? null");
@@ -98,6 +110,30 @@ try {
   // 이 시점은 규칙 무시 전이라 항목이 남아 있어야 배지 부재=회귀로 판정할 수 있다.
   report.thumbIssueBadge = await evaluate(
     "document.querySelector('.thumb-issue-badge')?.textContent ?? null");
+
+  // 2단계 결정 게이트(planDecisionGate): 문서 성격·목차·요약 결정을 마쳐야 확정이
+  // 열린다. 결정을 빼먹고 확정을 누르면 패널이 그대로 멈춰 이후 단계가 통째로
+  // 무너지므로, 확정 전에 게이트가 비었는지 먼저 단언한다.
+  report.planDecisions = await evaluate(`(async () => {
+    const select = document.querySelector('#document-kind');
+    if (!select) return { present: false };
+    // React 제어 select은 value 대입만으로는 상태가 움직이지 않는다 — 네이티브
+    // setter로 값을 넣고 change를 올려야 onChange가 실제로 실행된다.
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value').set;
+    setter.call(select, 'school-guidance-basic-plan');
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 600));
+    const fields = [...document.querySelectorAll('.plan-decision-list .workflow-field')];
+    for (const field of fields) {
+      // 목차·요약 모두 "빈 틀 추가"로 결정한다(경고 확인이 필요한 제외 경로를 피한다).
+      const button = [...field.querySelectorAll('button')].find((b) => b.textContent.includes('빈 틀 추가'));
+      if (button) { button.click(); await new Promise((r) => setTimeout(r, 500)); }
+    }
+    const labels = [...document.querySelectorAll('.plan-decision-list .workflow-field > span')]
+      .map((s) => s.textContent);
+    return { present: true, documentKind: select.value, labels,
+             resolved: select.value !== 'unknown' && !labels.some((t) => t.includes('결정 필요')) };
+  })()`);
 
   await clickAndRead('#analysis-confirm', 'information');
 
@@ -138,26 +174,43 @@ try {
     const fill = document.querySelector('.workflow-progress-fill');
     return fill ? fill.style.width : null;
   })()`);
+  // data-theme 속성은 즉시 바뀌지만 계산 스타일 반영은 렌더러 사정에 따라 1~2초까지
+  // 밀린다(실측). 고정 대기로 읽으면 "속성은 dark인데 색은 light"로 오판하므로
+  // 조건이 성립할 때까지 기다리고 걸린 시간을 증거로 남긴다.
   report.themeToggle = await evaluate(`(async () => {
     const button = document.querySelector('#theme-toggle');
     if (!button) return { present: false };
+    const topbar = document.querySelector('.app-topbar');
+    const surfaceNow = () => getComputedStyle(topbar).backgroundColor;
+    const waitFor = async (predicate, limitMs = 6000) => {
+      const start = performance.now();
+      while (performance.now() - start < limitMs) {
+        if (predicate()) return Math.round(performance.now() - start);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return null;
+    };
     // 직전 실행이 남긴 localStorage 테마에 의존하지 않도록 기준 상태(라이트)를 강제한다.
     if (document.documentElement.dataset.theme === 'dark') {
       button.click();
-      await new Promise((r) => setTimeout(r, 300));
+      await waitFor(() => document.documentElement.dataset.theme === 'light');
     }
+    const lightSurface = surfaceNow();
     button.click();
-    await new Promise((r) => setTimeout(r, 300));
-    const dark = document.documentElement.dataset.theme === 'dark';
+    await waitFor(() => document.documentElement.dataset.theme === 'dark');
     // 토큰이 실제로 화면 색을 바꿨는지 계산값으로 확인 — 속성만 바뀌고 CSS가
     // 안 먹는 회귀(토큰 오타 등)를 잡는다.
-    const surface = getComputedStyle(document.querySelector('.app-topbar')).backgroundColor;
+    const appliedMs = await waitFor(() => surfaceNow() !== lightSurface);
+    const dark = document.documentElement.dataset.theme === 'dark';
+    const surface = surfaceNow();
     button.click();
-    await new Promise((r) => setTimeout(r, 300));
+    await waitFor(() => document.documentElement.dataset.theme === 'light');
     const restored = document.documentElement.dataset.theme === 'light';
-    return { present: true, dark, darkSurface: surface, restored,
-             darkApplied: dark && surface !== 'rgb(255, 255, 255)' };
-  })()`);
+    // 라이트 계산색까지 돌아온 뒤에 반환해야 다음 검사(eyebrow 대비색)가 어긋나지 않는다.
+    await waitFor(() => surfaceNow() === lightSurface);
+    return { present: true, dark, lightSurface, darkSurface: surface, restored, appliedMs,
+             darkApplied: dark && surface !== lightSurface };
+  })()`, 40_000);
   // ── 11단계 5·6: 폴더 열기 브리지 / 내보내기 진행 UI 마크업 / faint 대비 토큰 ──
   report.microInteractions = await evaluate(`(() => ({
     showInFolderBridge: typeof window.icePlan?.showInFolder === 'function',
@@ -168,6 +221,11 @@ try {
   report.compareMode = await evaluate(`(async () => {
     const button = document.querySelector('#preview-compare');
     if (!button) return { present: false };
+    // 나란히 비교는 실조판 미리보기(realPreview)가 준비돼야 열린다. 직전 단계 확정으로
+    // 모델이 바뀌면 재조판이 다시 돌아 수 초간 비활성이므로, 곧바로 읽지 말고 기다린다.
+    for (let i = 0; i < 40 && button.disabled; i += 1) {
+      await new Promise((r) => setTimeout(r, 500));
+    }
     if (button.disabled) return { present: true, enabled: false };
     button.click();
     await new Promise((r) => setTimeout(r, 500));
@@ -175,7 +233,7 @@ try {
     const svg = Boolean(document.querySelector('.compare-pane .composition-svg'));
     const quick = Boolean(document.querySelector('.compare-pane .a4-page'));
     return { present: true, enabled: true, panes, svg, quick, ok: panes === 2 && svg && quick };
-  })()`);
+  })()`, 40_000);
   // ── 보정 결정 캐시: 같은 모델의 두 번째 미리보기는 루프를 다시 돌지 않아야 한다.
   // (미리보기가 계산한 결정을 내보내기가 재사용하는 것과 같은 경로 — 지연 보고의 수정)
   report.fitCache = await evaluate(`(async () => {
@@ -199,27 +257,45 @@ try {
     return { firstMs: Math.round(firstMs), secondMs: Math.round(secondMs),
              sameAdjustment: key(first) === key(second),
              cacheEffective: secondMs < firstMs * 0.8 };
-  })()`);
+  })()`, 60_000);
 
   // ── 3분할 스플리터: 키보드 조절이 실제 폭을 바꾸고, 검수 패널 폭이 %기반이라
   // 창 크기가 변해도 비례가 유지되는지 본다(2026-07-23 실사용 지적 회귀 방지).
+  // 폭 반영도 테마와 같은 렌더러 지연(최대 ~2초 실측)을 탄다. 고정 대기 대신
+  // aria-valuenow(상태 커밋)와 실제 폭(스타일 반영)이 조건을 만족할 때까지 기다린다.
   report.splitter = await evaluate(`(async () => {
     const sep = document.querySelector('.pane-splitter');
     if (!sep) return { present: false };
     const inspector = document.querySelector('.rule-inspector');
     const workspace = document.querySelector('.review-workspace');
-    const before = inspector.getBoundingClientRect().width;
+    const width = () => inspector.getBoundingClientRect().width;
+    const waitFor = async (predicate, limitMs = 6000) => {
+      const start = performance.now();
+      while (performance.now() - start < limitMs) {
+        if (predicate()) return true;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return false;
+    };
+    const key = (k) => sep.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
+    // 직전 실행이 남긴 폭에 기대지 않도록 Home으로 기준폭(25%)을 먼저 강제한다.
+    key('Home');
+    await waitFor(() => sep.getAttribute('aria-valuenow') === '25');
+    await waitFor(() => Math.abs(width() / workspace.getBoundingClientRect().width - 0.25) < 0.005);
+    const before = width();
     const ratioBefore = before / workspace.getBoundingClientRect().width;
-    sep.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
-    sep.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
-    await new Promise((r) => setTimeout(r, 300));
-    const wider = inspector.getBoundingClientRect().width;
-    sep.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
-    await new Promise((r) => setTimeout(r, 300));
-    const reset = inspector.getBoundingClientRect().width;
-    return { present: true, before, wider, reset, ratioBefore,
-             ok: wider > before + 10 && Math.abs(reset - before) < 10 };
-  })()`);
+    key('ArrowLeft');
+    key('ArrowLeft');
+    const commitOk = await waitFor(() => sep.getAttribute('aria-valuenow') === '29');
+    const applyOk = await waitFor(() => width() > before + 10);
+    const wider = width();
+    key('Home');
+    await waitFor(() => sep.getAttribute('aria-valuenow') === '25');
+    const resetOk = await waitFor(() => Math.abs(width() - before) < 10);
+    const reset = width();
+    return { present: true, before, wider, reset, ratioBefore, commitOk, applyOk, resetOk,
+             ok: commitOk && applyOk && resetOk };
+  })()`, 40_000);
   // 창을 줄였을 때 검수 패널이 같은 비율로 함께 줄어드는지 — 고정폭 회귀 감지
   report.proportional = await evaluate(`(async () => {
     const inspector = document.querySelector('.rule-inspector');
@@ -261,6 +337,7 @@ try {
   try { child.kill(); } catch { /* noop */ }
 }
 report.passed = !report.fatal && report.exceptions.length === 0 && report.allSixSeen === true
+  && report.planDecisions?.resolved === true
   && report.thumbIssueBadge !== null
   && report.progressBar === '100%'
   && report.themeToggle?.darkApplied === true && report.themeToggle?.restored === true

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "0.1",
+  "metadata": {
+    "title": "2026 인천세계로배움학교 추진 계획",
+    "documentKind": "school-guidance-basic-plan",
+    "layout": {
+      "page": "A4",
+      "profile": "worldschool-2026",
+      "coverProfile": "metropolitan-a"
+    },
+    "cover": {
+      "direction": "인천을 품고 세계로 나아가는 글로벌 인재 양성",
+      "title": "2026 인천세계로배움학교 추진 계획",
+      "date": "2026. 3.",
+      "displayName": "인천광역시교육청 세계시민교육과"
+    },
+    "pages": [
+      { "type": "cover", "role": "cover" },
+      {
+        "type": "toc",
+        "role": "toc",
+        "decisionMode": "source",
+        "title": "목 차",
+        "blocks": [
+          { "type": "paragraph", "text": "Ⅰ. 추진 근거 ................................ 1" },
+          { "type": "paragraph", "text": "Ⅱ. 추진 배경 ................................ 2" },
+          { "type": "paragraph", "text": "Ⅲ. 추진 계획 ................................ 3" }
+        ]
+      },
+      {
+        "type": "summary",
+        "role": "summary",
+        "decisionMode": "source",
+        "title": "요약",
+        "blocks": [
+          { "type": "paragraph", "text": "비전: 세계를 품은 인천교육" },
+          { "type": "paragraph", "text": "목표: 인천을 품고 세계로 나아가는 글로벌 인재 육성" }
+        ]
+      },
+      {
+        "type": "body-opening",
+        "role": "body-opening",
+        "blocks": [
+          { "type": "heading", "level": 1, "text": "Ⅰ. 추진 근거" },
+          { "type": "paragraph", "text": "교육기본법과 2026 인천교육계획에 따라 세계시민교육을 추진한다." }
+        ]
+      },
+      {
+        "type": "body-continuation",
+        "role": "body-continuation",
+        "blocks": [
+          { "type": "heading", "level": 1, "text": "Ⅱ. 추진 배경" },
+          { "type": "paragraph", "text": "학교 현장의 국제교류와 세계시민교육 실천을 지원한다." }
+        ]
+      }
+    ]
+  },
+  "styles": {},
+  "blocks": []
+}

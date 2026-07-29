@@ -18,9 +18,12 @@ const TOKENS = JSON.parse(fs.readFileSync(path.join(__dirname, 'layout-tokens.js
 // py 런처가 없는 PC(파이썬 직접 설치)를 위해 python 폴백을 둔다 — main.cjs와 같은 정책.
 function python(args) {
   let lastError = null;
-  for (const runner of ['py', 'python']) {
+  const runners = process.platform === 'win32'
+    ? [['py', '-3'], ['python']]
+    : [['python3'], ['python']];
+  for (const [runner, ...prefixArgs] of runners) {
     try {
-      return execFileSync(runner, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+      return execFileSync(runner, [...prefixArgs, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     } catch (error) {
       lastError = error;
     }

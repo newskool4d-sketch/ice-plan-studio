@@ -8,7 +8,7 @@ const { migratePlanIR } = require('../electron/workspace-packages.cjs');
 const appRoot = path.resolve(__dirname, '..');
 const sourceDir = path.join(appRoot, 'test-data');
 const outputDir = path.join(sourceDir, 'migrated-fixtures');
-const python = process.platform === 'win32' ? 'py' : 'python3';
+const python = process.platform === 'win32' ? ['py', '-3'] : ['python3'];
 const sources = fs.readdirSync(sourceDir).filter((name) => name.endsWith('.model.json')).sort();
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -35,9 +35,9 @@ for (const sourceName of sources) {
   const modelPath = path.join(outputDir, `${stem}.v0.2.model.json`);
   const hwpxPath = path.join(outputDir, `${stem}.v0.2.hwpx`);
   fs.writeFileSync(modelPath, `${JSON.stringify(model, null, 2)}\n`, 'utf8');
-  const generated = spawnSync(python, [path.join(appRoot, 'scripts/model_to_hwpx.py'), modelPath, hwpxPath, '--template', 'boncheong'], { encoding: 'utf8' });
+  const generated = spawnSync(python[0], [...python.slice(1), path.join(appRoot, 'scripts/model_to_hwpx.py'), modelPath, hwpxPath, '--template', 'boncheong'], { encoding: 'utf8' });
   const verified = generated.status === 0
-    ? spawnSync(python, [path.join(appRoot, 'scripts/verify_hwpx_output.py'), hwpxPath], { encoding: 'utf8' })
+    ? spawnSync(python[0], [...python.slice(1), path.join(appRoot, 'scripts/verify_hwpx_output.py'), hwpxPath], { encoding: 'utf8' })
     : { status: null, stdout: '', stderr: '' };
   const item = {
     source: sourceName,

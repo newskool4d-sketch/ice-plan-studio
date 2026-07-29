@@ -42,6 +42,7 @@ export function tableRowHeights(rows, widths) {
 function placeholders(type) {
   if (type === "preflight") return [{ type: "table", header: ["점검 항목", "검토완료", "해당없음"], rows: [["형식 점검", "□", "□"], ["내용 확인", "□", "□"]] }];
   if (type === "schedule") return [{ type: "table", header: ["구분", "내용"], rows: [["일정", "입력 대기"]] }];
+  if (type === "toc" || type === "summary") return [];
   const text = { toc: "목차 항목 입력", summary: "요약 내용 입력", task: "세부과제 내용 입력", appendix: "부록·붙임 내용 입력" }[type] || "내용 입력 대기";
   return [{ type: "paragraph", text }];
 }
@@ -68,12 +69,15 @@ export function createPreviewProjection(model) {
   const metadata = model?.metadata || {};
   const cover = metadata.cover || {};
   const profileId = metadata.layout?.coverProfile || metadata.coverProfile || "metropolitan-a";
+  const layoutProfileId = metadata.layout?.profile || (metadata.documentKind === "school-guidance-basic-plan" ? "worldschool-2026" : null);
   const profile = layoutTokens.coverProfiles[profileId];
   if (!profile) throw new Error(`지원하지 않는 표지 프로필입니다: ${profileId}`);
   const pages = pageSequence(model, profile).map((page, index) => {
-    const pageBlocks = page.type === "body" ? (page.blocks || model?.blocks || []) : (page.blocks || placeholders(page.type));
+    const pageBlocks = ["body", "body-opening", "body-continuation"].includes(page.type)
+      ? (page.blocks || model?.blocks || [])
+      : (page.blocks || placeholders(page.type));
     const blocks = pageBlocks.map(normalizeBlock).map((block) => block.type === "table" ? projectTable(block) : block);
-    const title = page.title || (page.type === "body" ? metadata.title || "일반 본문" : layoutTokens.pageTypes[page.type]);
+    const title = page.title || (["body", "body-opening", "body-continuation"].includes(page.type) ? metadata.title || "일반 본문" : layoutTokens.pageTypes[page.type]);
     return { id: `${page.type}-${index + 1}`, number: index + 1, type: page.type, label: layoutTokens.pageTypes[page.type], title, blocks };
   });
   // 영문 기관명은 기관 레지스트리 값(cover.englishName)을 우선한다. 직속기관
@@ -87,6 +91,7 @@ export function createPreviewProjection(model) {
     title: metadata.title || cover.title || "제목 없음",
     cover,
     profile: { id: profileId, ...profile, englishName: resolvedEnglishName },
+    layoutProfile: layoutProfileId ? { id: layoutProfileId, ...layoutTokens.layoutProfiles?.[layoutProfileId] } : null,
     pages,
     bodyWidthMm: layoutTokens.page.bodyWidthHwpUnit / layoutTokens.page.hwpUnitPerMm,
   };

@@ -171,6 +171,9 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .a4-page h3 { margin: 14px 0 7px; font-size: 11px; font-weight: 700; color: #2a3942; }
 .loaded-document-body { display: grid; gap: 2px; }
 .loaded-document-body table { margin: 8px 0 4px; }
+.front-matter-frame { border: 1px solid #9aa6ad; padding: 18px 20px; display: grid; gap: 12px; min-height: 220px; background: #fff; }
+.front-matter-row { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-weight: 700; }
+.front-matter-leader { border-bottom: 1px dotted #7a858b; height: 1em; }
 .loaded-paragraph { margin: 0 0 4px; font-size: 10.5px; line-height: 1.6; color: #2a3942; }
 .loaded-list-item { margin: 0 0 3px; font-size: 10.5px; line-height: 1.55; color: #2a3942; }
 .loaded-list-item .list-marker { color: #74808a; margin-right: 2px; }
