@@ -42,6 +42,10 @@ async function main() {
 
   const workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ice-fit-'));
   const generator = path.join(__dirname, 'model_to_hwpx.py');
+  const model = JSON.parse(fs.readFileSync(modelPath, 'utf8'));
+  const profileId = model?.metadata?.layout?.profile
+    || (model?.metadata?.documentKind === 'school-guidance-basic-plan' ? 'worldschool-2026' : null);
+  const layoutProfile = profileId ? TOKENS.layoutProfiles?.[profileId] : null;
   const regenerate = async (spacing) => {
     const candidate = path.join(workDir, `fit-${spacing.lineSpacingPercent}-${spacing.paraNextHwpUnit}.hwpx`);
     python([generator, modelPath, candidate, '--template', template,
@@ -51,6 +55,22 @@ async function main() {
   };
 
   try {
+    if (template === TOKENS.adaptiveSpacing.template && layoutProfile?.adaptiveSpacingCalibrated === false) {
+      python([generator, modelPath, outputPath, '--template', template]);
+      console.log(JSON.stringify({
+        applied: false,
+        reason: 'profile-calibration-pending',
+        notice: `본문 ${layoutProfile.bodySizePt}pt 적용 — 한글 COM 실물 교정 전까지 자동 간격 조정을 사용하지 않습니다.`,
+        final: {
+          spacing: {
+            lineSpacingPercent: TOKENS.adaptiveSpacing.baseLineSpacingPercent,
+            paraNextHwpUnit: 0,
+          },
+        },
+        attempts: [],
+      }, null, 2));
+      return;
+    }
     const { finalBuffer, ...report } = await fitLayout(regenerate, TOKENS.adaptiveSpacing);
     // 생성이 결정적이므로 채택 간격의 후보 바이트가 곧 최종 산출물이다 — 재생성하지 않는다.
     fs.writeFileSync(outputPath, finalBuffer);

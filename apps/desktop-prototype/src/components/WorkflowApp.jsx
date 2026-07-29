@@ -16,7 +16,7 @@ import {
 } from "../domain/planDecisions.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
 import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from "../domain/ruleEngine.js";
-import { compositionModel, modelTitle, pageDraftsFrom, profilePackage } from "../domain/workflowModel.js";
+import { compositionModel, modelTitle, pageDraftsFrom, profilePackage, withPagePlan } from "../domain/workflowModel.js";
 import { AnalysisPanel } from "./workflow/AnalysisPanel.jsx";
 import { AppTopbar } from "./workflow/AppTopbar.jsx";
 import { DocumentStage, ThumbnailRail } from "./workflow/DocumentStage.jsx";
@@ -37,19 +37,6 @@ const BLOCKING_LABELS = {
 // 본문 계열 쪽 유형. previewProjection·model_to_hwpx와 같은 목록을 쓴다.
 const BODY_PAGE_TYPES = ["body", "body-opening", "body-continuation"];
 
-// 구조 패널이 보여주는 쪽 계획을 모델에 그대로 반영한다. 이 반영을 빠뜨리면
-// 구조 패널(목차·요약 포함)과 미리보기·내보내기(metadata.pages)가 어긋나
-// 결정한 앞부분 쪽이 산출물에서 조용히 빠진다.
-function withPagePlan(model, drafts) {
-  return {
-    ...model,
-    metadata: {
-      ...model.metadata,
-      pages: drafts.map(({ type, title, role, decisionMode, blocks, id }) => ({ type, title, role, decisionMode, blocks, id })),
-    },
-  };
-}
-
 function WorkflowApp() {
   const [model, setModel] = useState(null);
   const [file, setFile] = useState("");
@@ -63,7 +50,7 @@ function WorkflowApp() {
   const [appVersion, setAppVersion] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [analysisConfirmed, setAnalysisConfirmed] = useState(false);
-  const [infoDraft, setInfoDraft] = useState({ title: "", date: "" });
+  const [infoDraft, setInfoDraft] = useState({ title: "", date: "", department: "" });
   const [infoConfirmed, setInfoConfirmed] = useState(false);
   const [pageDrafts, setPageDrafts] = useState([]);
   const [rulesConfirmed, setRulesConfirmed] = useState(false);
@@ -177,7 +164,11 @@ function WorkflowApp() {
       const drafts = pageDraftsFrom(next, agency);
       setFile(input.name);
       setModel(withPagePlan(next, drafts));
-      setInfoDraft({ title, date: next.metadata?.cover?.date || "" });
+      setInfoDraft({
+        title,
+        date: next.metadata?.cover?.date || "",
+        department: next.metadata?.organization?.department || next.metadata?.cover?.department || "",
+      });
       setPageDrafts(drafts);
       setAnalysisConfirmed(false);
       setInfoConfirmed(false);
@@ -293,6 +284,12 @@ function WorkflowApp() {
           title,
           date: infoDraft.date,
           displayName: agency.displayName,
+          department: infoDraft.department.trim(),
+        },
+        organization: {
+          ...(currentModel.metadata?.organization || {}),
+          displayName: agency.displayName,
+          department: infoDraft.department.trim() || null,
         },
         layout: {
           ...(currentModel.metadata?.layout || {}),
@@ -324,7 +321,11 @@ function WorkflowApp() {
   };
 
   const addPage = (index) => {
-    const nextPages = insertPage(pageDrafts, { type: "body", role: "body-continuation", title: layoutTokens.pageTypes.body }, index + 1);
+    const nextPages = insertPage(
+      pageDrafts,
+      { type: "body-continuation", role: "body-continuation", title: layoutTokens.pageTypes["body-continuation"], blocks: [] },
+      index + 1,
+    );
     applyPages(nextPages);
     setPage(index + 2);
     setNotice("본문 후속 쪽을 추가했습니다. 새 쪽 유형을 확인해 주세요.");
@@ -529,7 +530,11 @@ function WorkflowApp() {
       setFile(snapshot.project?.metadata?.loadedFile || result.filePath.split(/[\\/]/).pop());
       setAgencyId(nextAgency.id);
       setAnalysisConfirmed(nextAnalysisConfirmed);
-      setInfoDraft(workflow.infoDraft || { title: modelTitle(nextModel, "프로젝트"), date: nextModel.metadata?.cover?.date || "" });
+      setInfoDraft(workflow.infoDraft || {
+        title: modelTitle(nextModel, "프로젝트"),
+        date: nextModel.metadata?.cover?.date || "",
+        department: nextModel.metadata?.organization?.department || nextModel.metadata?.cover?.department || "",
+      });
       setInfoConfirmed(nextInfoConfirmed);
       setPageDrafts(nextDrafts);
       setRulesConfirmed(nextRulesConfirmed);

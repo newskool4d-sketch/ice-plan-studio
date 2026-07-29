@@ -99,9 +99,26 @@ function fitCacheKey(model) {
 async function generateFitted(model, workDir, modelPath, outputPath) {
   const template = outputTemplate(model);
   const tokens = LAYOUT_TOKENS.adaptiveSpacing;
+  const profileId = model?.metadata?.layout?.profile
+    || (model?.metadata?.documentKind === 'school-guidance-basic-plan' ? 'worldschool-2026' : null);
+  const layoutProfile = profileId ? LAYOUT_TOKENS.layoutProfiles?.[profileId] : null;
   if (template !== tokens.template) {
     await runGenerator(modelPath, outputPath, template);
     return null;
+  }
+  if (layoutProfile?.adaptiveSpacingCalibrated === false) {
+    await runGenerator(modelPath, outputPath, template);
+    const spacing = {
+      lineSpacingPercent: tokens.baseLineSpacingPercent,
+      paraNextHwpUnit: 0,
+    };
+    return {
+      applied: false,
+      reason: 'profile-calibration-pending',
+      notice: `본문 ${layoutProfile.bodySizePt}pt 적용 — 한글 COM 실물 교정 전까지 자동 간격 조정을 사용하지 않습니다.`,
+      base: { spacing, pageCount: null },
+      final: { spacing, pageCount: null },
+    };
   }
   const cacheKey = fitCacheKey(model);
   const cached = fitDecisionCache.get(cacheKey);

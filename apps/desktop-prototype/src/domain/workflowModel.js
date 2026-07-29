@@ -28,6 +28,11 @@ export function compositionModel(model, agency) {
         // 넘겨 기관별로 정확히 반영하고, 영문명 없는 기관은 표지에서 생략한다.
         englishName: agency.englishName ?? null,
       },
+      organization: {
+        ...(model.metadata?.organization || {}),
+        displayName: model.metadata?.organization?.displayName || agency.displayName,
+        department: model.metadata?.organization?.department || model.metadata?.cover?.department || null,
+      },
       layout: {
         ...(model.metadata?.layout || {}),
         template: "boncheong",
@@ -60,13 +65,55 @@ export function pageDraftsFrom(model, agency) {
     ...prepared,
     metadata: { ...prepared.metadata, pages: planned },
   };
-  return createPreviewProjection(compositionModel(projectionModel, agency)).pages.map((page, index) => ({
+  return createPreviewProjection(compositionModel(projectionModel, agency)).pages.map((page) => ({
     id: page.id,
     type: page.type,
     title: page.title,
-    role: planned[index]?.role || page.type,
-    decisionMode: planned[index]?.decisionMode || null,
-    blocks: planned[index]?.blocks || [],
+    role: page.role || page.type,
+    decisionMode: page.decisionMode || null,
+    sourcePage: page.sourcePage || null,
+    sourcePolicy: page.sourcePolicy || null,
+    sourceBlockCount: Number(page.sourceBlockCount) || 0,
+    collapsedSourcePages: Array.isArray(page.collapsedSourcePages) ? [...page.collapsedSourcePages] : [],
+    collapseReason: page.collapseReason || null,
+    blocks: page.blocks || [],
     confirmed: false,
   }));
+}
+
+// 구조 패널의 쪽 초안을 저장 모델에 반영하는 순수 변환이다. 페이지 출처와
+// 재구성·통합 감사 필드를 함께 보존해야 미리보기와 HWPX 내보내기가 같은
+// 결정 기록을 사용한다.
+export function withPagePlan(model, drafts) {
+  return {
+    ...model,
+    metadata: {
+      ...model.metadata,
+      pages: drafts.map(({
+        type,
+        title,
+        role,
+        decisionMode,
+        sourcePage,
+        sourcePolicy,
+        sourceBlockCount,
+        collapsedSourcePages,
+        collapseReason,
+        blocks,
+        id,
+      }) => ({
+        type,
+        title,
+        role,
+        decisionMode,
+        sourcePage,
+        sourcePolicy,
+        sourceBlockCount,
+        collapsedSourcePages: Array.isArray(collapsedSourcePages) ? [...collapsedSourcePages] : [],
+        collapseReason: collapseReason || null,
+        blocks,
+        id,
+      })),
+    },
+  };
 }

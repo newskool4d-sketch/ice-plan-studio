@@ -7,7 +7,8 @@ function PreviewBlock({ block, index, highlighted }) {
     return <Tag className={highlightClass} key={index}>{renderInline(block.text)}</Tag>;
   }
   if (block.type === "listItem") {
-    return <p className={`loaded-list-item ${highlightClass}`.trim()} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
+    const sectionClass = block.ordered && Number(block.level || 0) === 0 ? "section-heading" : "";
+    return <p className={`loaded-list-item ${sectionClass} ${highlightClass}`.trim()} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
   }
   if (block.type === "table") {
     const [header, ...body] = block.rows;
@@ -23,12 +24,11 @@ function PreviewBlock({ block, index, highlighted }) {
 function CoverPage({ page, projection, agencyName }) {
   const { cover, profile } = projection;
   return <>
-    {profile.bannerImage ? <div className="preview-cover-banner">{cover.direction || "기본 방향"}</div> : null}
+    {profile.bannerImage && cover.direction ? <div className="preview-cover-banner">{cover.direction}</div> : null}
     <div className={`preview-cover-title ${profile.titleBox ? "has-title-box" : ""}`}><h1>{cover.title || projection.title}</h1></div>
     <p className="preview-cover-date">{cover.date || ""}</p>
     <p className="preview-cover-agency">{cover.displayName || agencyName}</p>
     {profile.englishName ? <p className="preview-cover-english">{profile.englishName}</p> : null}
-    <div className="page-number">- {page.number} -</div>
   </>;
 }
 
@@ -41,18 +41,34 @@ function FrontMatterFrame({ page }) {
   </div>;
 }
 
+function BodyOpeningHeader({ projection }) {
+  const departmentLine = [projection.organization?.displayName, projection.organization?.department].filter(Boolean).join(" ");
+  return <div className="body-opening-header">
+    <h1>{projection.title}</h1>
+    {departmentLine ? <p>{departmentLine}</p> : null}
+  </div>;
+}
+
 export function PlanPreview({ projection, page, agencyName, highlightBlockIndex = null }) {
   if (!projection || !page) return null;
-  return <article className={`a4-page composition-page page-type-${page.type}`} aria-label={`${page.number}쪽 ${page.label} 미리보기`}>
+  const previewStyle = {
+    "--plan-body-size": `${projection.layoutProfile?.bodySizePt || projection.tokens.typography.body.sizePt}pt`,
+    "--opening-title-size": `${projection.layoutProfile?.openingTitleSizePt || 18}pt`,
+    "--opening-department-size": `${projection.layoutProfile?.openingDepartmentSizePt || 12}pt`,
+  };
+  return <article className={`a4-page composition-page page-type-${page.type}`} style={previewStyle} aria-label={`${page.number}쪽 ${page.label} 미리보기`}>
     {page.type === "cover" ? <CoverPage page={page} projection={projection} agencyName={agencyName} /> : <>
-      <header className="document-header"><span>{projection.title}</span><span className="document-meta">{page.label}</span></header>
-      <div className="document-rule" />
+      {!["body-opening", "body-continuation", "body"].includes(page.type) ? <>
+        <header className="document-header"><span>{projection.title}</span><span className="document-meta">{page.label}</span></header>
+        <div className="document-rule" />
+      </> : null}
       <div className="loaded-document-body">
+        {page.type === "body-opening" ? <BodyOpeningHeader projection={projection} /> : null}
         {page.type !== "body" && page.type !== "body-opening" && page.type !== "body-continuation" ? <h1>{page.title}</h1> : null}
         {(page.type === "toc" || page.type === "summary") && page.blocks.length === 0 ? <FrontMatterFrame page={page} /> : null}
         {page.blocks.map((block, index) => <PreviewBlock block={block} index={index} highlighted={index === highlightBlockIndex} key={`${page.id}-${index}`} />)}
       </div>
-      <div className="page-number">- {page.number} -</div>
+      {page.displayNumber ? <div className="page-number">- {page.displayNumber} -</div> : null}
     </>}
   </article>;
 }

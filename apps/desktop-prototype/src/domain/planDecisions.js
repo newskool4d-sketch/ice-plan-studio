@@ -8,19 +8,75 @@ export const FRONT_MATTER_MODES = new Set(["source", "template", "omitted", "unr
 
 const TOC_HEADING = /^(목\s*차|contents?)$/i;
 const SUMMARY_HEADING = /^(요약|summary|추진계획\s*\(\s*요약\s*\))$/i;
+const TEMPLATE_ARTIFACTS = new Set([
+  "내용 입력 대기",
+  "운영 계획",
+  "인천을 품고 세계로 나아가는 글로벌 인재 양성",
+]);
 
 function normalize(value) {
   return String(value ?? "").normalize("NFC").trim();
 }
 
+function withoutKnownExtension(value) {
+  return normalize(value).replace(/\.(?:md|txt|hwpx?|iceplan)$/i, "");
+}
+
+function documentTitleCandidates(model) {
+  const candidates = new Set();
+  for (const value of [model.metadata?.title, model.metadata?.cover?.title]) {
+    const normalized = normalize(value);
+    const withoutExtension = withoutKnownExtension(value);
+    if (normalized) candidates.add(normalized);
+    if (withoutExtension) candidates.add(withoutExtension);
+  }
+  return candidates;
+}
+
+function blockText(block) {
+  const marker = normalize(block?.marker);
+  const text = normalize(block?.text);
+  return marker && text ? `${marker} ${text}` : text;
+}
+
+function sourcePageOf(block) {
+  const value = block?.sourcePage ?? block?.source?.pageNumber ?? block?.source?.page;
+  const page = Number(value);
+  return Number.isInteger(page) && page > 0 ? page : null;
+}
+
+function isBodySectionStart(block) {
+  const text = blockText(block);
+  if (block?.type === "heading") return !TOC_HEADING.test(text) && !SUMMARY_HEADING.test(text);
+  if (block?.type === "listItem" && /^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+\.)$/.test(normalize(block.marker))) return true;
+  return /^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+\.)\s+\S/.test(text);
+}
+
 function detectedSection(blocks, headingPattern) {
-  const index = blocks.findIndex((block) => block?.type === "heading" && headingPattern.test(normalize(block.text)));
+  const index = blocks.findIndex((block) => headingPattern.test(blockText(block)));
   if (index < 0) return { detected: false, headingIndex: null, blockIndices: [] };
+  const sourcePage = sourcePageOf(blocks[index]);
+  if (sourcePage) {
+    return {
+      detected: true,
+      headingIndex: index,
+      sourcePage,
+      blockIndices: blocks
+        .map((block, blockIndex) => sourcePageOf(block) === sourcePage ? blockIndex : null)
+        .filter((blockIndex) => blockIndex !== null),
+    };
+  }
   const headingLevel = Number(blocks[index].level) || 1;
   const blockIndices = [index];
   for (let cursor = index + 1; cursor < blocks.length; cursor += 1) {
     const block = blocks[cursor];
-    if (block?.type === "heading" && (Number(block.level) || 1) <= headingLevel) break;
+    const text = blockText(block);
+    if (TOC_HEADING.test(text) || SUMMARY_HEADING.test(text)) break;
+    if (blocks[index]?.type === "heading") {
+      if (block?.type === "heading" && (Number(block.level) || 1) <= headingLevel) break;
+    } else if (isBodySectionStart(block)) {
+      break;
+    }
     blockIndices.push(cursor);
   }
   return { detected: true, headingIndex: index, blockIndices };
@@ -146,9 +202,174 @@ export function planDecisionGate(model) {
   return { passed: blocking.length === 0, blocking, documentKind: kind, frontMatter };
 }
 
+function blocksFromSourcePage(model, sourcePage) {
+  return (sourcePage?.blockIndices || [])
+    .map((index) => model.blocks?.[index])
+    .filter(Boolean);
+}
+
+function withoutFrontMatterHeading(blocks, headingPattern) {
+  return blocks.filter((block) => !headingPattern.test(blockText(block)));
+}
+
+function cleanedBodyPageBlocks(blocks, model, opening) {
+  const titleCandidates = documentTitleCandidates(model);
+  const organizationCandidates = new Set(
+    [
+      model.metadata?.organization?.displayName,
+      model.metadata?.cover?.displayName,
+      [
+        model.metadata?.organization?.displayName || model.metadata?.cover?.displayName,
+        model.metadata?.organization?.department || model.metadata?.cover?.department,
+      ].filter(Boolean).join(" "),
+    ]
+      .map(normalize)
+      .filter(Boolean),
+  );
+  const leadingWindow = blocks.slice(0, 8);
+  const repeatedDocumentTitle = leadingWindow.some((block) => titleCandidates.has(withoutKnownExtension(blockText(block))));
+  let bodyBlocks = [...blocks];
+  const stripLeadingWrapper = () => {
+    while (bodyBlocks.length) {
+      const text = blockText(bodyBlocks[0]);
+      if (
+        titleCandidates.has(text)
+        || titleCandidates.has(withoutKnownExtension(text))
+        || organizationCandidates.has(text)
+        || TEMPLATE_ARTIFACTS.has(text)
+      ) {
+        bodyBlocks.shift();
+        continue;
+      }
+      break;
+    }
+  };
+  if (opening) {
+    const bodyStart = bodyBlocks.findIndex(isBodySectionStart);
+    if (bodyStart >= 0) bodyBlocks = bodyBlocks.slice(bodyStart);
+    else if (repeatedDocumentTitle) stripLeadingWrapper();
+  } else if (repeatedDocumentTitle) {
+    stripLeadingWrapper();
+  }
+  return { blocks: bodyBlocks, repeatedDocumentTitle };
+}
+
+function bodyPageFingerprint(blocks) {
+  return JSON.stringify(blocks.map((block) => {
+    if (block.type === "table") {
+      return {
+        type: block.type,
+        cells: block.table?.cells?.map((row) => row.map((cell) => normalize(cell?.text)))
+          || [block.header || [], ...(block.rows || [])],
+      };
+    }
+    if (block.type === "image") return { type: block.type, sha256: block.image?.sha256 || null };
+    return {
+      type: block.type,
+      marker: normalize(block.marker),
+      level: Number(block.level) || 0,
+      text: normalize(block.text),
+    };
+  }));
+}
+
+function sourcePagePlan(model, frontMatter) {
+  const sourcePages = (model.metadata?.sourcePages || [])
+    .filter((page) => Number.isInteger(Number(page?.number)))
+    .sort((left, right) => Number(left.number) - Number(right.number));
+  if (!sourcePages.length) return null;
+
+  const pages = [];
+  let bodySeen = false;
+  const seenBodyFingerprints = new Map();
+  for (const sourcePage of sourcePages) {
+    const role = sourcePage.role;
+    if (role === "cover") {
+      pages.push({
+        type: "cover",
+        role: "cover",
+        sourcePage: sourcePage.number,
+        sourcePolicy: "retemplate",
+        sourceBlockCount: sourcePage.blockIndices?.length || 0,
+        blocks: [],
+      });
+      continue;
+    }
+    if (role === "inner-cover") {
+      pages.push({
+        type: "inner-cover",
+        role: "inner-cover",
+        sourcePage: sourcePage.number,
+        sourcePolicy: "retemplate",
+        sourceBlockCount: sourcePage.blockIndices?.length || 0,
+        blocks: [],
+      });
+      continue;
+    }
+    if (role === "toc") {
+      if (!["source", "template"].includes(frontMatter.toc.mode)) continue;
+      const blocks = frontMatter.toc.mode === "source"
+        ? withoutFrontMatterHeading(blocksFromSourcePage(model, sourcePage), TOC_HEADING)
+        : [];
+      pages.push({ type: "toc", role: "toc", sourcePage: sourcePage.number, decisionMode: frontMatter.toc.mode, blocks });
+      continue;
+    }
+    if (role === "summary") {
+      if (!["source", "template"].includes(frontMatter.summary.mode)) continue;
+      const blocks = frontMatter.summary.mode === "source"
+        ? withoutFrontMatterHeading(blocksFromSourcePage(model, sourcePage), SUMMARY_HEADING)
+        : [];
+      pages.push({ type: "summary", role: "summary", sourcePage: sourcePage.number, decisionMode: frontMatter.summary.mode, blocks });
+      continue;
+    }
+    const bodyRole = bodySeen ? "body-continuation" : "body-opening";
+    const rawBlocks = blocksFromSourcePage(model, sourcePage);
+    const cleaned = cleanedBodyPageBlocks(rawBlocks, model, !bodySeen);
+    const blocks = cleaned.blocks;
+    const fingerprint = bodyPageFingerprint(blocks);
+    if (bodySeen && cleaned.repeatedDocumentTitle && seenBodyFingerprints.has(fingerprint)) {
+      const preserved = seenBodyFingerprints.get(fingerprint);
+      const page = pages[preserved.pageIndex];
+      pages[preserved.pageIndex] = {
+        ...page,
+        collapsedSourcePages: [
+          ...(page.collapsedSourcePages || []),
+          sourcePage.number,
+        ],
+        collapseReason: "repeated-document-title-wrapper",
+      };
+      continue;
+    }
+    pages.push({ type: bodyRole, role: bodyRole, sourcePage: sourcePage.number, blocks });
+    if (!seenBodyFingerprints.has(fingerprint)) {
+      seenBodyFingerprints.set(fingerprint, {
+        sourcePage: sourcePage.number,
+        pageIndex: pages.length - 1,
+      });
+    }
+    bodySeen = true;
+  }
+
+  if (!pages.some((page) => page.type === "cover")) pages.unshift({ type: "cover", role: "cover", blocks: [] });
+  const insertFrontMatterPage = (field, type) => {
+    if (frontMatter[field].mode !== "template" || pages.some((page) => page.type === type)) return;
+    const firstBody = pages.findIndex((page) => ["body", "body-opening", "body-continuation"].includes(page.type));
+    const index = firstBody >= 0 ? firstBody : pages.length;
+    pages.splice(index, 0, { type, role: type, decisionMode: "template", blocks: [] });
+  };
+  insertFrontMatterPage("toc", "toc");
+  insertFrontMatterPage("summary", "summary");
+  if (!pages.some((page) => ["body", "body-opening", "body-continuation"].includes(page.type))) {
+    pages.push({ type: "body-opening", role: "body-opening", blocks: [] });
+  }
+  return pages;
+}
+
 export function pagePlanFromDecisions(model) {
   const next = ensurePlanDecisions(model);
   const frontMatter = next.metadata.plan.frontMatter;
+  const preservedSourcePages = sourcePagePlan(next, frontMatter);
+  if (preservedSourcePages) return preservedSourcePages;
   const pages = [{ type: "cover", role: "cover" }];
   const sourceBlocks = (section) => section.mode === "source"
     ? (section.source?.blockIndices || []).slice(1).map((index) => next.blocks?.[index]).filter(Boolean)
@@ -164,7 +385,8 @@ export function pagePlanFromDecisions(model) {
       .filter((section) => section.mode === "source")
       .flatMap((section) => section.source?.blockIndices || []),
   );
-  const bodyBlocks = (next.blocks || []).filter((_, index) => !frontMatterIndices.has(index));
+  const bodySourceBlocks = (next.blocks || []).filter((_block, index) => !frontMatterIndices.has(index));
+  const bodyBlocks = cleanedBodyPageBlocks(bodySourceBlocks, next, true).blocks;
   pages.push({ type: "body-opening", role: "body-opening", blocks: bodyBlocks });
   return pages;
 }

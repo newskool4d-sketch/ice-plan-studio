@@ -74,12 +74,13 @@
       "summaryTitleSizePt": 22,
       "summaryBoxSizePt": 12,
       "openingSloganSizePt": 16,
-      "openingTitleSizePt": 24,
-      "openingDepartmentSizePt": 15,
+      "openingTitleSizePt": 18,
+      "openingDepartmentSizePt": 12,
       "chapterTitleSizePt": 18,
       "bodySizePt": 14,
       "noteSizePt": 11,
-      "pageNumberSizePt": 10
+      "pageNumberSizePt": 10,
+      "adaptiveSpacingCalibrated": false
     }
   },
   "coverProfiles": {

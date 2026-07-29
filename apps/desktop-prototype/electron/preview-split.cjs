@@ -8,7 +8,7 @@ const AdmZip = require('adm-zip');
 // 처리하므로, 하드 나눔+자동 넘침이 모두 반영된 근사 조판이 된다.
 
 // model_to_hwpx.py page_break_para()가 생성하는 마커와 정확히 일치해야 한다.
-const PAGE_BREAK_PARA = /<hp:p id="\d+" paraPrIDRef="0" styleIDRef="0" pageBreak="1" columnBreak="0" merged="0"><hp:run charPrIDRef="0"><hp:t\/><\/hp:run><\/hp:p>/g;
+const PAGE_BREAK_PARA = /<hp:p id="\d+" paraPrIDRef="0" styleIDRef="0" pageBreak="1" columnBreak="0" merged="0">(?:<hp:ctrl>[\s\S]*?<\/hp:ctrl>)*<hp:run charPrIDRef="0">(?:<hp:ctrl>[\s\S]*?<\/hp:ctrl>)*<hp:t\/><\/hp:run><\/hp:p>/g;
 
 function splitSection(sectionXml) {
   const open = sectionXml.indexOf('>', sectionXml.indexOf('<hs:sec')) + 1;
@@ -34,6 +34,13 @@ function stripToInnerSvg(svg, y) {
   return withoutDecl.replace(/<svg /, `<svg y="${y}" `);
 }
 
+function minimumPhysicalHeight(rendered) {
+  const width = Number(rendered?.width) || 595;
+  const pageCount = Math.max(1, Number(rendered?.pageCount) || 1);
+  const a4PageHeight = Math.round(width * (297 / 210));
+  return Math.max(Number(rendered?.height) || 0, a4PageHeight * pageCount);
+}
+
 async function renderPagedPreview(hwpxBuffer, renderHwpxToSvg) {
   const parts = [];
   let pageCount = 0;
@@ -46,12 +53,12 @@ async function renderPagedPreview(hwpxBuffer, renderHwpxToSvg) {
     parts.push(stripToInnerSvg(r.svg, height));
     pageCount += r.pageCount;
     width = Math.max(width, r.width);
-    height += r.height;
+    height += minimumPhysicalHeight(r);
     warnings.push(...(r.warnings || []));
     for (const key of Object.keys(stats)) stats[key] += r.stats?.[key] || 0;
   }
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${parts.join('')}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="#fff"/>${parts.join('')}</svg>`;
   return { svg, pageCount, warnings, stats };
 }
 
-module.exports = { renderPagedPreview, splitSection, chunkBuffers };
+module.exports = { renderPagedPreview, splitSection, chunkBuffers, minimumPhysicalHeight };

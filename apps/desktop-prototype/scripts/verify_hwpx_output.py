@@ -8,7 +8,7 @@ OPF_NS = 'http://www.idpf.org/2007/opf/'
 HP_NS = 'http://www.hancom.co.kr/hwpml/2011/paragraph'
 # boncheong 템플릿 표지에 원본 그대로 붙는 장식 표. 자료 표가 아니므로 머리글
 # 반복 규약(header="1")의 대상이 아니다 — model_to_hwpx.py의 표지 splice 참조.
-TEMPLATE_DECORATION_TABLE_IDS = {'2063551796', '2063551804'}
+TEMPLATE_DECORATION_TABLE_IDS = {'2063551796', '2063551804', '2063551812'}
 
 
 def content_tables(root: ET.Element) -> list[ET.Element]:

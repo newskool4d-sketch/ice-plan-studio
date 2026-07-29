@@ -23,6 +23,7 @@ from image_dimensions import image_dims_hwpunit  # noqa: E402
 from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, TOKENS, page_sequence, resolve_profile, table_column_widths, table_row_heights  # noqa: E402
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
+BODY_TITLE_FRAME_TABLE_ID = '2063551812'
 
 # 스타일 ID는 템플릿마다 완전히 다르다. 템플릿의 header.xml에 실제 존재하는 ID만
 # 써야 하며, 다른 템플릿의 ID를 쓰면 dangling 참조가 되거나 엉뚱한 서식으로 렌더된다.
@@ -44,11 +45,13 @@ STYLE_SETS = {
         'table_anchor_parapr': '0',
     },
     'boncheong': {
-        # 실측 ID 맵: 9=장제목 14pt, 121=본문 12pt(paraPr 73=개조식 내어쓰기),
+        # 실측 ID 맵: 9=14pt 본문, 27=18pt 굵은 장제목,
+        # 121=기본 12pt 본문(paraPr 73=개조식 내어쓰기).
+        # 학교 배포용 기본계획(worldschool-2026)은 style_for_model에서 9를 본문으로 쓴다.
         # 307=표 머리글 맑은고딕 11pt(자간 -15%), 417=표 본문 맑은고딕 10pt,
         # 64=표 셀 문단(가운데 120%)
-        'valid_charpr': {'9', '11', '15', '18', '121', '132', '204', '277', '307', '338', '417', '512'},
-        'bold_map': {'121': '132'},
+        'valid_charpr': {'9', '11', '15', '18', '19', '27', '121', '132', '204', '277', '307', '338', '417', '512'},
+        'bold_map': {'9': '19', '121': '132'},
         'heading': {1: ('9', '1'), 2: ('132', '73')},
         'heading_default': ('132', '73'),
         'body': ('121', '73'),
@@ -62,6 +65,26 @@ STYLE_SETS = {
     },
 }
 BOLD_PATTERN = re.compile(r'\*\*(.+?)\*\*')
+
+
+def style_for_model(template, model):
+    base = STYLE_SETS[template]
+    style = {
+        **base,
+        'valid_charpr': set(base['valid_charpr']),
+        'bold_map': dict(base['bold_map']),
+        'heading': dict(base['heading']),
+    }
+    metadata = model.get('metadata', {})
+    profile_id = (
+        (metadata.get('layout') or {}).get('profile')
+        or ('worldschool-2026' if metadata.get('documentKind') == 'school-guidance-basic-plan' else None)
+    )
+    profile = (TOKENS.get('layoutProfiles') or {}).get(profile_id or '') or {}
+    if template == 'boncheong' and profile.get('bodySizePt') == 14:
+        style['body'] = ('9', '73')
+        style['heading'][1] = ('27', '1')
+    return style
 
 
 def runs_xml(text, charpr, style=None):
@@ -99,11 +122,28 @@ def blank_para():
     )
 
 
-def page_break_para():
+def page_boundary_para(*, page_break=False, hide_page_number=False, restart_page_number=None):
+    controls = []
+    if hide_page_number:
+        controls.append(
+            '<hp:ctrl><hp:pageHiding hideHeader="0" hideFooter="0" '
+            'hideMasterPage="0" hideBorder="0" hideFill="0" hidePageNum="1"/></hp:ctrl>'
+        )
+    if restart_page_number is not None:
+        controls.append(
+            f'<hp:ctrl><hp:newNum num="{int(restart_page_number)}" numType="PAGE"/></hp:ctrl>'
+        )
     return (
         f'<hp:p id="{next_id()}" paraPrIDRef="0" styleIDRef="0" '
-        f'pageBreak="1" columnBreak="0" merged="0"><hp:run charPrIDRef="0"><hp:t/></hp:run></hp:p>'
+        f'pageBreak="{"1" if page_break else "0"}" columnBreak="0" merged="0">'
+        + '<hp:run charPrIDRef="0">'
+        + ''.join(controls)
+        + '<hp:t/></hp:run></hp:p>'
     )
+
+
+def page_break_para():
+    return page_boundary_para(page_break=True)
 
 
 def decode_data_url_to_tempfile(data_url):
@@ -170,7 +210,7 @@ def boncheong_cover_paragraphs(model, profile):
         '본청 계획안',
     )
     replacements = {
-        '기본 방향 문구를 입력하세요': cover.get('direction') or '기본 방향',
+        '기본 방향 문구를 입력하세요': cover.get('direction') or '',
         '2026 ○○○○ 기본 계획': cover.get('title') or metadata.get('title') or first_heading,
         '2026. 7. ': cover.get('date') or '2026. 7.',
         '인천광역시교육청 ○○과 ': cover.get('displayName') or '인천광역시교육청',
@@ -210,7 +250,6 @@ def boncheong_cover_paragraphs(model, profile):
         if trailing_slot not in parts[0]:
             raise RuntimeError('Could not find the cover english-name anchor slot')
         parts[0] = parts[0].replace(trailing_slot, filled_slot, 1)
-    parts.append(page_break_para())
     return parts
 
 
@@ -220,36 +259,121 @@ def page_placeholder_blocks(page_type):
         return [{'type': 'table', 'header': ['점검 항목', '검토완료', '해당없음'], 'rows': [['형식 점검', '□', '□'], ['내용 확인', '□', '□']]}]
     if page_type == 'schedule':
         return [{'type': 'table', 'header': ['구분', '내용'], 'rows': [['일정', '입력 대기']]}]
-    if page_type in ('toc', 'summary'):
+    if page_type in ('inner-cover', 'toc', 'summary'):
         return []
-    label = {'toc': '목차 항목 입력', 'summary': '요약 내용 입력', 'task': '세부과제 내용 입력', 'appendix': '부록·붙임 내용 입력'}.get(page_type, '내용 입력 대기')
-    return [{'type': 'paragraph', 'text': label}]
+    label = {'task': '세부과제 내용 입력', 'appendix': '부록·붙임 내용 입력'}.get(page_type)
+    return [{'type': 'paragraph', 'text': label}] if label else []
 
 
-def page_type_paragraphs(page, model, profile, styles, style, starts_new_page=True):
+def front_matter_frame_block(page_type):
+    """내용을 대신 작성하지 않는 목차·요약용 빈 입력 틀."""
+    if page_type == 'toc':
+        return {
+            'type': 'table',
+            'header': ['구성 항목', '쪽'],
+            'rows': [['', ''] for _ in range(8)],
+        }
+    return {
+        'type': 'table',
+        'header': ['구분', '내용'],
+        'rows': [
+            ['추진 배경', ''],
+            ['주요 내용', ''],
+            ['기대 효과', ''],
+        ],
+    }
+
+
+def body_title_frame(title, style):
+    """교육청 계획서 본문 첫 쪽의 상·하단 선 제목 틀."""
+    width = style.get('body_width', BODY_WIDTH_HWPUNIT)
+    cell_id = next_id()
+    para_id = next_id()
+    return (
+        f'<hp:p id="{next_id()}" paraPrIDRef="{style["table_anchor_parapr"]}" styleIDRef="0" '
+        'pageBreak="0" columnBreak="0" merged="0">'
+        f'<hp:run charPrIDRef="27"><hp:tbl id="{BODY_TITLE_FRAME_TABLE_ID}" zOrder="0" numberingType="TABLE" '
+        'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" '
+        'pageBreak="CELL" repeatHeader="0" rowCnt="1" colCnt="1" cellSpacing="0" '
+        'borderFillIDRef="52" noAdjust="0">'
+        f'<hp:sz width="{width}" widthRelTo="ABSOLUTE" height="2000" heightRelTo="ABSOLUTE" protect="0"/>'
+        '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" '
+        'holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" '
+        'horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
+        '<hp:outMargin left="0" right="0" top="0" bottom="0"/>'
+        '<hp:inMargin left="0" right="0" top="0" bottom="0"/>'
+        '<hp:tr><hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" '
+        'borderFillIDRef="52"><hp:cellAddr colAddr="0" rowAddr="0"/>'
+        '<hp:cellSpan colSpan="1" rowSpan="1"/>'
+        f'<hp:cellSz width="{width}" height="2000"/>'
+        '<hp:cellMargin left="283" right="283" top="340" bottom="340"/>'
+        f'<hp:subList id="{cell_id}" textDirection="HORIZONTAL" lineWrap="BREAK" '
+        f'vertAlign="CENTER" linkListIDRef="0" linkListNextIDRef="0" textWidth="{max(width - 566, 1)}" fieldName="">'
+        f'<hp:p id="{para_id}" paraPrIDRef="23" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+        f'{runs_xml(title, "27", style)}</hp:p></hp:subList></hp:tc></hp:tr></hp:tbl></hp:run></hp:p>'
+    )
+
+
+def page_type_paragraphs(
+    page,
+    model,
+    profile,
+    styles,
+    style,
+    starts_new_page=True,
+    hide_page_number=False,
+    restart_page_number=None,
+):
     """Render one of the nine layout page types; policy content remains caller-owned."""
     page_type = page['type']
     metadata = model.get('metadata', {})
     if page_type == 'cover':
         return boncheong_cover_paragraphs(model, profile)
     if page_type in ('body', 'body-opening', 'body-continuation'):
-        parts = [page_break_para()] if starts_new_page else []
+        parts = [
+            page_boundary_para(
+                page_break=True,
+                hide_page_number=hide_page_number,
+                restart_page_number=restart_page_number,
+            )
+        ] if starts_new_page else []
         if page_type == 'body-opening':
-            parts.append(text_para(metadata.get('cover', {}).get('direction') or '인천을 품고 세계로 나아가는 글로벌 인재 양성', '15', '20', style))
-            parts.append(text_para(metadata.get('title') or '추진 계획', '9', '1', style))
-            parts.append(text_para(metadata.get('cover', {}).get('displayName') or '인천광역시교육청', '121', '73', style))
-        parts.extend(render_blocks(page.get('blocks', model.get('blocks', [])), styles, style))
+            title = metadata.get('title') or metadata.get('cover', {}).get('title') or '추진 계획'
+            parts.append(body_title_frame(title, style))
+            covered = metadata.get('cover') or {}
+            organization = metadata.get('organization') or {}
+            display_name = organization.get('displayName') or covered.get('displayName') or ''
+            department = organization.get('department') or covered.get('department') or ''
+            department_line = ' '.join(str(value).strip() for value in (display_name, department) if str(value).strip())
+            if department_line:
+                parts.append(text_para(department_line, '121', '22', style))
+        if page_type == 'body-continuation':
+            page_blocks = page.get('blocks') or []
+        else:
+            page_blocks = page['blocks'] if 'blocks' in page else model.get('blocks', [])
+        parts.extend(render_blocks(page_blocks, styles, style))
         return parts
     title = page.get('title') or PAGE_LABELS[page_type]
-    parts = [page_break_para()] if starts_new_page else []
+    parts = [
+        page_boundary_para(
+            page_break=True,
+            hide_page_number=hide_page_number,
+            restart_page_number=restart_page_number,
+        )
+    ] if starts_new_page else []
     if page_type == 'inner-cover':
         parts.append(text_para(metadata.get('title') or title, '9', '1', style))
         covered = metadata.get('cover') or {}
         parts.append(text_para(covered.get('displayName') or '인천광역시교육청', '121', '73', style))
-        parts.append(text_para('운영 계획', '121', '73', style))
+    elif page_type in ('toc', 'summary'):
+        parts.append(text_para('목 차' if page_type == 'toc' else title, '27', '23', style))
     else:
         parts.append(text_para(title, '9', '1', style))
-    parts.extend(render_blocks(page.get('blocks') or page_placeholder_blocks(page_type), styles, style))
+    page_blocks = page.get('blocks') or page_placeholder_blocks(page_type)
+    if page_type in ('toc', 'summary') and not page_blocks:
+        parts.append(table_paragraph(front_matter_frame_block(page_type), styles, style))
+    else:
+        parts.extend(render_blocks(page_blocks, styles, style))
     return parts
 
 
@@ -331,6 +455,8 @@ def render_blocks(blocks, styles, style):
             continue
         if block['type'] == 'heading':
             charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
+        elif block['type'] == 'listItem' and block.get('ordered') and int(block.get('level') or 0) == 0:
+            charpr, parapr = style['heading'].get(1, style['heading_default'])
         elif block['type'] == 'listItem':
             charpr, parapr = style['body'][0], style['list_parapr']
         else:
@@ -383,16 +509,34 @@ def build(model_path, output, template='gonmun', line_spacing_percent=None, para
     if template not in TEMPLATE_CHOICES:
         raise ValueError(f'Unsupported template: {template}')
     styles = model.get('styles', {})
-    style = STYLE_SETS[template]
+    style = style_for_model(template, model)
     reset_id(1000)
     images = []
     if template == 'boncheong':
         profile = resolve_profile(model.get('metadata', {}))
         paragraphs = []
         pages = page_sequence(model.get('metadata', {}), profile)
+        body_types = {'body', 'body-opening', 'body-continuation'}
+        first_body_index = next(
+            (index for index, page in enumerate(pages) if page['type'] in body_types),
+            None,
+        )
         for index, page in enumerate(pages):
-            starts_new_page = index > 0 and pages[index - 1]['type'] != 'cover'
-            paragraphs.extend(page_type_paragraphs(page, model, profile, styles, style, starts_new_page=starts_new_page))
+            paragraphs.extend(page_type_paragraphs(
+                page,
+                model,
+                profile,
+                styles,
+                style,
+                starts_new_page=index > 0,
+                hide_page_number=(
+                    first_body_index is not None
+                    and 0 < index < first_body_index
+                ),
+                restart_page_number=(
+                    1 if first_body_index is not None and index == first_body_index else None
+                ),
+            ))
     else:
         paragraphs = [first_paragraph()]
         cover = model.get('metadata', {}).get('cover')
