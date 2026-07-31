@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { parseMarkdown } from "../src/domain/markdownParser.js";
+import { classifyStructuredHeading } from "../src/domain/headingPresentation.js";
 import { applyFrontMatterDecision, ensurePlanDecisions, pagePlanFromDecisions } from "../src/domain/planDecisions.js";
 import { createPreviewProjection } from "../src/domain/previewProjection.js";
 import { pageDraftsFrom, withPagePlan } from "../src/domain/workflowModel.js";
@@ -43,6 +44,42 @@ assert(
 );
 assert(projection.layoutProfile?.openingTitleSizePt === 18, "body-opening title token must match the 18pt HWPX style");
 assert(projection.layoutProfile?.openingDepartmentSizePt === 12, "department token must match the 12pt HWPX style");
+assert(
+  JSON.stringify(classifyStructuredHeading("Ⅰ. 추진 근거")) === JSON.stringify({
+    kind: "roman-chapter",
+    label: "Ⅰ",
+    title: "추진 근거",
+  }),
+  "roman chapter heading classification changed",
+);
+assert(
+  JSON.stringify(classifyStructuredHeading("[과제1] 체험교육 강화")) === JSON.stringify({
+    kind: "task-section",
+    label: "[과제1]",
+    title: "체험교육 강화",
+  }),
+  "compact task heading classification changed",
+);
+assert(
+  JSON.stringify(classifyStructuredHeading("[과제 1] 체험교육 강화")) === JSON.stringify({
+    kind: "task-section",
+    label: "[과제 1]",
+    title: "체험교육 강화",
+  }),
+  "spaced task heading classification changed",
+);
+assert(
+  JSON.stringify(classifyStructuredHeading("[과제 1-1] 운영 기반 조성")) === JSON.stringify({
+    kind: "task-subsection",
+    label: "[과제 1-1]",
+    title: "운영 기반 조성",
+  }),
+  "task subsection heading classification changed",
+);
+assert(classifyStructuredHeading("1. 일반 항목") === null, "ordinary numbered heading must not use the structured frame");
+assert(projection.layoutProfile?.chapterTitleSizePt === 18, "roman chapter title must remain 18pt");
+assert(projection.layoutProfile?.taskTitleSizePt === 14, "task title must be smaller than the roman chapter");
+assert(projection.layoutProfile?.taskSubTitleSizePt === 12, "task subsection title must be smaller than the task title");
 const blank = createPreviewProjection({
   ...decided,
   metadata: { ...decided.metadata, pages: pages.map((page) => page.type === "toc" ? { ...page, blocks: [], decisionMode: "template" } : page) },
@@ -173,6 +210,8 @@ console.log(JSON.stringify({
     "14pt school-guidance body",
     "legacy 12pt spacing bypass",
     "18pt title and 12pt department tokens",
+    "roman, task, and task-subsection heading classification",
+    "18pt, 14pt, and 12pt structured-heading hierarchy",
     "blank frame without synthetic text",
     "direct-g role alignment",
     "body-relative page numbering",

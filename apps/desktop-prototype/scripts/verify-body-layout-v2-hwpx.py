@@ -57,7 +57,9 @@ def main():
                     "type": "body-opening",
                     "role": "body-opening",
                     "blocks": [
-                        {"type": "heading", "level": 1, "text": "1. 추진 배경"},
+                        {"type": "heading", "level": 1, "text": "Ⅰ. 추진 배경"},
+                        {"type": "heading", "level": 2, "text": "[과제1] 체험교육 강화"},
+                        {"type": "heading", "level": 3, "text": "[과제 1-1] 운영 기반 조성"},
                         {"type": "paragraph", "text": "체험교육 프로그램을 고도화한다."},
                         {"type": "paragraph", "text": "일반 **강조** 일반"},
                     ],
@@ -146,6 +148,29 @@ def main():
         section.index('<hp:newNum num="1" numType="PAGE"/>') < section.rindex(TITLE),
         "page-number restart is not attached before the body-opening title",
     )
+    structured_specs = (
+        ("Ⅰ", "추진 배경", "12", "31", "27"),
+        ("[과제1]", "체험교육 강화", "10", "114", "19"),
+        ("[과제 1-1]", "운영 기반 조성", "14", "414", "315"),
+    )
+    section_tables = [element for element in section_root.iter() if local_name(element) == "tbl"]
+    for label, title, label_fill, label_charpr, title_charpr in structured_specs:
+        table = next(
+            (
+                candidate for candidate in section_tables
+                if "".join((node.text or "") for node in candidate.iter() if local_name(node) == "t") == label + title
+            ),
+            None,
+        )
+        require(table is not None, f"structured heading table is missing: {label}")
+        require(table.attrib.get("rowCnt") == "1" and table.attrib.get("colCnt") == "2", f"structured heading is not a 1x2 table: {label}")
+        cells = [element for element in table.iter() if local_name(element) == "tc"]
+        require(len(cells) == 2, f"structured heading cell count changed: {label}")
+        require(cells[0].attrib.get("borderFillIDRef") == label_fill, f"structured heading accent changed: {label}")
+        label_runs = [element for element in cells[0].iter() if local_name(element) == "run"]
+        title_runs = [element for element in cells[1].iter() if local_name(element) == "run"]
+        require(any(run.attrib.get("charPrIDRef") == label_charpr for run in label_runs), f"structured heading label size changed: {label}")
+        require(any(run.attrib.get("charPrIDRef") == title_charpr for run in title_runs), f"structured heading title size changed: {label}")
     bold_paragraph = next(
         (
             paragraph for paragraph in section_root.iter()
@@ -186,6 +211,9 @@ def main():
         "checks": [
             "forbidden defaults removed",
             "education-office title frame",
+            "roman chapter 1x2 heading frame",
+            "task 1x2 heading frame with reduced green styling",
+            "task subsection 1x2 heading frame with reduced blue-gray styling",
             "organization and department line",
             "blank TOC and summary frames",
             "school-guidance 14pt body text",

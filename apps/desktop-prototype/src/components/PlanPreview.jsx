@@ -1,8 +1,16 @@
 import { renderInline } from "../domain/previewText.js";
+import { classifyStructuredHeading } from "../domain/headingPresentation.js";
 
 function PreviewBlock({ block, index, highlighted }) {
   const highlightClass = highlighted ? "rule-target-preview" : "";
   if (block.type === "heading") {
+    const structured = classifyStructuredHeading(block.text);
+    if (structured) {
+      return <div className={`structured-heading structured-heading-${structured.kind} ${highlightClass}`.trim()} role="heading" aria-level={Math.min(Math.max(block.level || 1, 1), 3)} key={index}>
+        <span className="structured-heading-label">{renderInline(structured.label)}</span>
+        <span className="structured-heading-title">{renderInline(structured.title)}</span>
+      </div>;
+    }
     const Tag = `h${Math.min(Math.max(block.level || 1, 1), 3)}`;
     return <Tag className={highlightClass} key={index}>{renderInline(block.text)}</Tag>;
   }
@@ -55,6 +63,15 @@ export function PlanPreview({ projection, page, agencyName, highlightBlockIndex 
     "--plan-body-size": `${projection.layoutProfile?.bodySizePt || projection.tokens.typography.body.sizePt}pt`,
     "--opening-title-size": `${projection.layoutProfile?.openingTitleSizePt || 18}pt`,
     "--opening-department-size": `${projection.layoutProfile?.openingDepartmentSizePt || 12}pt`,
+    "--chapter-label-size": `${projection.layoutProfile?.chapterLabelSizePt || 14}pt`,
+    "--chapter-title-size": `${projection.layoutProfile?.chapterTitleSizePt || 18}pt`,
+    "--task-label-size": `${projection.layoutProfile?.taskLabelSizePt || 13}pt`,
+    "--task-title-size": `${projection.layoutProfile?.taskTitleSizePt || 14}pt`,
+    "--task-sub-label-size": `${projection.layoutProfile?.taskSubLabelSizePt || 12}pt`,
+    "--task-sub-title-size": `${projection.layoutProfile?.taskSubTitleSizePt || 12}pt`,
+    "--chapter-accent": projection.layoutProfile?.chapterAccentColor || "#3057b9",
+    "--task-accent": projection.layoutProfile?.taskAccentColor || "#1e7452",
+    "--task-sub-accent": projection.layoutProfile?.taskSubAccentColor || "#2d629c",
   };
   return <article className={`a4-page composition-page page-type-${page.type}`} style={previewStyle} aria-label={`${page.number}쪽 ${page.label} 미리보기`}>
     {page.type === "cover" ? <CoverPage page={page} projection={projection} agencyName={agencyName} /> : <>

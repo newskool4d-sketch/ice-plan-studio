@@ -24,6 +24,11 @@ from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, TOKENS, page_sequence
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
 BODY_TITLE_FRAME_TABLE_ID = '2063551812'
+STRUCTURED_HEADING_PATTERNS = (
+    ('task-subsection', re.compile(r'^\s*(\[과제\s*\d+\s*-\s*\d+\])\s*(.+)$')),
+    ('task-section', re.compile(r'^\s*(\[과제\s*\d+\])\s*(.+)$')),
+    ('roman-chapter', re.compile(r'^\s*([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+)\.\s*(.+)$')),
+)
 
 # 스타일 ID는 템플릿마다 완전히 다르다. 템플릿의 header.xml에 실제 존재하는 ID만
 # 써야 하며, 다른 템플릿의 ID를 쓰면 dangling 참조가 되거나 엉뚱한 서식으로 렌더된다.
@@ -50,7 +55,10 @@ STYLE_SETS = {
         # 학교 배포용 기본계획(worldschool-2026)은 style_for_model에서 9를 본문으로 쓴다.
         # 307=표 머리글 맑은고딕 11pt(자간 -15%), 417=표 본문 맑은고딕 10pt,
         # 64=표 셀 문단(가운데 120%)
-        'valid_charpr': {'9', '11', '15', '18', '19', '27', '121', '132', '204', '277', '307', '338', '417', '512'},
+        'valid_charpr': {
+            '9', '11', '15', '18', '19', '27', '31', '114', '121', '132',
+            '204', '277', '307', '315', '338', '414', '417', '512',
+        },
         'bold_map': {'9': '19', '121': '132'},
         'heading': {1: ('9', '1'), 2: ('132', '73')},
         'heading_default': ('132', '73'),
@@ -62,6 +70,32 @@ STYLE_SETS = {
         # bf4·bf13·bf17 모두 4면 실선. 표 셀에는 bf13 사용(레퍼런스 표 셀 계열)
         'cell_borderfill': {'header': '13', 'body': '13'},
         'table_borderfill': '13',
+        'structured_heading': {
+            'roman-chapter': {
+                'label_charpr': '31',
+                'title_charpr': '27',
+                'label_borderfill': '12',
+                'title_borderfill': '52',
+                'label_width': 4200,
+                'height': 1900,
+            },
+            'task-section': {
+                'label_charpr': '114',
+                'title_charpr': '19',
+                'label_borderfill': '10',
+                'title_borderfill': '52',
+                'label_width': 7200,
+                'height': 1600,
+            },
+            'task-subsection': {
+                'label_charpr': '414',
+                'title_charpr': '315',
+                'label_borderfill': '14',
+                'title_borderfill': '52',
+                'label_width': 9000,
+                'height': 1450,
+            },
+        },
     },
 }
 BOLD_PATTERN = re.compile(r'\*\*(.+?)\*\*')
@@ -314,6 +348,64 @@ def body_title_frame(title, style):
     )
 
 
+def structured_heading_parts(text):
+    for kind, pattern in STRUCTURED_HEADING_PATTERNS:
+        match = pattern.match(str(text or ''))
+        if match:
+            return {'kind': kind, 'label': match.group(1), 'title': match.group(2).strip()}
+    return None
+
+
+def structured_heading_table(text, style):
+    parts = structured_heading_parts(text)
+    config = (style.get('structured_heading') or {}).get(parts['kind'] if parts else '')
+    if not parts or not config:
+        return None
+    width = style.get('body_width', BODY_WIDTH_HWPUNIT)
+    label_width = min(config['label_width'], width - 1)
+    title_width = width - label_width
+    height = config['height']
+    table_id = next_id()
+    label_cell_id = next_id()
+    label_para_id = next_id()
+    title_cell_id = next_id()
+    title_para_id = next_id()
+    return (
+        f'<hp:p id="{next_id()}" paraPrIDRef="{style["table_anchor_parapr"]}" styleIDRef="0" '
+        'pageBreak="0" columnBreak="0" merged="0">'
+        f'<hp:run charPrIDRef="{config["title_charpr"]}"><hp:tbl id="{table_id}" zOrder="0" '
+        'numberingType="TABLE" textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" '
+        'dropcapstyle="None" pageBreak="CELL" repeatHeader="0" rowCnt="1" colCnt="2" '
+        'cellSpacing="0" borderFillIDRef="52" noAdjust="0">'
+        f'<hp:sz width="{width}" widthRelTo="ABSOLUTE" height="{height}" heightRelTo="ABSOLUTE" protect="0"/>'
+        '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" '
+        'holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" '
+        'horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
+        '<hp:outMargin left="0" right="0" top="0" bottom="0"/>'
+        '<hp:inMargin left="0" right="0" top="0" bottom="0"/>'
+        '<hp:tr>'
+        f'<hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" '
+        f'borderFillIDRef="{config["label_borderfill"]}">'
+        '<hp:cellAddr colAddr="0" rowAddr="0"/><hp:cellSpan colSpan="1" rowSpan="1"/>'
+        f'<hp:cellSz width="{label_width}" height="{height}"/>'
+        '<hp:cellMargin left="141" right="141" top="141" bottom="141"/>'
+        f'<hp:subList id="{label_cell_id}" textDirection="HORIZONTAL" lineWrap="BREAK" '
+        f'vertAlign="CENTER" linkListIDRef="0" linkListNextIDRef="0" textWidth="{max(label_width - 282, 1)}" fieldName="">'
+        f'<hp:p id="{label_para_id}" paraPrIDRef="23" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+        f'{runs_xml(parts["label"], config["label_charpr"], style)}</hp:p></hp:subList></hp:tc>'
+        f'<hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" '
+        f'borderFillIDRef="{config["title_borderfill"]}">'
+        '<hp:cellAddr colAddr="1" rowAddr="0"/><hp:cellSpan colSpan="1" rowSpan="1"/>'
+        f'<hp:cellSz width="{title_width}" height="{height}"/>'
+        '<hp:cellMargin left="566" right="283" top="141" bottom="141"/>'
+        f'<hp:subList id="{title_cell_id}" textDirection="HORIZONTAL" lineWrap="BREAK" '
+        f'vertAlign="CENTER" linkListIDRef="0" linkListNextIDRef="0" textWidth="{max(title_width - 849, 1)}" fieldName="">'
+        f'<hp:p id="{title_para_id}" paraPrIDRef="1" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+        f'{runs_xml(parts["title"], config["title_charpr"], style)}</hp:p></hp:subList></hp:tc>'
+        '</hp:tr></hp:tbl></hp:run></hp:p>'
+    )
+
+
 def page_type_paragraphs(
     page,
     model,
@@ -444,6 +536,11 @@ def render_blocks(blocks, styles, style):
             paragraphs.append(table_paragraph(block, styles, style))
             continue
         text = block.get('text', '')
+        if block['type'] == 'heading':
+            framed_heading = structured_heading_table(text, style)
+            if framed_heading:
+                paragraphs.append(framed_heading)
+                continue
         if block['type'] == 'listItem':
             # Plan IR이 담은 실제 기호(□·○·가.·1. 등)를 우선 사용한다.
             # 과거엔 marker를 버리고 '- '/'1. '를 하드코딩해, React 빠른 미리보기(marker
