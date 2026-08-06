@@ -44,13 +44,17 @@ export function DocumentStage({
 }) {
   const hasQuick = Boolean(projection && current);
   const visiblePage = previewMode === "rendered" ? renderedPage : current?.number;
+  // 나란히 비교는 논리 쪽 번호를 실조판 쪽 번호로 그대로 쓴다. 가져온 HWPX는 원문
+  // 자동 넘침 때문에 두 번호가 어긋나므로(예: 논리 2쪽 / 실제 17쪽) 같은 쪽을
+  // 비교한다는 전제가 성립하지 않는다 — 아예 제공하지 않는다(AGENTS.md 계약).
+  const allowCompare = projection?.sourceFormat !== "hwpx";
   // 비교 모드는 축소해 보는 화면이라 확대율을 절반으로 눌러 두 쪽이 나란히 들어오게 한다.
   const compareZoom = Math.max(38, Math.round(zoom * 0.55));
   return <section className="document-stage">
     <div className="preview-toolbar"><div className="toolbar-group">
       <button type="button" className={`view-button${previewMode === "react" ? " is-active" : ""}`} onClick={() => onPreviewMode("react")}>빠른 미리보기</button>
       <button type="button" className={`view-button${previewMode === "rendered" ? " is-active" : ""}`} disabled={!realPreview} onClick={() => onPreviewMode("rendered")}>실조판 SVG</button>
-      <button id="preview-compare" type="button" className={`view-button${previewMode === "compare" ? " is-active" : ""}`} disabled={!realPreview || !hasQuick} onClick={() => onPreviewMode("compare")}>나란히 비교</button>
+      {allowCompare ? <button id="preview-compare" type="button" className={`view-button${previewMode === "compare" ? " is-active" : ""}`} disabled={!realPreview || !hasQuick} onClick={() => onPreviewMode("compare")}>나란히 비교</button> : null}
       {previewMode === "rendered" && realPreview ? <>
         <button type="button" className="tool-button" disabled={renderedPage <= 1} onClick={() => onRenderedPage((value) => Math.max(1, value - 1))}>이전 쪽</button>
         <button type="button" className="tool-button" disabled={renderedPage >= realPreview.pageCount} onClick={() => onRenderedPage((value) => Math.min(realPreview.pageCount, value + 1))}>다음 쪽</button>
@@ -61,7 +65,7 @@ export function DocumentStage({
     </div><span>{previewMode === "rendered" && realPreview ? `${visiblePage}/${realPreview.pageCount}쪽 · 실조판` : current ? `${current.number}쪽 · ${current.label}` : "입력 대기"}</span></div>
     {realPreview?.layoutAdjustment?.applied ? <div className="layout-adjust-banner" role="status">{realPreview.layoutAdjustment.notice}</div> : null}
     <div className="canvas-scroll">
-      {previewMode === "compare" && realPreview && hasQuick ? <div className="compare-grid">
+      {previewMode === "compare" && allowCompare && realPreview && hasQuick ? <div className="compare-grid">
         <figure className="compare-pane"><figcaption>빠른 미리보기 · {current.number}쪽</figcaption><QuickPreview projection={projection} current={current} agencyName={agencyName} highlightBlockIndex={highlightBlockIndex} zoom={compareZoom} /></figure>
         <figure className="compare-pane"><figcaption>실조판 SVG · {current.number}/{realPreview.pageCount}쪽</figcaption><RenderedPreview realPreview={realPreview} pageNumber={current.number} zoom={compareZoom} /></figure>
       </div>

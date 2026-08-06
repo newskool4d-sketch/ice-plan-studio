@@ -183,7 +183,10 @@ function WorkflowApp() {
       setRuleHistory([]);
       setPage(1);
       setRenderedPage(1);
-      setPreviewMode("react");
+      // 가져온 HWPX는 논리 구조 쪽과 자동 넘침이 반영된 실제 쪽이 다르다. 빠른
+      // 미리보기로 시작하면 사용자가 원문에 없는 쪽 구성을 보게 되므로 실조판을
+      // 기본 화면으로 삼는다(AGENTS.md 본문 조판 계약).
+      setPreviewMode(next?.source?.format === "hwpx" ? "rendered" : "react");
       setActiveStep(1);
       setNotice(`${input.name}을 불러왔습니다. 분석 결과를 확인해 주세요.`);
     } catch (error) {

@@ -28,7 +28,9 @@ function normalizeText(value) {
 const IMPORTED_TASK_SUBHEADING = /^\s*(?:\[과제\s*\d+\s*-\s*\d+\]|과제\s*\d+\s*-\s*\d+\.?)\s*(\S.*)$/;
 const IMPORTED_TASK_HEADING = /^\s*(?:\[과제\s*\d+\]|과제\s*\d+\.?)\s*(\S.*)$/;
 const IMPORTED_CHAPTER_HEADING = /^\s*(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+\.)\s+(\S.*)$/;
-const IMPORTED_KOREAN_SUBHEADING = /^\s*[가-하]\.\s+(\S.*)$/;
+// `[가-하]`는 유니코드 음절 1만여 자를 모두 포함해 "예. 그렇다"·"결. 정리" 같은
+// 평문까지 소제목으로 잡는다. 실제 가나다 항목기호로 쓰이는 14자만 허용한다.
+const IMPORTED_KOREAN_SUBHEADING = /^\s*[가나다라마바사아자차카타파하]\.\s+(\S.*)$/;
 const IMPORTED_DATE = /^\s*\d{4}\.\s*\d{1,2}\.\s*$/;
 // 번호로 시작하는 본문 문단이 제목으로 승격되는 것을 막는 상한(공백 제외).
 // 점선 목차 줄("Ⅰ. 추진 근거 ......... 1")도 이 상한에 걸려 본문 제목에서 빠진다.

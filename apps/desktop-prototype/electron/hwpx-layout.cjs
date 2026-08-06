@@ -263,7 +263,6 @@ function stripReviewAnnotations(source) {
     }
     paragraph.parentNode?.removeChild(paragraph);
   }
-  if (!notes.length) return { buffer: Buffer.isBuffer(source) ? source : Buffer.from(source), count: 0 };
   archive.updateFile(
     'Contents/section0.xml',
     Buffer.from(new XMLSerializer().serializeToString(section), 'utf8'),

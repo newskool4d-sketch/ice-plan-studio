@@ -48,14 +48,34 @@ function svgBody(svg) {
     .replace(/<\/svg>\s*$/, '');
 }
 
+/**
+ * kordoc이 각 쪽에 붙이는 `<g data-page="N" transform="translate(0 Y)">`에서 실제 쪽
+ * 오프셋을 읽는다. 균등 분할(전체 높이 ÷ 쪽수)로 대신하면 안 된다 — 실측에서 균등값
+ * 864.45pt 대 실제 간격 865.86pt로 쪽마다 1.4pt씩 어긋나, 17쪽 문서의 마지막 쪽은
+ * 약 23pt가 밀려 아랫쪽 내용이 잘려 들어온다.
+ */
+function pageOffsets(svg) {
+  return [...String(svg || '').matchAll(/<g[^>]*\bdata-page="\d+"[^>]*\btransform="translate\(\s*[\d.-]+[\s,]+([\d.-]+)\s*\)"/g)]
+    .map((match) => Number(match[1]))
+    .filter((value) => Number.isFinite(value));
+}
+
 function sliceRenderedPages(rendered) {
   const width = Number(rendered?.width) || 595;
   const pageCount = Math.max(1, Number(rendered?.pageCount) || 1);
   const totalHeight = minimumPhysicalHeight(rendered);
-  const pageHeight = totalHeight / pageCount;
+  const offsets = pageOffsets(rendered?.svg);
+  const usable = offsets.length === pageCount ? offsets : null;
+  const uniformHeight = totalHeight / pageCount;
   const content = svgBody(rendered?.svg);
   return Array.from({ length: pageCount }, (_value, index) => {
-    const offset = pageHeight * index;
+    const offset = usable ? usable[index] : uniformHeight * index;
+    // 마지막 쪽은 뒤따르는 마커가 없다. 균등 추정값 대신 직전 쪽 간격을 그대로 써야
+    // 마지막 쪽만 높이가 다르게 잘리지 않는다.
+    const step = usable
+      ? (usable[index + 1] ?? offset + (index > 0 ? offset - usable[index - 1] : uniformHeight))
+      : uniformHeight * (index + 1);
+    const pageHeight = Math.max(1, step - offset);
     return (
       `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${pageHeight}" `
       + `viewBox="0 0 ${width} ${pageHeight}"><rect width="${width}" height="${pageHeight}" fill="#fff"/>`

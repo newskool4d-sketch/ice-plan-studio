@@ -118,6 +118,15 @@ STYLE_SETS = {
 BOLD_PATTERN = re.compile(r'\*\*(.+?)\*\*')
 
 
+def resolve_layout_profile(metadata):
+    """미리보기(previewProjection)와 같은 규칙으로 layoutProfile을 고른다."""
+    profile_id = (
+        (metadata.get('layout') or {}).get('profile')
+        or ('worldschool-2026' if metadata.get('documentKind') == 'school-guidance-basic-plan' else None)
+    )
+    return (TOKENS.get('layoutProfiles') or {}).get(profile_id or '') or {}
+
+
 def style_for_model(template, model):
     base = STYLE_SETS[template]
     style = {
@@ -126,12 +135,7 @@ def style_for_model(template, model):
         'bold_map': dict(base['bold_map']),
         'heading': dict(base['heading']),
     }
-    metadata = model.get('metadata', {})
-    profile_id = (
-        (metadata.get('layout') or {}).get('profile')
-        or ('worldschool-2026' if metadata.get('documentKind') == 'school-guidance-basic-plan' else None)
-    )
-    profile = (TOKENS.get('layoutProfiles') or {}).get(profile_id or '') or {}
+    profile = resolve_layout_profile(model.get('metadata', {}))
     if template == 'boncheong' and profile.get('bodySizePt') == 13:
         style['body'] = ('132', '238')
         style['list_parapr'] = '239'
@@ -545,7 +549,11 @@ def page_type_paragraphs(
                 if str(value).strip()
             )
             if department_line:
-                parts.append(text_para(department_line, '121', '22', style))
+                # 기관명·부서명 크기는 미리보기(--opening-department-size)와 같은
+                # layoutProfile 값을 따라야 한다. 121=12pt, 132=13pt.
+                department_charpr = '132' if resolve_layout_profile(metadata).get(
+                    'openingDepartmentSizePt') == 13 else '121'
+                parts.append(text_para(department_line, department_charpr, '22', style))
         if page_type == 'body-continuation':
             page_blocks = page.get('blocks') or []
         else:
