@@ -110,9 +110,11 @@ def main() -> int:
     calibrated_for = ADAPTIVE.get('calibratedForBodySizePt')
     body_size = TYPOGRAPHY.get('body', {}).get('sizePt')
     if calibrated_for is not None and body_size is not None and calibrated_for != body_size:
-        print(json.dumps({
+        skip_log = {
             'gate': 'adaptive-layout',
+            'generatedAt': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
             'skipped': True,
+            'comChecked': False,
             'reason': 'calibration-pending',
             'detail': (f'safeFillThreshold는 본문 {calibrated_for}pt에서 실측한 값인데 현재 본문은 '
                        f'{body_size}pt다. 재교정 전까지 적응 조판을 사용하지 않으므로 '
@@ -122,7 +124,12 @@ def main() -> int:
                              'layout-tokens.json adaptiveSpacing.calibratedForBodySizePt를 '
                              f'{body_size}(으)로 올릴 것.'),
             'guarantees': 'none — 재교정 전에는 이 게이트가 적응 조판을 보증하지 않는다.',
-        }, ensure_ascii=False, indent=2))
+        }
+        # 건너뛴 상태도 기록으로 남긴다. 남기지 않으면 gate-log.json에 직전 실행의
+        # 실패 기록이 그대로 남아, 코드는 "건너뜀"이라는데 기록은 "실패"라고 말한다.
+        (HERE / 'gate-log.json').write_text(
+            json.dumps(skip_log, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        print(json.dumps(skip_log, ensure_ascii=False, indent=2))
         return 0
 
     log = {'generatedAt': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),

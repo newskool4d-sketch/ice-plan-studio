@@ -1,6 +1,6 @@
 {
   "name": "ice-plan-studio-prototype",
-  "version": "0.12.6",
+  "version": "0.12.7",
   "private": true,
   "type": "module",
   "main": "electron/main.cjs",
