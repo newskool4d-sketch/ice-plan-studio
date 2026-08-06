@@ -153,8 +153,17 @@ function WorkflowApp() {
   const loadFile = async (input) => {
     if (!input) return;
     try {
-      const parsed = window.icePlan?.loadPlanInput && input.path
-        ? (await window.icePlan.loadPlanInput(input.path)).model
+      // Electron 32부터 File.path가 사라져 preload의 webUtils.getPathForFile로
+      // 경로를 얻는다. 경로가 없으면 텍스트로 읽는 수밖에 없는데, 그 경로는
+      // markdown 전용이다 — HWPX·HWP를 텍스트로 읽으면 ZIP 바이너리가 그대로
+      // 본문 블록이 되어 조판이 깨진다. 조용히 망가뜨리지 말고 막는다.
+      const filePath = input.path || window.icePlan?.pathForFile?.(input) || null;
+      const binary = /\.(hwpx?|iceplan)$/i.test(input.name || "");
+      if (binary && !(window.icePlan?.loadPlanInput && filePath)) {
+        throw new Error(`${input.name}은 파일 경로를 확인할 수 있는 데스크톱 앱에서만 불러올 수 있습니다.`);
+      }
+      const parsed = window.icePlan?.loadPlanInput && filePath
+        ? (await window.icePlan.loadPlanInput(filePath)).model
         : parseMarkdown(await input.text(), { title: input.name });
       const prepared = ensurePlanDecisions(parsed);
       const title = modelTitle(prepared, input.name);

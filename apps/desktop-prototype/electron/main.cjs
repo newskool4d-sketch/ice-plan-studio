@@ -7,7 +7,7 @@ const { renderHwpxToSvg } = require('kordoc');
 const { kordocSmokeInfo, loadPlanInput } = require('./input-adapters.cjs');
 const { createProfileArchive, createProjectArchive, readProfileArchive, readProjectArchive } = require('./workspace-packages.cjs');
 const { renderPagedPreview } = require('./preview-split.cjs');
-const { fitLayout } = require('./layout-fit.cjs');
+const { fitLayout, spacingCalibrationCurrent } = require('./layout-fit.cjs');
 
 const LAYOUT_TOKENS = JSON.parse(
   require('node:fs').readFileSync(
@@ -109,7 +109,9 @@ async function generateFitted(model, workDir, modelPath, outputPath) {
     await runGenerator(modelPath, outputPath, template);
     return null;
   }
-  if (layoutProfile?.adaptiveSpacingCalibrated === false) {
+  const bodySizePt = layoutProfile?.bodySizePt || LAYOUT_TOKENS.typography.body.sizePt;
+  const calibrationCurrent = spacingCalibrationCurrent(tokens, bodySizePt);
+  if (layoutProfile?.adaptiveSpacingCalibrated === false || !calibrationCurrent) {
     await runGenerator(modelPath, outputPath, template);
     const spacing = {
       lineSpacingPercent: tokens.baseLineSpacingPercent,
@@ -118,7 +120,7 @@ async function generateFitted(model, workDir, modelPath, outputPath) {
     return {
       applied: false,
       reason: 'profile-calibration-pending',
-      notice: `본문 ${layoutProfile.bodySizePt}pt 적용 — 한글 COM 실물 교정 전까지 자동 간격 조정을 사용하지 않습니다.`,
+      notice: `본문 ${bodySizePt}pt 적용 — 한글 COM 실물 교정 전까지 자동 간격 조정을 사용하지 않습니다.`,
       base: { spacing, pageCount: null },
       final: { spacing, pageCount: null },
     };
@@ -172,9 +174,11 @@ ipcMain.handle('render-composition-preview', async (_event, model) => {
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'ice-plan-preview-'));
   const modelPath = path.join(workDir, 'document.model.json');
   const hwpxPath = path.join(workDir, 'document.hwpx');
+  let generated = false;
   try {
     await fs.writeFile(modelPath, JSON.stringify(model), 'utf8');
     const fitted = await generateFitted(model, workDir, modelPath, hwpxPath);
+    generated = true;
     // kordoc reflow는 하드 쪽 나눔(pageBreak="1")을 무시하므로 쪽 나눔 경계로
     // 분할 렌더한다 — preview-split.cjs 참조.
     const rendered = await renderPagedPreview(await fs.readFile(hwpxPath), renderHwpxToSvg);
@@ -186,8 +190,13 @@ ipcMain.handle('render-composition-preview', async (_event, model) => {
       stats: rendered.stats,
       layoutAdjustment: adjustmentPayload(fitted),
     };
+  } catch (error) {
+    // 실패한 생성물(model.json·section0.xml)을 지우면 원인 추적이 불가능하다.
+    // 성공했을 때만 정리하고, 실패 시에는 작업 폴더 경로를 오류에 실어 보낸다.
+    error.message = `${error.message}\n[진단용 작업 폴더 보존] ${workDir}`;
+    throw error;
   } finally {
-    await fs.rm(workDir, { recursive: true, force: true });
+    if (generated) await fs.rm(workDir, { recursive: true, force: true });
   }
 });
 

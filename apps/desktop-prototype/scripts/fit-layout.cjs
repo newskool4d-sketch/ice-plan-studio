@@ -12,7 +12,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const { fitLayout } = require(path.join(__dirname, '..', 'electron', 'layout-fit.cjs'));
+const { fitLayout, spacingCalibrationCurrent } = require(path.join(__dirname, '..', 'electron', 'layout-fit.cjs'));
 const TOKENS = JSON.parse(fs.readFileSync(path.join(__dirname, 'layout-tokens.json'), 'utf8'));
 
 // py 런처가 없는 PC(파이썬 직접 설치)를 위해 python 폴백을 둔다 — main.cjs와 같은 정책.
@@ -55,12 +55,15 @@ async function main() {
   };
 
   try {
-    if (template === TOKENS.adaptiveSpacing.template && layoutProfile?.adaptiveSpacingCalibrated === false) {
+    const bodySizePt = layoutProfile?.bodySizePt || TOKENS.typography.body.sizePt;
+    const calibrationStale = !spacingCalibrationCurrent(TOKENS.adaptiveSpacing, bodySizePt);
+    if (template === TOKENS.adaptiveSpacing.template
+      && (layoutProfile?.adaptiveSpacingCalibrated === false || calibrationStale)) {
       python([generator, modelPath, outputPath, '--template', template]);
       console.log(JSON.stringify({
         applied: false,
         reason: 'profile-calibration-pending',
-        notice: `본문 ${layoutProfile.bodySizePt}pt 적용 — 한글 COM 실물 교정 전까지 자동 간격 조정을 사용하지 않습니다.`,
+        notice: `본문 ${bodySizePt}pt 적용 — 한글 COM 실물 교정 전까지 자동 간격 조정을 사용하지 않습니다.`,
         final: {
           spacing: {
             lineSpacingPercent: TOKENS.adaptiveSpacing.baseLineSpacingPercent,

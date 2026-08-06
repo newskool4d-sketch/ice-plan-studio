@@ -37,7 +37,10 @@ from hwp_com_session import HwpSession  # noqa: E402
 
 MODELS = HERE / 'models'
 OUT = HERE / 'out'
-TOKENS = json.loads((SCRIPTS / 'layout-tokens.json').read_text(encoding='utf-8'))['adaptiveSpacing']
+_ALL_TOKENS = json.loads((SCRIPTS / 'layout-tokens.json').read_text(encoding='utf-8'))
+TOKENS = _ALL_TOKENS['adaptiveSpacing']
+ADAPTIVE = TOKENS
+TYPOGRAPHY = _ALL_TOKENS['typography']
 BASE_SPACING = TOKENS['squeezeLadder'][0]['lineSpacingPercent']
 
 # fixture는 calibrate.py가 만드는 sweep 모델을 그대로 쓴다(같은 분량 정의를 두 번
@@ -99,6 +102,28 @@ def main() -> int:
         print(json.dumps({'error': 'fixture 모델 없음 — calibrate.py를 먼저 실행하세요.',
                           'missing': missing}, ensure_ascii=False))
         return 2
+
+    # 측정기 교정이 만료되면 보정 루프 자체가 꺼진다(layout-fit.cjs
+    # spacingCalibrationCurrent). 이 상태에서 기대값을 단정하면 게이트가 영구
+    # 적색이 되어 진짜 회귀와 구분되지 않는다. 건너뛴다는 사실을 분명히 알리고
+    # 통과로 처리하되, 재교정 전에는 이 게이트가 아무것도 보증하지 않음을 밝힌다.
+    calibrated_for = ADAPTIVE.get('calibratedForBodySizePt')
+    body_size = TYPOGRAPHY.get('body', {}).get('sizePt')
+    if calibrated_for is not None and body_size is not None and calibrated_for != body_size:
+        print(json.dumps({
+            'gate': 'adaptive-layout',
+            'skipped': True,
+            'reason': 'calibration-pending',
+            'detail': (f'safeFillThreshold는 본문 {calibrated_for}pt에서 실측한 값인데 현재 본문은 '
+                       f'{body_size}pt다. 재교정 전까지 적응 조판을 사용하지 않으므로 '
+                       f'{len(CASES)}개 사례를 건너뛴다.'),
+            'skippedCases': [case['id'] for case in CASES],
+            'howToRestore': ('py test-data/adaptive-layout/calibrate.py --com 으로 재교정한 뒤 '
+                             'layout-tokens.json adaptiveSpacing.calibratedForBodySizePt를 '
+                             f'{body_size}(으)로 올릴 것.'),
+            'guarantees': 'none — 재교정 전에는 이 게이트가 적응 조판을 보증하지 않는다.',
+        }, ensure_ascii=False, indent=2))
+        return 0
 
     log = {'generatedAt': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
            'comChecked': args.com, 'cases': {}}

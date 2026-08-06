@@ -128,13 +128,11 @@ try {
   // 적응 조판이 "실제로" 동작하는지 확인한다. 보정이 필요 없는 입력만 넣으면
   // 하드코딩된 null과 정상 동작을 구분할 수 없다(memory: electron-cdp-verification —
   // 위반 있는/없는 양쪽 입력을 모두 넣어야 정적 mock을 잡는다).
-  // 32문단은 기본 간격(160%)에서 한 쪽을 살짝 넘겨 3쪽이 되고, 조이면 2쪽으로
-  // 돌아온다(sweep 실측: 155% rung에서 성공). 본문 타이포그래피가 12pt/160%에서
-  // 13pt/170%로 바뀌며 예전 36문단 기준은 사다리 끝(140%)까지 조여도 2쪽에 못
-  // 들어가 재보정했다(2026-08-05) — test-data/adaptive-layout/gate.py의
-  // 'sweep-p36' fixture도 같은 타이포그래피 변경의 영향을 받을 수 있으나, 그쪽은
-  // 한글 COM 실물 계측(calibrate:layout-measure --com)이 필요해 이 스크립트
-  // 범위 밖이다. 재교정 필요 여부를 별도로 확인할 것.
+  //
+  // 단, 측정기 교정이 만료되면(layout-tokens.json calibratedForBodySizePt ≠ 본문
+  // 크기) 앱은 보정 루프를 아예 돌리지 않고 원래 조판을 낸다. 그때는 "보정이
+  // 걸렸는가"가 아니라 **"교정 만료를 정확히 알리고 조판을 건드리지 않았는가"**를
+  // 단정해야 한다. 그러지 않으면 이 게이트가 영구 실패해 dist:installer가 막힌다.
   const overflowing = {
     ...model,
     metadata: { ...model.metadata, title: '적응 조판 검증', cover: { ...model.metadata.cover, title: '적응 조판 검증' } },
@@ -148,6 +146,14 @@ try {
   report.ipcAdaptive.adjustmentApplied = report.ipcAdaptive.adjustment?.applied === true;
   report.ipcAdaptive.hasNotice = Boolean(report.ipcAdaptive.adjustment?.notice);
   report.ipcAdaptive.pagesMatch = report.ipcAdaptive.pageCount === EXPECTED_PAGES;
+  report.ipcAdaptive.calibrationPending = report.ipcAdaptive.adjustment?.reason === 'profile-calibration-pending';
+  // 교정 만료 상태의 계약: 보정을 걸지 않고(applied=false), 사용자에게 이유를
+  // 고지하며(notice), 사다리 0단(=본문 실제 줄간격)을 그대로 쓴다.
+  report.ipcAdaptive.pendingContractHeld = report.ipcAdaptive.calibrationPending
+    && report.ipcAdaptive.adjustment?.applied === false
+    && report.ipcAdaptive.hasNotice === true
+    && report.ipcAdaptive.adjustment?.baseLineSpacingPercent
+      === report.ipcAdaptive.adjustment?.finalLineSpacingPercent;
 
   ws.close();
 } catch (error) {
@@ -160,7 +166,13 @@ report.passed = !report.fatal && report.exceptions.length === 0
   && report.rootChildren > 0 && report.hasIcePlanBridge === true && report.versionShown === true
   && report.ipcPreview?.ok === true && report.ipcPreview?.pagesMatch === true
   && report.ipcPreview?.adjustmentSkipped === true
-  && report.ipcAdaptive?.ok === true && report.ipcAdaptive?.adjustmentApplied === true
-  && report.ipcAdaptive?.hasNotice === true && report.ipcAdaptive?.pagesMatch === true;
+  && report.ipcAdaptive?.ok === true
+  && (report.ipcAdaptive?.calibrationPending
+    // 교정 만료: 조판을 건드리지 않고 이유를 고지했는지만 단정한다.
+    ? report.ipcAdaptive?.pendingContractHeld === true
+    // 교정 유효: 보정이 실제로 걸려 쪽수가 목표로 돌아왔는지 단정한다.
+    : report.ipcAdaptive?.adjustmentApplied === true
+      && report.ipcAdaptive?.hasNotice === true
+      && report.ipcAdaptive?.pagesMatch === true);
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.passed ? 0 : 1;

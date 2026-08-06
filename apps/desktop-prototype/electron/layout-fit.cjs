@@ -126,4 +126,19 @@ async function fitLayout(regenerate, tokens) {
   return finish(result);
 }
 
-module.exports = { fitLayout, shouldSqueeze };
+/**
+ * 측정기 교정이 현재 본문 크기에 유효한가.
+ *
+ * safeFillThreshold는 특정 본문 크기에서 한글 COM과 대조해 실측한 값이다. 본문
+ * 크기가 바뀌면 그 임계는 더 이상 "들어감/안 들어감"을 가르지 못하고, 루프는
+ * 멀쩡한 문서를 늘이거나 못 줄일 문서를 계속 조인다(실측: 13pt 전환 후 게이트
+ * 4종 중 3종이 반대로 판정). 교정 전에는 보정을 아예 하지 않는 편이 안전하다.
+ */
+function spacingCalibrationCurrent(tokens, bodySizePt) {
+  const calibrated = Number(tokens?.calibratedForBodySizePt);
+  const actual = Number(bodySizePt);
+  if (!Number.isFinite(calibrated) || !Number.isFinite(actual)) return true;
+  return calibrated === actual;
+}
+
+module.exports = { fitLayout, shouldSqueeze, spacingCalibrationCurrent };
