@@ -64,10 +64,15 @@ try {
   });
   const send = (method, params = {}) => new Promise((resolve, reject) => {
     const n = ++id;
+    // 적응 조판 검증(ipcAdaptive)은 후보 생성 루프(sadeuri)를 여러 rung 도는 IPC
+    // 호출을 기다린다 — squeeze가 실패(exhausted)하면 조기 반환 없이 사다리
+    // 전체를 다 돌므로 성공 케이스보다 오래 걸린다(후보 1회당 model_to_hwpx.py
+    // 재실행 + 목차 쪽 번호 계산 포함). 넉넉히 잡아 느린 정상 완료를 오탐 실패로
+    // 처리하지 않는다.
     const timeout = setTimeout(() => {
       pending.delete(n);
       reject(new Error(`CDP ${method} 응답 시간 초과`));
-    }, 10_000);
+    }, 30_000);
     pending.set(n, (message) => { clearTimeout(timeout); resolve(message); });
     ws.send(JSON.stringify({ id: n, method, params }));
   });
@@ -123,13 +128,18 @@ try {
   // 적응 조판이 "실제로" 동작하는지 확인한다. 보정이 필요 없는 입력만 넣으면
   // 하드코딩된 null과 정상 동작을 구분할 수 없다(memory: electron-cdp-verification —
   // 위반 있는/없는 양쪽 입력을 모두 넣어야 정적 mock을 잡는다).
-  // 36문단은 기본 간격에서 한 쪽을 살짝 넘겨 3쪽이 되고, 조이면 2쪽으로 돌아온다
-  // (test-data/adaptive-layout/gate.py fixture A와 같은 분량).
+  // 32문단은 기본 간격(160%)에서 한 쪽을 살짝 넘겨 3쪽이 되고, 조이면 2쪽으로
+  // 돌아온다(sweep 실측: 155% rung에서 성공). 본문 타이포그래피가 12pt/160%에서
+  // 13pt/170%로 바뀌며 예전 36문단 기준은 사다리 끝(140%)까지 조여도 2쪽에 못
+  // 들어가 재보정했다(2026-08-05) — test-data/adaptive-layout/gate.py의
+  // 'sweep-p36' fixture도 같은 타이포그래피 변경의 영향을 받을 수 있으나, 그쪽은
+  // 한글 COM 실물 계측(calibrate:layout-measure --com)이 필요해 이 스크립트
+  // 범위 밖이다. 재교정 필요 여부를 별도로 확인할 것.
   const overflowing = {
     ...model,
     metadata: { ...model.metadata, title: '적응 조판 검증', cover: { ...model.metadata.cover, title: '적응 조판 검증' } },
     blocks: [{ id: 'h', type: 'heading', role: 'heading', level: 1, text: 'Ⅰ. 검증' },
-             ...Array.from({ length: 36 }, (_value, index) => ({
+             ...Array.from({ length: 32 }, (_value, index) => ({
                id: `p${index}`, type: 'paragraph', role: 'body',
                text: `${index + 1}. 조판 측정기 교정을 위한 본문 문단으로 분량 경계를 확인한다`,
              }))],

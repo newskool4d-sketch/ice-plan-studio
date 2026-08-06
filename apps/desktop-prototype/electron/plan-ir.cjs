@@ -25,6 +25,88 @@ function normalizeText(value) {
     .join('\n');
 }
 
+const IMPORTED_TASK_SUBHEADING = /^\s*(?:\[과제\s*\d+\s*-\s*\d+\]|과제\s*\d+\s*-\s*\d+\.?)\s*(\S.*)$/;
+const IMPORTED_TASK_HEADING = /^\s*(?:\[과제\s*\d+\]|과제\s*\d+\.?)\s*(\S.*)$/;
+const IMPORTED_CHAPTER_HEADING = /^\s*(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+\.)\s+(\S.*)$/;
+const IMPORTED_KOREAN_SUBHEADING = /^\s*[가-하]\.\s+(\S.*)$/;
+const IMPORTED_DATE = /^\s*\d{4}\.\s*\d{1,2}\.\s*$/;
+// 번호로 시작하는 본문 문단이 제목으로 승격되는 것을 막는 상한(공백 제외).
+// 점선 목차 줄("Ⅰ. 추진 근거 ......... 1")도 이 상한에 걸려 본문 제목에서 빠진다.
+// model_to_hwpx.py NUMERIC_HEADING_MAX_TITLE_CHARS와 같은 값을 유지할 것.
+const IMPORTED_HEADING_MAX_TITLE_CHARS = 20;
+
+function isPlausibleImportedHeadingTitle(title) {
+  const stripped = String(title || '').replace(/\s+/g, '');
+  return stripped.length > 0 && stripped.length <= IMPORTED_HEADING_MAX_TITLE_CHARS;
+}
+
+function normalizeImportedHeadingBlock(block) {
+  if (!['paragraph', 'listItem', 'heading'].includes(block?.type)) return block;
+  const text = [block.marker, block.text].filter(Boolean).join(' ').trim();
+  if (!text || IMPORTED_DATE.test(text)) return block;
+  let level = null;
+  let headingKind = null;
+  let match = IMPORTED_TASK_SUBHEADING.exec(text);
+  if (match && isPlausibleImportedHeadingTitle(match[1])) {
+    level = 2;
+    headingKind = 'task-subsection';
+  } else if ((match = IMPORTED_TASK_HEADING.exec(text)) && isPlausibleImportedHeadingTitle(match[1])) {
+    level = 1;
+    headingKind = 'task-section';
+  } else if ((match = IMPORTED_CHAPTER_HEADING.exec(text)) && isPlausibleImportedHeadingTitle(match[1])) {
+    level = 1;
+    headingKind = 'chapter';
+  } else if ((match = IMPORTED_KOREAN_SUBHEADING.exec(text)) && isPlausibleImportedHeadingTitle(match[1])) {
+    level = 2;
+    headingKind = 'korean-subheading';
+  }
+  if (!level) return block;
+  return {
+    ...block,
+    type: 'heading',
+    role: 'heading',
+    level,
+    text,
+    headingKind,
+    sourceType: block.type,
+  };
+}
+
+function normalizeImportedHeadings(model) {
+  if ((model?.metadata?.sourcePages || []).length) {
+    return {
+      ...model,
+      // 쪽 분할 가져오기는 blockIndices를 유지해야 하므로 필터링하거나 재정렬하지
+      // 않고, 각 블록의 제목 의미만 보강한다.
+      blocks: (model?.blocks || []).map(normalizeImportedHeadingBlock),
+    };
+  }
+  const documentTitle = normalizeText(model?.metadata?.title || '')
+    .replace(/\.(md|txt|hwpx?|iceplan)$/i, '')
+    .trim();
+  const artifact = (block) => {
+    const text = normalizeText(block?.text || '').trim();
+    if (/^(?:-{3,}|—{3,}|_{3,})$/.test(text)) return true;
+    if (documentTitle && text === documentTitle) return true;
+    if (block?.type !== 'table' || !documentTitle) return false;
+    const cellText = [
+      ...(block.header || []),
+      ...(block.rows || []).flat(),
+    ].map((value) => normalizeText(value || '').trim()).filter(Boolean).join('');
+    return cellText === documentTitle;
+  };
+  let blocks = (model?.blocks || []).filter((block) => !artifact(block));
+  const tocIndex = blocks.findIndex((block) => (
+    block?.type !== 'table'
+    && /^목\s*차$/.test(normalizeText(block?.text || '').trim())
+  ));
+  if (tocIndex > 0) blocks = blocks.slice(tocIndex);
+  return {
+    ...model,
+    blocks: blocks.map(normalizeImportedHeadingBlock),
+  };
+}
+
 function positiveInteger(value) {
   const number = Number(value);
   return Number.isInteger(number) && number > 0 ? number : null;
@@ -450,6 +532,8 @@ module.exports = {
   createPlanIR,
   kordocResultToPlanIR,
   kordocResultsToPlanIR,
+  normalizeImportedHeadingBlock,
+  normalizeImportedHeadings,
   normalizeText,
   parseTextToPlanIR,
   semanticProjection,

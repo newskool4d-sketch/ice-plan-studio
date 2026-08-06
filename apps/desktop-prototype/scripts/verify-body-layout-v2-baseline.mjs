@@ -24,7 +24,7 @@ const requiredIds = [
   "summary-missing-template",
   "body-opening-continuation",
   "bullet-override",
-  "layout-14pt-boundaries",
+  "layout-13pt-boundaries",
 ];
 
 function assert(condition, message) {
@@ -120,8 +120,8 @@ function evaluateFixture(fixture) {
     );
   }
 
-  if (fixture.id === "layout-14pt-boundaries") {
-    check("14pt-layout-profile", projection.layoutProfile?.bodySizePt === fixture.expected.bodyFontSizePt);
+  if (fixture.id === "layout-13pt-boundaries") {
+    check("13pt-layout-profile", projection.layoutProfile?.bodySizePt === fixture.expected.bodyFontSizePt);
     check("stale-12pt-calibration-disabled", projection.layoutProfile?.adaptiveSpacingCalibrated === false);
     check("com-recalibration-declared", fixture.expected.comComparisonRequired === true);
   }

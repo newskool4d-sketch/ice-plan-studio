@@ -19,10 +19,10 @@
     "repeatHeader": true
   },
   "typography": {
-    "body": { "font": "함초롬바탕", "sizePt": 12, "lineSpacingPercent": 160, "charPrId": "121", "paraPrId": "73" },
+    "body": { "font": "함초롬바탕", "sizePt": 13, "lineSpacingPercent": 170, "charPrId": "132", "paraPrId": "238" },
     "heading": { "font": "함초롬바탕", "sizePt": 14, "charPrId": "9", "paraPrId": "1" },
-    "tableHeader": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "307", "charSpacingPercent": -15 },
-    "tableBody": { "font": "맑은 고딕", "sizePt": 10, "charPrId": "417", "charSpacingPercent": -11 }
+    "tableHeader": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "82", "charSpacingPercent": -15 },
+    "tableBody": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "83", "charSpacingPercent": -15 }
   },
   "adaptiveSpacing": {
     "_note": "9단계 적응 조판. boncheong 템플릿 한정 — gonmun의 본문 paraPr 0·14는 표지·표와 공용이라 건드리면 회귀한다.",
@@ -74,8 +74,8 @@
       "summaryTitleSizePt": 22,
       "summaryBoxSizePt": 12,
       "openingSloganSizePt": 16,
-      "openingTitleSizePt": 18,
-      "openingDepartmentSizePt": 12,
+      "openingTitleSizePt": 22,
+      "openingDepartmentSizePt": 13,
       "chapterLabelSizePt": 14,
       "chapterTitleSizePt": 18,
       "taskLabelSizePt": 13,
@@ -85,7 +85,7 @@
       "chapterAccentColor": "#3057B9",
       "taskAccentColor": "#1E7452",
       "taskSubAccentColor": "#2D629C",
-      "bodySizePt": 14,
+      "bodySizePt": 13,
       "noteSizePt": 11,
       "pageNumberSizePt": 10,
       "adaptiveSpacingCalibrated": false

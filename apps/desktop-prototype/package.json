@@ -1,6 +1,6 @@
 {
   "name": "ice-plan-studio-prototype",
-  "version": "0.12.2",
+  "version": "0.12.6",
   "private": true,
   "type": "module",
   "main": "electron/main.cjs",
@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "5.0.4",
+    "@xmldom/xmldom": "0.8.13",
     "adm-zip": "0.5.16",
     "kordoc": "4.1.0",
     "react": "19.2.0",
@@ -76,7 +77,8 @@
     },
     "asarUnpack": [
       "scripts/**/*",
-      "hwpx-toolkit/**/*"
+      "hwpx-toolkit/**/*",
+      "node_modules/**/*"
     ]
   }
 }

@@ -46,6 +46,7 @@ function WorkflowApp() {
   const [agencyId, setAgencyId] = useState(defaultAgencyProfile.id);
   const [previewMode, setPreviewMode] = useState("react");
   const [realPreview, setRealPreview] = useState(null);
+  const [renderedPage, setRenderedPage] = useState(1);
   // 설치본이 어느 빌드인지 화면에서 바로 확인하기 위한 표시(Electron에서만 채워진다).
   const [appVersion, setAppVersion] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -140,7 +141,11 @@ function WorkflowApp() {
     let cancelled = false;
     setRealPreview(null);
     window.icePlan.renderCompositionPreview(outputModel)
-      .then((result) => { if (!cancelled) setRealPreview(result); })
+      .then((result) => {
+        if (cancelled) return;
+        setRealPreview(result);
+        setRenderedPage((value) => Math.min(Math.max(value, 1), result.pageCount || 1));
+      })
       .catch((error) => { if (!cancelled) setNotice(`실조판 미리보기를 만들지 못했습니다: ${error.message}`); });
     return () => { cancelled = true; };
   }, [outputModel]);
@@ -177,6 +182,7 @@ function WorkflowApp() {
       setSelectedRuleId(null);
       setRuleHistory([]);
       setPage(1);
+      setRenderedPage(1);
       setPreviewMode("react");
       setActiveStep(1);
       setNotice(`${input.name}을 불러왔습니다. 분석 결과를 확인해 주세요.`);
@@ -640,10 +646,15 @@ function WorkflowApp() {
     <div className="app-body">
       <WorkflowRail activeStep={activeStep} available={available} completed={completed} onSelect={setActiveStep} />
       <section className="review-workspace" ref={workspaceRef} style={{ "--inspector-size": `${inspectorPct}%` }}>
-        <ThumbnailRail projection={projection} page={page} onSelectPage={setPage} issueCountByPage={issueCountByPage} />
+        <ThumbnailRail
+          projection={projection} page={page} onSelectPage={setPage} issueCountByPage={issueCountByPage}
+          previewMode={previewMode} realPreview={realPreview}
+          renderedPage={renderedPage} onSelectRenderedPage={setRenderedPage}
+        />
         <DocumentStage
           previewMode={previewMode} onPreviewMode={setPreviewMode} realPreview={realPreview}
           zoom={zoom} onZoom={setZoom} projection={projection} current={current}
+          renderedPage={renderedPage} onRenderedPage={setRenderedPage}
           agencyName={agency.displayName}
           highlightBlockIndex={activeStep === 4 ? selectedFinding?.target?.blockIndex : null}
         />

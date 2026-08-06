@@ -25,7 +25,10 @@ function runPython(args, { onStdout } = {}) {
     const settle = (fn, value) => { if (!settled) { settled = true; fn(value); } };
     const tryLaunch = (candidates) => {
       const [[command, ...prefixArgs], ...rest] = candidates;
-      const child = spawn(command, [...prefixArgs, ...args], { windowsHide: true });
+      const child = spawn(command, [...prefixArgs, ...args], {
+        windowsHide: true,
+        env: { ...process.env, ICE_PLAN_ELECTRON_EXEC: process.execPath, PYTHONIOENCODING: 'utf-8' },
+      });
       let stderr = '';
       child.stderr.on('data', (chunk) => { stderr += chunk.toString(); });
       if (onStdout) child.stdout.on('data', onStdout);
@@ -177,6 +180,7 @@ ipcMain.handle('render-composition-preview', async (_event, model) => {
     const rendered = await renderPagedPreview(await fs.readFile(hwpxPath), renderHwpxToSvg);
     return {
       svg: rendered.svg,
+      pages: rendered.pages,
       pageCount: rendered.pageCount,
       warnings: rendered.warnings,
       stats: rendered.stats,

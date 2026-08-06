@@ -6,6 +6,10 @@ import { createPreviewProjection } from "./previewProjection.js";
 import { ensurePlanDecisions, pagePlanFromDecisions } from "./planDecisions.js";
 
 export function modelTitle(model, fallback) {
+  if (model?.source?.format === "hwpx") {
+    return (model?.metadata?.cover?.title || model?.metadata?.title || fallback)
+      .replace(/\.(md|txt|hwpx?|iceplan)$/i, "");
+  }
   return model?.blocks?.find((block) => block.type === "heading" && block.level === 1)?.text
     || model?.metadata?.cover?.title
     || model?.metadata?.title
@@ -37,6 +41,7 @@ export function compositionModel(model, agency) {
         ...(model.metadata?.layout || {}),
         template: "boncheong",
         coverProfile: agency.coverProfile,
+        ...(typeof agency?.innerCover === "boolean" ? { innerCover: agency.innerCover } : {}),
       },
     },
   };
@@ -60,7 +65,8 @@ export function profilePackage(agency) {
 
 export function pageDraftsFrom(model, agency) {
   const prepared = ensurePlanDecisions(model);
-  const planned = pagePlanFromDecisions(prepared);
+  const planned = pagePlanFromDecisions(prepared)
+    .filter((page) => agency?.innerCover !== false || page.type !== "inner-cover");
   const projectionModel = {
     ...prepared,
     metadata: { ...prepared.metadata, pages: planned },

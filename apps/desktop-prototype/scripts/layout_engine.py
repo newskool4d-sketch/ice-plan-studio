@@ -65,7 +65,8 @@ def page_sequence(metadata: dict[str, Any], profile: CoverProfile) -> list[dict[
             if page_type not in PAGE_TYPES:
                 raise ValueError(f'Unsupported page type: {page_type}')
             normalized.append({'type': page_type})
-    if profile.inner_cover and not any(page['type'] == 'inner-cover' for page in normalized):
+    inner_cover = (metadata.get('layout') or {}).get('innerCover', profile.inner_cover)
+    if inner_cover and not any(page['type'] == 'inner-cover' for page in normalized):
         cover_index = next((index for index, page in enumerate(normalized) if page['type'] == 'cover'), -1)
         normalized.insert(cover_index + 1, {'type': 'inner-cover'})
     return normalized

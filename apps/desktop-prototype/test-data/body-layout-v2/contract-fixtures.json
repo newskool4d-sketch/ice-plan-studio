@@ -97,8 +97,8 @@
       "baseline": { "status": "expected-gap", "gap": "explicit per-document override reason and visual indentation roundtrip are not a complete gate" }
     },
     {
-      "id": "layout-14pt-boundaries",
-      "purpose": "worldschool-2026 14pt 조판의 경계 분량을 별도 교정",
+      "id": "layout-13pt-boundaries",
+      "purpose": "worldschool-2026 13pt 조판의 경계 분량을 별도 교정",
       "source": {
         "format": "synthetic-model",
         "text": "본문 길이만 달라지는 합성 분량 경계 4종"
@@ -107,7 +107,7 @@
       "expected": {
         "pageTypes": ["cover", "toc", "summary", "body-opening", "body-continuation"],
         "layoutProfile": "worldschool-2026",
-        "bodyFontSizePt": 14,
+        "bodyFontSizePt": 13,
         "cases": ["overflow-rescuable", "comfortable-noop", "underfilled-loosen", "overflow-unrescuable"],
         "boundaryCases": [
           { "id": "overflow-rescuable", "expectedAdjustment": "squeeze", "expectedOutcome": "target-page-count-after-recalibration", "comComparisonRequired": true },

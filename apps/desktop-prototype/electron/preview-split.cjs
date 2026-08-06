@@ -41,8 +41,32 @@ function minimumPhysicalHeight(rendered) {
   return Math.max(Number(rendered?.height) || 0, a4PageHeight * pageCount);
 }
 
+function svgBody(svg) {
+  return String(svg || '')
+    .replace(/^<\?xml[^?]*\?>\s*/, '')
+    .replace(/^<svg\b[^>]*>/, '')
+    .replace(/<\/svg>\s*$/, '');
+}
+
+function sliceRenderedPages(rendered) {
+  const width = Number(rendered?.width) || 595;
+  const pageCount = Math.max(1, Number(rendered?.pageCount) || 1);
+  const totalHeight = minimumPhysicalHeight(rendered);
+  const pageHeight = totalHeight / pageCount;
+  const content = svgBody(rendered?.svg);
+  return Array.from({ length: pageCount }, (_value, index) => {
+    const offset = pageHeight * index;
+    return (
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${pageHeight}" `
+      + `viewBox="0 0 ${width} ${pageHeight}"><rect width="${width}" height="${pageHeight}" fill="#fff"/>`
+      + `<g transform="translate(0 -${offset})">${content}</g></svg>`
+    );
+  });
+}
+
 async function renderPagedPreview(hwpxBuffer, renderHwpxToSvg) {
   const parts = [];
+  const pages = [];
   let pageCount = 0;
   let width = 0;
   let height = 0;
@@ -51,6 +75,7 @@ async function renderPagedPreview(hwpxBuffer, renderHwpxToSvg) {
   for (const buffer of chunkBuffers(hwpxBuffer)) {
     const r = await renderHwpxToSvg(buffer, { reflow: true, reflowMode: 'keep' });
     parts.push(stripToInnerSvg(r.svg, height));
+    pages.push(...sliceRenderedPages(r));
     pageCount += r.pageCount;
     width = Math.max(width, r.width);
     height += minimumPhysicalHeight(r);
@@ -58,7 +83,13 @@ async function renderPagedPreview(hwpxBuffer, renderHwpxToSvg) {
     for (const key of Object.keys(stats)) stats[key] += r.stats?.[key] || 0;
   }
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="#fff"/>${parts.join('')}</svg>`;
-  return { svg, pageCount, warnings, stats };
+  return { svg, pages, pageCount, warnings, stats };
 }
 
-module.exports = { renderPagedPreview, splitSection, chunkBuffers, minimumPhysicalHeight };
+module.exports = {
+  renderPagedPreview,
+  sliceRenderedPages,
+  splitSection,
+  chunkBuffers,
+  minimumPhysicalHeight,
+};

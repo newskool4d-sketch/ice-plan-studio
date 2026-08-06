@@ -32,8 +32,8 @@ const EXPECTED_FIRST_BLOCK_TEXT = [
   '운영 계획',
   '목 차',
   '요약',
-  '추진 배경',
-  '추진 내용',
+  '1. 추진 배경',
+  '2. 추진 내용',
 ];
 
 function pageBreakParagraph(id, boundaryIndex) {

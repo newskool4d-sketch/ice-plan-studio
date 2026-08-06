@@ -2,10 +2,13 @@
 import argparse
 import base64
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 # 벤더링된 hwpx-toolkit 사용 (타 PC 배포 시 개발자 홈 경로 의존 제거).
@@ -25,10 +28,25 @@ COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
 BODY_TITLE_FRAME_TABLE_ID = '2063551812'
 STRUCTURED_HEADING_PATTERNS = (
-    ('task-subsection', re.compile(r'^\s*(\[과제\s*\d+\s*-\s*\d+\])\s*(.+)$')),
-    ('task-section', re.compile(r'^\s*(\[과제\s*\d+\])\s*(.+)$')),
+    ('task-subsection', re.compile(r'^\s*(\[?과제\s*\d+\s*-\s*\d+\]?[.]?)\s*(.+)$')),
+    ('task-section', re.compile(r'^\s*(\[?과제\s*\d+\]?[.]?)\s*(.+)$')),
     ('roman-chapter', re.compile(r'^\s*([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+)\.\s*(.+)$')),
+    ('roman-chapter', re.compile(r'^\s*(\d+\.)\s*(?!\d)(.+)$')),
 )
+# 번호로 시작하는 일반 본문 문장이 장 제목으로 오인되는 것을 막는 상한(공백 제외).
+# 없으면 "1. 조판 측정기 교정을 위한 본문 문단으로…"가 목차 항목이 되고,
+# populate-toc-pages.cjs가 그 문장의 쪽을 찾지 못해 **빌드 전체가 실패**한다
+# (fixture sweep-w08에서 실제로 재현됨).
+# 20자 근거: 실측 최장 제목이 "학교급별·운영형태별 프로그램군"(15자)이라 여유 5자.
+# 이보다 긴 제목은 구조 제목 표와 목차 양쪽에서 조용히 빠지므로, 실제 문서에서
+# 20자 초과 장 제목이 나오면 상한을 올릴 것.
+NUMERIC_HEADING_MAX_TITLE_CHARS = 20
+
+
+def plausible_heading_title(title):
+    """번호/문자 접두어 뒤 본문이 실제 제목처럼 짧은지 판정한다(공백 제외 길이 기준)."""
+    stripped = re.sub(r'\s+', '', str(title or ''))
+    return 0 < len(stripped) <= NUMERIC_HEADING_MAX_TITLE_CHARS
 
 # 스타일 ID는 템플릿마다 완전히 다르다. 템플릿의 header.xml에 실제 존재하는 ID만
 # 써야 하며, 다른 템플릿의 ID를 쓰면 dangling 참조가 되거나 엉뚱한 서식으로 렌더된다.
@@ -50,22 +68,21 @@ STYLE_SETS = {
         'table_anchor_parapr': '0',
     },
     'boncheong': {
-        # 실측 ID 맵: 9=14pt 본문, 27=18pt 굵은 장제목,
-        # 121=기본 12pt 본문(paraPr 73=개조식 내어쓰기).
-        # 학교 배포용 기본계획(worldschool-2026)은 style_for_model에서 9를 본문으로 쓴다.
-        # 307=표 머리글 맑은고딕 11pt(자간 -15%), 417=표 본문 맑은고딕 10pt,
-        # 64=표 셀 문단(가운데 120%)
+        # 실측 ID 맵: 132=함초롬바탕 13pt 본문, 364=동일 계열 굵게,
+        # 82/83=표 머리글/본문 맑은고딕 11pt, 34=양쪽정렬 170%,
+        # 64=표 머리글 가운데정렬 120%.
         'valid_charpr': {
-            '9', '11', '15', '18', '19', '27', '31', '114', '121', '132',
-            '204', '277', '307', '315', '338', '414', '417', '512',
+            '9', '11', '15', '18', '19', '27', '31', '82', '83', '114', '121',
+            '132', '204', '277', '307', '315', '338', '364', '414', '417', '512',
         },
-        'bold_map': {'9': '19', '121': '132'},
+        'bold_map': {'9': '19', '121': '364', '132': '364'},
         'heading': {1: ('9', '1'), 2: ('132', '73')},
         'heading_default': ('132', '73'),
-        'body': ('121', '73'),
-        'list_parapr': '73',
-        'cell_parapr': '64',
-        'cell_charpr': {'header': '307', 'body': '417'},
+        'korean_subheading': ('132', '240'),
+        'body': ('132', '238'),
+        'list_parapr': '239',
+        'cell_parapr': {'header': '64', 'body': '238'},
+        'cell_charpr': {'header': '82', 'body': '83'},
         'table_anchor_parapr': '1',
         # bf4·bf13·bf17 모두 4면 실선. 표 셀에는 bf13 사용(레퍼런스 표 셀 계열)
         'cell_borderfill': {'header': '13', 'body': '13'},
@@ -115,9 +132,9 @@ def style_for_model(template, model):
         or ('worldschool-2026' if metadata.get('documentKind') == 'school-guidance-basic-plan' else None)
     )
     profile = (TOKENS.get('layoutProfiles') or {}).get(profile_id or '') or {}
-    if template == 'boncheong' and profile.get('bodySizePt') == 14:
-        style['body'] = ('9', '73')
-        style['heading'][1] = ('27', '1')
+    if template == 'boncheong' and profile.get('bodySizePt') == 13:
+        style['body'] = ('132', '238')
+        style['list_parapr'] = '239'
     return style
 
 
@@ -147,6 +164,32 @@ def text_para(text, charpr, parapr, style=None):
         f'<hp:p id="{next_id()}" paraPrIDRef="{parapr}" styleIDRef="0" '
         f'pageBreak="0" columnBreak="0" merged="0">{runs_xml(text, charpr, style)}</hp:p>'
     )
+
+
+def repack_mimetype_first(hwpx_path):
+    """ZIP 수정 후 mimetype을 첫 번째 무압축 엔트리로 복구한다."""
+    source_path = Path(hwpx_path)
+    with zipfile.ZipFile(source_path, 'r') as source_archive:
+        entries = [
+            (info, source_archive.read(info.filename))
+            for info in source_archive.infolist()
+            if info.filename != 'mimetype'
+        ]
+        mimetype = source_archive.read('mimetype')
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix='.hwpx',
+        dir=source_path.parent,
+    ) as temp_handle:
+        temp_path = Path(temp_handle.name)
+    try:
+        with zipfile.ZipFile(temp_path, 'w') as target_archive:
+            target_archive.writestr('mimetype', mimetype, compress_type=zipfile.ZIP_STORED)
+            for info, data in entries:
+                target_archive.writestr(info, data, compress_type=info.compress_type)
+        temp_path.replace(source_path)
+    finally:
+        temp_path.unlink(missing_ok=True)
 
 
 def blank_para():
@@ -243,9 +286,11 @@ def boncheong_cover_paragraphs(model, profile):
          if block.get('type') == 'heading' and block.get('text')),
         '본청 계획안',
     )
+    cover_title = cover.get('title') or metadata.get('title') or first_heading
+    cover_title = re.sub(r'\.(md|txt|hwpx?|iceplan)$', '', str(cover_title), flags=re.I).strip()
     replacements = {
         '기본 방향 문구를 입력하세요': cover.get('direction') or '',
-        '2026 ○○○○ 기본 계획': cover.get('title') or metadata.get('title') or first_heading,
+        '2026 ○○○○ 기본 계획': cover_title,
         '2026. 7. ': cover.get('date') or '2026. 7.',
         '인천광역시교육청 ○○과 ': cover.get('displayName') or '인천광역시교육청',
     }
@@ -299,13 +344,50 @@ def page_placeholder_blocks(page_type):
     return [{'type': 'paragraph', 'text': label}] if label else []
 
 
-def front_matter_frame_block(page_type):
-    """내용을 대신 작성하지 않는 목차·요약용 빈 입력 틀."""
+def block_plain_text(block):
+    if block.get('type') != 'table':
+        return str(block.get('text') or '').strip()
+    cells = list(block.get('header') or [])
+    cells.extend(cell for row in (block.get('rows') or []) for cell in row)
+    return ' '.join(str(cell or '').strip() for cell in cells if str(cell or '').strip())
+
+
+def toc_entries(model):
+    """본문의 장 제목에서 실제 목차 행과 쪽 번호 치환표를 만든다."""
+    candidates = []
+    for page in page_sequence(model.get('metadata', {}), resolve_profile(model.get('metadata', {}))):
+        if page.get('type') not in {'body', 'body-opening', 'body-continuation'}:
+            continue
+        blocks = page.get('blocks') if 'blocks' in page else model.get('blocks', [])
+        candidates.extend(blocks or [])
+    entries = []
+    seen = set()
+    for block in candidates:
+        text = block_plain_text(block)
+        match = re.match(r'^\s*((?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+|\d+)\.)\s*(.+?)\s*$', text)
+        if not match or not plausible_heading_title(match.group(2)):
+            continue
+        normalized = f'{match.group(1)} {match.group(2).strip()}'
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        index = len(entries)
+        entries.append({
+            'text': normalized,
+            'lookup': match.group(2).strip(),
+            'placeholder': chr(0xE000 + index),
+        })
+    return entries
+
+
+def front_matter_frame_block(page_type, model=None):
+    """목차는 본문 장 제목으로 채우고, 요약은 빈 입력 틀을 유지한다."""
     if page_type == 'toc':
+        entries = toc_entries(model or {})
         return {
             'type': 'table',
             'header': ['구성 항목', '쪽'],
-            'rows': [['', ''] for _ in range(8)],
+            'rows': [[entry['text'], entry['placeholder']] for entry in entries],
         }
     return {
         'type': 'table',
@@ -318,40 +400,60 @@ def front_matter_frame_block(page_type):
     }
 
 
+def toc_blocks_effectively_empty(blocks):
+    if not blocks:
+        return True
+    meaningful = []
+    for block in blocks:
+        if block.get('type') != 'table':
+            text = str(block.get('text') or '').strip()
+            if text and not re.fullmatch(r'목\s*차', text):
+                meaningful.append(text)
+            continue
+        cells = list(block.get('header') or [])
+        cells.extend(cell for row in (block.get('rows') or []) for cell in row)
+        values = [str(cell or '').strip() for cell in cells if str(cell or '').strip()]
+        meaningful.extend(value for value in values if value not in {'구성 항목', '쪽'})
+    return not meaningful
+
+
 def body_title_frame(title, style):
-    """교육청 계획서 본문 첫 쪽의 상·하단 선 제목 틀."""
-    width = style.get('body_width', BODY_WIDTH_HWPUNIT)
-    cell_id = next_id()
-    para_id = next_id()
+    """표지와 같은 색띠 구조를 축소한 본문 첫 쪽 3행×4열 제목 틀."""
+    anchor = BONCHEONG_ANCHOR.read_text(encoding='utf-8')
+    match = re.search(
+        r'<hp:tbl id="2063551796".*?</hp:tbl>',
+        anchor,
+        flags=re.S,
+    )
+    if not match:
+        raise RuntimeError('본청 표지 앵커에서 본문 제목 표를 찾지 못했습니다.')
+    table = match.group(0)
+    table = table.replace('id="2063551796"', f'id="{BODY_TITLE_FRAME_TABLE_ID}"', 1)
+    table = re.sub(
+        r'<hp:p\b[^>]*>\s*<hp:run charPrIDRef="18"><hp:t>기본 방향 문구를 입력하세요'
+        r'</hp:t></hp:run>.*?</hp:p>',
+        '',
+        table,
+        count=1,
+        flags=re.S,
+    )
+    table = table.replace('2026 ○○○○ 기본 계획', xml_escape(title), 1)
+    table = table.replace('charPrIDRef="512"', 'charPrIDRef="11"', 1)
+    table = re.sub(r'<hp:linesegarray>.*?</hp:linesegarray>', '', table, flags=re.S)
+    table = re.sub(r'(<hp:p id=")[^"]+(")', lambda m: f'{m.group(1)}{next_id()}{m.group(2)}', table)
+    table = re.sub(r'<hp:outMargin\b[^>]*/>', '<hp:outMargin left="0" right="0" top="0" bottom="300"/>',
+                   table, count=1)
     return (
         f'<hp:p id="{next_id()}" paraPrIDRef="{style["table_anchor_parapr"]}" styleIDRef="0" '
         'pageBreak="0" columnBreak="0" merged="0">'
-        f'<hp:run charPrIDRef="27"><hp:tbl id="{BODY_TITLE_FRAME_TABLE_ID}" zOrder="0" numberingType="TABLE" '
-        'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" '
-        'pageBreak="CELL" repeatHeader="0" rowCnt="1" colCnt="1" cellSpacing="0" '
-        'borderFillIDRef="52" noAdjust="0">'
-        f'<hp:sz width="{width}" widthRelTo="ABSOLUTE" height="2000" heightRelTo="ABSOLUTE" protect="0"/>'
-        '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" '
-        'holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" '
-        'horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
-        '<hp:outMargin left="0" right="0" top="0" bottom="0"/>'
-        '<hp:inMargin left="0" right="0" top="0" bottom="0"/>'
-        '<hp:tr><hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" '
-        'borderFillIDRef="52"><hp:cellAddr colAddr="0" rowAddr="0"/>'
-        '<hp:cellSpan colSpan="1" rowSpan="1"/>'
-        f'<hp:cellSz width="{width}" height="2000"/>'
-        '<hp:cellMargin left="283" right="283" top="340" bottom="340"/>'
-        f'<hp:subList id="{cell_id}" textDirection="HORIZONTAL" lineWrap="BREAK" '
-        f'vertAlign="CENTER" linkListIDRef="0" linkListNextIDRef="0" textWidth="{max(width - 566, 1)}" fieldName="">'
-        f'<hp:p id="{para_id}" paraPrIDRef="23" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
-        f'{runs_xml(title, "27", style)}</hp:p></hp:subList></hp:tc></hp:tr></hp:tbl></hp:run></hp:p>'
+        f'<hp:run charPrIDRef="11">{table}</hp:run></hp:p>'
     )
 
 
 def structured_heading_parts(text):
     for kind, pattern in STRUCTURED_HEADING_PATTERNS:
         match = pattern.match(str(text or ''))
-        if match:
+        if match and plausible_heading_title(match.group(2)):
             return {'kind': kind, 'label': match.group(1), 'title': match.group(2).strip()}
     return None
 
@@ -381,7 +483,7 @@ def structured_heading_table(text, style):
         '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" '
         'holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" '
         'horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
-        '<hp:outMargin left="0" right="0" top="0" bottom="0"/>'
+        '<hp:outMargin left="0" right="0" top="0" bottom="300"/>'
         '<hp:inMargin left="0" right="0" top="0" bottom="0"/>'
         '<hp:tr>'
         f'<hp:tc name="" header="0" hasMargin="0" protect="0" editable="0" dirty="0" '
@@ -422,6 +524,8 @@ def page_type_paragraphs(
     if page_type == 'cover':
         return boncheong_cover_paragraphs(model, profile)
     if page_type in ('body', 'body-opening', 'body-continuation'):
+        document_title = metadata.get('cover', {}).get('title') or metadata.get('title') or '추진 계획'
+        document_title = re.sub(r'\.(md|txt|hwpx?|iceplan)$', '', str(document_title), flags=re.I).strip()
         parts = [
             page_boundary_para(
                 page_break=True,
@@ -430,19 +534,38 @@ def page_type_paragraphs(
             )
         ] if starts_new_page else []
         if page_type == 'body-opening':
-            title = metadata.get('title') or metadata.get('cover', {}).get('title') or '추진 계획'
-            parts.append(body_title_frame(title, style))
+            parts.append(body_title_frame(document_title, style))
             covered = metadata.get('cover') or {}
             organization = metadata.get('organization') or {}
             display_name = organization.get('displayName') or covered.get('displayName') or ''
             department = organization.get('department') or covered.get('department') or ''
-            department_line = ' '.join(str(value).strip() for value in (display_name, department) if str(value).strip())
+            department_line = ' '.join(
+                str(value).strip()
+                for value in (display_name, department)
+                if str(value).strip()
+            )
             if department_line:
                 parts.append(text_para(department_line, '121', '22', style))
         if page_type == 'body-continuation':
             page_blocks = page.get('blocks') or []
         else:
             page_blocks = page['blocks'] if 'blocks' in page else model.get('blocks', [])
+        if page_type == 'body-opening':
+            def is_duplicate_title(block):
+                text = re.sub(
+                    r'\.(md|txt|hwpx?|iceplan)$',
+                    '',
+                    str(block.get('text') or ''),
+                    flags=re.I,
+                ).strip()
+                if text == document_title:
+                    return True
+                if block.get('type') != 'table':
+                    return False
+                cells = list(block.get('header') or [])
+                cells.extend(cell for row in (block.get('rows') or []) for cell in row)
+                return ''.join(str(cell or '').strip() for cell in cells if str(cell or '').strip()) == document_title
+            page_blocks = [block for block in page_blocks if not is_duplicate_title(block)]
         parts.extend(render_blocks(page_blocks, styles, style))
         return parts
     title = page.get('title') or PAGE_LABELS[page_type]
@@ -462,8 +585,19 @@ def page_type_paragraphs(
     else:
         parts.append(text_para(title, '9', '1', style))
     page_blocks = page.get('blocks') or page_placeholder_blocks(page_type)
-    if page_type in ('toc', 'summary') and not page_blocks:
-        parts.append(table_paragraph(front_matter_frame_block(page_type), styles, style))
+    if page_type == 'toc':
+        # 원문 목차 블록이 있어도 최종 HWPX에서는 본문 제목과 실제 조판 쪽을
+        # 기준으로 만든 목차 표를 사용한다. 원문 목차를 평문으로 다시 쓰면
+        # 예전 쪽 번호가 남고, populate-toc-pages.cjs가 치환할 placeholder도
+        # 생성되지 않는다. 본문 제목을 찾지 못한 경우에만 원문을 보존한다.
+        generated_toc = front_matter_frame_block(page_type, model)
+        has_generated_entries = bool(generated_toc.get('rows'))
+        if has_generated_entries or toc_blocks_effectively_empty(page_blocks):
+            parts.append(table_paragraph(generated_toc, styles, style))
+        else:
+            parts.extend(render_blocks(page_blocks, styles, style))
+    elif page_type == 'summary' and not page_blocks:
+        parts.append(table_paragraph(front_matter_frame_block(page_type, model), styles, style))
     else:
         parts.extend(render_blocks(page_blocks, styles, style))
     return parts
@@ -474,9 +608,24 @@ def table_xml(block, styles, style=None):
     header = block.get('header', [])
     rows = [header] + block.get('rows', [])
     columns = max((len(row) for row in rows), default=1)
-    total_width = style.get('body_width', BODY_WIDTH_HWPUNIT)
-    widths = table_column_widths(rows, total_width=total_width)
-    row_heights = table_row_heights(rows, widths)
+    source_table = (block.get('layout') or {}).get('table') or {}
+    source_widths = source_table.get('columnWidthsHwpUnit') or []
+    if len(source_widths) == columns and all(int(width or 0) > 0 for width in source_widths):
+        widths = [int(width) for width in source_widths]
+        total_width = int(source_table.get('widthHwpUnit') or sum(widths))
+        if total_width > style.get('body_width', BODY_WIDTH_HWPUNIT):
+            target_width = style.get('body_width', BODY_WIDTH_HWPUNIT)
+            factor = target_width / max(sum(widths), 1)
+            widths = [max(1, round(width * factor)) for width in widths]
+            widths[-1] += target_width - sum(widths)
+            total_width = target_width
+    else:
+        total_width = style.get('body_width', BODY_WIDTH_HWPUNIT)
+        widths = table_column_widths(rows, total_width=total_width)
+    source_heights = source_table.get('rowHeightsHwpUnit') or []
+    row_heights = ([int(height) for height in source_heights]
+                   if len(source_heights) == len(rows) and all(int(height or 0) > 0 for height in source_heights)
+                   else table_row_heights(rows, widths))
     table_id = next_id()
     cells = []
     for row_index, row in enumerate(rows):
@@ -491,6 +640,9 @@ def table_xml(block, styles, style=None):
             charpr = styles.get(style_key, {}).get('charPrId')
             if charpr not in style['valid_charpr']:
                 charpr = style['cell_charpr']['header' if row_index == 0 else 'body']
+            cell_parapr = style['cell_parapr']
+            if isinstance(cell_parapr, dict):
+                cell_parapr = cell_parapr['header' if row_index == 0 else 'body']
             header_flag = '1' if row_index == 0 else '0'
             cells.append(
                 f'<hp:tc name="" header="{header_flag}" hasMargin="0" protect="0" editable="0" dirty="0" borderFillIDRef="{cell_border}">'
@@ -500,7 +652,7 @@ def table_xml(block, styles, style=None):
                 '<hp:cellMargin left="283" right="283" top="141" bottom="141"/>'
                 f'<hp:subList id="{cell_id}" textDirection="HORIZONTAL" lineWrap="BREAK" vertAlign="CENTER" '
                 f'linkListIDRef="0" linkListNextIDRef="0" textWidth="{max(widths[col_index] - 566, 1)}" fieldName="">'
-                f'<hp:p id="{para_id}" paraPrIDRef="{style["cell_parapr"]}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+                f'<hp:p id="{para_id}" paraPrIDRef="{cell_parapr}" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
                 f'{runs_xml(str(value), charpr, style)}'
                 f'</hp:p></hp:subList></hp:tc>'
             )
@@ -515,7 +667,7 @@ def table_xml(block, styles, style=None):
         # 레퍼런스 A도 소형 표는 treatAsChar=1을 쓴다 — BASELINE_ANALYSIS §2.5 참조.
         '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" '
         'vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/>'
-        '<hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:inMargin left="0" right="0" top="0" bottom="0"/>'
+        '<hp:outMargin left="0" right="0" top="0" bottom="300"/><hp:inMargin left="0" right="0" top="0" bottom="0"/>'
         + ''.join(cells) + '</hp:tbl>'
     )
 
@@ -536,6 +688,8 @@ def render_blocks(blocks, styles, style):
             paragraphs.append(table_paragraph(block, styles, style))
             continue
         text = block.get('text', '')
+        if re.fullmatch(r'\s*-{3,}\s*', str(text or '')):
+            continue
         if block['type'] == 'heading':
             framed_heading = structured_heading_table(text, style)
             if framed_heading:
@@ -551,7 +705,10 @@ def render_blocks(blocks, styles, style):
         if not text:
             continue
         if block['type'] == 'heading':
-            charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
+            if block.get('headingKind') == 'korean-subheading':
+                charpr, parapr = style.get('korean_subheading', style['heading_default'])
+            else:
+                charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
         elif block['type'] == 'listItem' and block.get('ordered') and int(block.get('level') or 0) == 0:
             charpr, parapr = style['heading'].get(1, style['heading_default'])
         elif block['type'] == 'listItem':
@@ -562,7 +719,7 @@ def render_blocks(blocks, styles, style):
     return paragraphs
 
 
-def spacing_header(template, line_spacing_percent, para_next_hwpunit):
+def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0):
     """9단계 적응 조판 — 본문 paraPr의 줄간격·문단 아래 간격만 바꾼 header.xml을 만든다.
 
     이미 만든 HWPX를 후처리로 변조하지 않고 **매 pass 재생성**하는 경로다(멱등).
@@ -573,31 +730,96 @@ def spacing_header(template, line_spacing_percent, para_next_hwpunit):
     gonmun은 대상이 아니다 — 본문 paraPr 0·14를 표지·표 문단도 함께 쓰기 때문에
     같은 방식으로 조이면 표까지 눌린다.
     """
-    tokens = TOKENS['adaptiveSpacing']
-    if template != tokens['template']:
-        raise ValueError(f'적응 조판은 {tokens["template"]} 템플릿에서만 지원합니다 (요청: {template}).')
     source = TEMPLATE_HEADERS[template].read_text(encoding='utf-8')
-    target_id = tokens['targetParaPrId']
-    match = re.search(r'<hh:paraPr id="%s".*?</hh:paraPr>' % re.escape(target_id), source, flags=re.S)
-    if not match:
-        raise RuntimeError(f'header.xml에서 paraPr {target_id}을 찾지 못했습니다.')
-    original = match.group(0)
-    # paraPr 안의 hp:case·hp:default 두 분기를 모두 고쳐야 한다. 한쪽만 고치면
-    # 한글 버전에 따라 조정이 무시된다.
-    # 치환 결과가 원본과 같을 수 있다(사다리 0단 = 기본값 160%). 그것은 정상이므로
-    # 동일성이 아니라 **치환 횟수**로 검증한다 — 동일성으로 막으면 무보정 경로가 깨진다.
-    patched, spacing_hits = re.subn(r'(<hh:lineSpacing type="PERCENT" value=")\d+(")',
-                                    lambda m: f'{m.group(1)}{line_spacing_percent}{m.group(2)}', original)
-    patched, next_hits = re.subn(r'(<hc:next value=")-?\d+(")',
-                                 lambda m: f'{m.group(1)}{para_next_hwpunit}{m.group(2)}', patched)
-    # hp:case·hp:default 두 분기를 모두 고쳐야 한다. 한쪽만 잡히면 한글 버전에 따라
-    # 조정이 무시되므로 2건 미만이면 실패로 본다.
-    if spacing_hits < 2 or next_hits < 2:
-        raise RuntimeError(
-            f'paraPr {target_id} 간격 치환 실패 (lineSpacing {spacing_hits}건, next {next_hits}건 — 각 2건 필요).')
+    if template == 'boncheong':
+        cover_charpr = re.search(r'<hh:charPr id="512".*?</hh:charPr>', source, flags=re.S)
+        if not cover_charpr:
+            raise RuntimeError('header.xml에서 표지 제목 charPr 512를 찾지 못했습니다.')
+        patched_cover = cover_charpr.group(0).replace(
+            '<hh:fontRef hangul="9" latin="9" hanja="9" japanese="9" other="9" symbol="9" user="9"/>',
+            '<hh:fontRef hangul="10" latin="10" hanja="10" japanese="10" other="10" symbol="10" user="10"/>',
+            1,
+        )
+        source = source.replace(cover_charpr.group(0), patched_cover, 1)
+        para_properties = re.search(
+            r'(<hh:paraProperties itemCnt=")(\d+)(".*?>)(.*?)(</hh:paraProperties>)',
+            source,
+            flags=re.S,
+        )
+        if not para_properties:
+            raise RuntimeError('header.xml에서 paraProperties를 찾지 못했습니다.')
+        custom_ids = {'238', '239', '240'}
+        if any(re.search(rf'<hh:paraPr id="{para_id}"\b', para_properties.group(4)) for para_id in custom_ids):
+            raise RuntimeError('사용자 정의 문단 속성 ID 238~240이 이미 사용 중입니다.')
+
+        def custom_para_pr(para_id, *, align, left, intent, prev, next_value, line_spacing, keep_with_next):
+            margin = (
+                f'<hh:margin><hc:intent value="{intent}" unit="HWPUNIT"/>'
+                f'<hc:left value="{left}" unit="HWPUNIT"/><hc:right value="0" unit="HWPUNIT"/>'
+                f'<hc:prev value="{prev}" unit="HWPUNIT"/><hc:next value="{next_value}" unit="HWPUNIT"/>'
+                '</hh:margin>'
+            )
+            return (
+                f'<hh:paraPr id="{para_id}" tabPrIDRef="0" condense="0" fontLineHeight="0" '
+                'snapToGrid="0" suppressLineNumbers="0" checked="0">'
+                f'<hh:align horizontal="{align}" vertical="BASELINE"/>'
+                '<hh:heading type="NONE" idRef="0" level="0"/>'
+                f'<hh:breakSetting breakLatinWord="KEEP_WORD" breakNonLatinWord="KEEP_WORD" '
+                f'widowOrphan="0" keepWithNext="{keep_with_next}" keepLines="0" '
+                'pageBreakBefore="0" lineWrap="BREAK"/>'
+                '<hh:autoSpacing eAsianEng="0" eAsianNum="0"/>'
+                '<hp:switch><hp:case hp:required-namespace="http://www.hancom.co.kr/hwpml/2016/HwpUnitChar">'
+                f'{margin}<hh:lineSpacing type="PERCENT" value="{line_spacing}" unit="HWPUNIT"/>'
+                f'</hp:case><hp:default>{margin}<hh:lineSpacing type="PERCENT" '
+                f'value="{line_spacing}" unit="HWPUNIT"/></hp:default></hp:switch>'
+                '<hh:border borderFillIDRef="2" offsetLeft="0" offsetRight="0" '
+                'offsetTop="0" offsetBottom="0" connect="0" ignoreMargin="0"/>'
+                '</hh:paraPr>'
+            )
+
+        additions = ''.join([
+            custom_para_pr(
+                '238', align='JUSTIFY', left=0, intent=0, prev=0,
+                next_value=0, line_spacing=170, keep_with_next=0,
+            ),
+            custom_para_pr(
+                '239', align='JUSTIFY', left=1600, intent=-1200, prev=0,
+                next_value=0, line_spacing=170, keep_with_next=0,
+            ),
+            custom_para_pr(
+                '240', align='LEFT', left=800, intent=-800, prev=1000,
+                next_value=200, line_spacing=160, keep_with_next=1,
+            ),
+        ])
+        patched_para_properties = (
+            f'{para_properties.group(1)}{int(para_properties.group(2)) + 3}'
+            f'{para_properties.group(3)}{para_properties.group(4)}{additions}{para_properties.group(5)}'
+        )
+        source = source.replace(para_properties.group(0), patched_para_properties, 1)
+    if line_spacing_percent is not None:
+        tokens = TOKENS['adaptiveSpacing']
+        if template != tokens['template']:
+            raise ValueError(f'적응 조판은 {tokens["template"]} 템플릿에서만 지원합니다 (요청: {template}).')
+        # boncheong 실제 본문 문단은 STYLE_SETS['boncheong']['body']가 가리키는
+        # paraPr 238을 쓴다(paraPr 34가 아니다 — 34는 미사용 유물). 238은 표 셀
+        # 본문(cell_parapr.body)도 함께 참조하므로 조이기가 표 셀 줄간격에도
+        # 적용된다(의도된 동작으로 확인됨).
+        target_id = '238' if template == 'boncheong' else tokens['targetParaPrId']
+        match = re.search(r'<hh:paraPr id="%s".*?</hh:paraPr>' % re.escape(target_id), source, flags=re.S)
+        if not match:
+            raise RuntimeError(f'header.xml에서 paraPr {target_id}을 찾지 못했습니다.')
+        original = match.group(0)
+        patched, spacing_hits = re.subn(r'(<hh:lineSpacing type="PERCENT" value=")\d+(")',
+                                        lambda m: f'{m.group(1)}{line_spacing_percent}{m.group(2)}', original)
+        patched, next_hits = re.subn(r'(<hc:next value=")-?\d+(")',
+                                     lambda m: f'{m.group(1)}{para_next_hwpunit}{m.group(2)}', patched)
+        if spacing_hits < 2 or next_hits < 2:
+            raise RuntimeError(
+                f'paraPr {target_id} 간격 치환 실패 (lineSpacing {spacing_hits}건, next {next_hits}건 — 각 2건 필요).')
+        source = source.replace(original, patched, 1)
     handle = tempfile.NamedTemporaryFile('w', suffix='.header.xml', delete=False, encoding='utf-8')
     with handle:
-        handle.write(source.replace(original, patched, 1))
+        handle.write(source)
     return Path(handle.name)
 
 
@@ -619,8 +841,13 @@ def build(model_path, output, template='gonmun', line_spacing_percent=None, para
             None,
         )
         for index, page in enumerate(pages):
+            render_page = page
+            # 일부 실제 모델은 첫 본문을 generic `body`로 표현한다. 이 경우에도
+            # 출력의 첫 본문 쪽에는 본문 제목표·기관명/부서명 헤더가 필요하다.
+            if index == first_body_index and page.get('type') == 'body':
+                render_page = {**page, 'type': 'body-opening'}
             paragraphs.extend(page_type_paragraphs(
-                page,
+                render_page,
                 model,
                 profile,
                 styles,
@@ -646,8 +873,11 @@ def build(model_path, output, template='gonmun', line_spacing_percent=None, para
                'xmlns:hc="http://www.hancom.co.kr/hwpml/2011/core">' + ''.join(paragraphs) + '</hs:sec>')
     section_path = Path(output).with_suffix('.section0.xml')
     section_path.write_text(section, encoding='utf-8')
-    header_path = (spacing_header(template, line_spacing_percent, para_next_hwpunit)
-                   if line_spacing_percent else None)
+    header_path = (
+        presentation_header(template, line_spacing_percent, para_next_hwpunit)
+        if template == 'boncheong' or line_spacing_percent is not None
+        else None
+    )
     try:
         # metadata.title은 원본 파일명(예: "계획안.md")을 그대로 담고 있을 수 있어
         # 확장자를 제거한다 (내부 문서 속성에 ".md"가 그대로 노출되는 것 방지).
@@ -663,6 +893,47 @@ def build(model_path, output, template='gonmun', line_spacing_percent=None, para
             update_content_hpf(output, images)
         subprocess.run([sys.executable, str(SCRIPTS / 'fix_namespaces.py'), str(output)], check=True)
         subprocess.run([sys.executable, str(SCRIPTS / 'finalize_hwpx.py'), str(output), '--in-place', '--strip-linesegarray', '--layout'], check=True)
+        entries = toc_entries(model) if template == 'boncheong' else []
+        if entries:
+            body_start_page = (first_body_index + 1) if first_body_index is not None else 1
+            with tempfile.NamedTemporaryFile(
+                'w', suffix='.toc.json', delete=False, encoding='utf-8'
+            ) as toc_handle:
+                json.dump(entries, toc_handle, ensure_ascii=False)
+                toc_entries_path = Path(toc_handle.name)
+            try:
+                electron_exec = os.environ.get('ICE_PLAN_ELECTRON_EXEC')
+                node_exec = shutil.which('node')
+                if electron_exec:
+                    command = [
+                        electron_exec,
+                        str(Path(__file__).resolve().parent / 'populate-toc-pages.cjs'),
+                        str(output),
+                        str(toc_entries_path),
+                        str(body_start_page),
+                    ]
+                    node_env = dict(os.environ)
+                    node_env['ELECTRON_RUN_AS_NODE'] = '1'
+                elif node_exec:
+                    command = [
+                        node_exec,
+                        str(Path(__file__).resolve().parent / 'populate-toc-pages.cjs'),
+                        str(output),
+                        str(toc_entries_path),
+                        str(body_start_page),
+                    ]
+                    node_env = None
+                else:
+                    raise RuntimeError('목차 쪽 번호 계산에 필요한 Electron/Node 실행기를 찾지 못했습니다.')
+                toc_result = subprocess.run(command, env=node_env, capture_output=True, text=True, encoding='utf-8')
+                if toc_result.returncode != 0:
+                    detail = '\n'.join(filter(None, [toc_result.stderr.strip(), toc_result.stdout.strip()]))
+                    raise RuntimeError(
+                        f'목차 쪽 번호 계산 스크립트 실패 (exit {toc_result.returncode}): {detail}'
+                    )
+                repack_mimetype_first(output)
+            finally:
+                toc_entries_path.unlink(missing_ok=True)
         subprocess.run([sys.executable, str(SCRIPTS / 'validate.py'), str(output)], check=True)
     finally:
         section_path.unlink(missing_ok=True)

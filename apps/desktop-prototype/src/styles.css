@@ -169,13 +169,18 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .a4-page h1 { margin: 0 0 28px; font-size: 24px; letter-spacing: -.04em; }
 .a4-page h2 { margin: 20px 0 9px; font-size: 13px; letter-spacing: -.02em; }
 .a4-page h3 { margin: 14px 0 7px; font-size: 11px; font-weight: 700; color: #2a3942; }
-.loaded-document-body { display: grid; gap: 2px; }
-.loaded-document-body table { margin: 8px 0 4px; }
+.loaded-document-body { display: grid; gap: 0; }
+.loaded-document-body table { margin: 8px 0 7px; }
 .front-matter-frame { border: 1px solid #9aa6ad; padding: 18px 20px; display: grid; gap: 12px; min-height: 220px; background: #fff; }
 .front-matter-row { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-weight: 700; }
 .front-matter-leader { border-bottom: 1px dotted #7a858b; height: 1em; }
 .body-opening-header { margin-bottom: 24px; }
-.body-opening-header h1 { margin: 0; padding: 12px 8px; border-top: 1px solid #202830; border-bottom: 1px solid #202830; text-align: center; font-size: var(--opening-title-size, 18pt); line-height: 1.35; }
+.body-opening-title-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0 !important; }
+.body-opening-title-table td, .body-opening-title-table th { border: 1px solid #202830; }
+.body-opening-title-table th { height: 58px; padding: 10px 16px; background: #fff; font-family: "HY헤드라인M", "함초롬바탕", serif; font-size: 22pt; line-height: 1.35; text-align: center; }
+.body-opening-title-table .title-decoration-row { height: 8px; }
+.body-opening-title-table .title-decoration-row td { padding: 0; background: #fff; }
+.body-opening-title-table .title-decoration-row td:nth-child(2) { background: var(--chapter-accent, #3057b9); }
 .body-opening-header p { margin: 12px 0 0; text-align: right; font-weight: 700; font-size: var(--opening-department-size, 12pt); }
 .structured-heading {
   --structured-accent: var(--chapter-accent, #3057b9);
@@ -185,7 +190,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
   display: grid;
   grid-template-columns: var(--structured-label-width) minmax(0, 1fr);
   align-items: stretch;
-  margin: 18px 0 8px;
+  margin: 18px 0 11px;
   border-top: 1px solid var(--structured-accent);
   border-bottom: 1px solid var(--structured-accent);
   color: #17232c;
@@ -217,6 +222,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
   --structured-title-size: var(--task-title-size, 14pt);
   --structured-label-width: 72px;
   margin-top: 14px;
+  margin-bottom: 9px;
 }
 .structured-heading-task-subsection {
   --structured-accent: var(--task-sub-accent, #2d629c);
@@ -224,17 +230,21 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
   --structured-title-size: var(--task-sub-title-size, 12pt);
   --structured-label-width: 88px;
   margin-top: 11px;
+  margin-bottom: 8px;
 }
 .structured-heading-task-section .structured-heading-label { min-height: 30px; }
 .structured-heading-task-subsection .structured-heading-label { min-height: 27px; }
-.loaded-paragraph { margin: 0 0 4px; font-size: var(--plan-body-size, 12pt); line-height: 1.6; color: #2a3942; }
-.loaded-list-item { margin: 0 0 3px; font-size: var(--plan-body-size, 12pt); line-height: 1.55; color: #2a3942; }
+.korean-subheading { margin-top: 1em !important; margin-bottom: 0.2em !important; padding-left: 8pt; text-indent: -8pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: 13pt !important; }
+.loaded-paragraph { margin: 0 0 6px; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
+.loaded-list-item { margin: 0 0 6px; padding-left: 16pt; text-indent: -12pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item .list-marker { color: #74808a; margin-right: 2px; }
 .loaded-list-item.section-heading { margin: 16px 0 7px; font-size: 18pt; line-height: 1.3; font-weight: 700; color: #17232c; }
 .loaded-list-item.section-heading .list-marker { color: inherit; margin-right: 5px; }
 .loaded-table { font-size: 9px; }
-.plan-table.loaded-table { font-size: 10pt; }
+.plan-table.loaded-table { font-family: "맑은 고딕", sans-serif; font-size: 11pt; }
 .loaded-table th, .loaded-table td { word-break: keep-all; }
+.loaded-table th { font-family: inherit; font-size: inherit; font-weight: 700; text-align: center; }
+.loaded-table td { font-family: inherit; font-size: inherit; font-weight: 400; text-align: justify; }
 .thumbnail-note { padding: 12px 10px; font-size: 11px; line-height: 1.5; color: var(--muted); }
 .lead-box { margin: 0; padding: 14px; text-align: center; border: 1px solid #b4bfc7; background: #f1f3f4; color: #36444e; font-size: 11px; line-height: 1.55; }
 .plan-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 8px; line-height: 1.4; }

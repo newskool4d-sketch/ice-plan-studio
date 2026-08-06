@@ -58,7 +58,7 @@ const DIRECT = [
   agency({ id: 'direct-ai', type: 'direct', label: 'AI융합교육원', displayName: '인천광역시교육청AI융합교육원', coverProfile: 'direct-g' }),
   agency({ id: 'direct-training', type: 'direct', label: '교육연수원', displayName: '인천광역시교육청교육연수원', coverProfile: 'direct-g' }),
   agency({ id: 'direct-culture', type: 'direct', label: '학생교육문화회관', displayName: '인천광역시교육청학생교육문화회관', coverProfile: 'direct-g' }),
-  agency({ id: 'direct-student', type: 'direct', label: '학생교육원', displayName: '인천광역시교육청학생교육원', englishName: 'Incheon Student Education Institute', coverProfile: 'direct-g' }),
+  agency({ id: 'direct-student', type: 'direct', label: '학생교육원', displayName: '인천광역시교육청학생교육원', englishName: 'Incheon Student Education Institute', coverProfile: 'direct-g', innerCover: false }),
   agency({ id: 'direct-staff', type: 'direct', label: '교직원수련원', displayName: '인천광역시교육청교직원수련원', coverProfile: 'direct-g' }),
   agency({ id: 'direct-lifelong', type: 'direct', label: '평생학습관', displayName: '인천광역시교육청평생학습관', englishName: 'Incheon Lifelong Learning Center', coverProfile: 'direct-f' }),
   agency({ id: 'direct-early', type: 'direct', label: '유아교육진흥원', displayName: '인천광역시교육청유아교육진흥원', coverProfile: 'direct-g' }),

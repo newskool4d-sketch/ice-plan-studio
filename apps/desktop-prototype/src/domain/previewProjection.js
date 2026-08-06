@@ -1,4 +1,5 @@
 import layoutTokens from "../../scripts/layout-tokens.json" with { type: "json" };
+import { isPlausibleHeadingTitle } from "./headingPresentation.js";
 
 const PAGE_TYPES = new Set(Object.keys(layoutTokens.pageTypes));
 
@@ -47,11 +48,57 @@ function placeholders(type) {
   return text ? [{ type: "paragraph", text }] : [];
 }
 
+function blockPlainText(block) {
+  const normalized = normalizeBlock(block);
+  if (normalized?.type !== "table") return String(normalized?.text || "").trim();
+  return [...(normalized.header || []), ...(normalized.rows || []).flat()]
+    .map((value) => String(value || "").trim())
+    .filter(Boolean)
+    .join(" ");
+}
+
+function tocEntries(model) {
+  const seen = new Set();
+  const entries = [];
+  for (const block of model?.blocks || []) {
+    const match = /^\s*((?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+|\d+)\.)\s*(.+?)\s*$/.exec(blockPlainText(block));
+    if (!match || !isPlausibleHeadingTitle(match[2])) continue;
+    const text = `${match[1]} ${match[2].trim()}`;
+    if (seen.has(text)) continue;
+    seen.add(text);
+    entries.push(text);
+  }
+  return entries;
+}
+
+function tocBlocksEffectivelyEmpty(blocks) {
+  const meaningful = (blocks || []).flatMap((block) => {
+    if (block?.type !== "table") {
+      const text = String(block?.text || "").trim();
+      return text && !/^목\s*차$/.test(text) ? [text] : [];
+    }
+    const normalized = normalizeBlock(block);
+    return [...(normalized.header || []), ...(normalized.rows || []).flat()]
+      .map((value) => String(value || "").trim())
+      .filter((value) => value && !["구성 항목", "쪽"].includes(value));
+  });
+  return meaningful.length === 0;
+}
+
+function automaticTocBlock(model) {
+  return {
+    type: "table",
+    header: ["구성 항목", "쪽"],
+    rows: tocEntries(model).map((text) => [text, "자동"]),
+  };
+}
+
 function pageSequence(model, profile) {
   const metadata = model?.metadata || {};
   const requested = metadata.pages?.length ? metadata.pages : (metadata.pageTypes?.length ? metadata.pageTypes.map((type) => ({ type })) : (model?.pageTypes?.length ? model.pageTypes.map((type) => ({ type })) : [{ type: "cover" }, { type: "body" }]));
   const pages = requested.map(normalizePage);
-  if (profile.innerCover && !pages.some((page) => page.type === "inner-cover")) {
+  const innerCover = metadata.layout?.innerCover ?? profile.innerCover;
+  if (innerCover && !pages.some((page) => page.type === "inner-cover")) {
     const coverIndex = pages.findIndex((page) => page.type === "cover");
     pages.splice(coverIndex + 1, 0, { type: "inner-cover" });
   }
@@ -61,8 +108,26 @@ function pageSequence(model, profile) {
 function projectTable(block) {
   const normalized = normalizeBlock(block);
   const rows = [normalized.header || [], ...(normalized.rows || [])];
-  const columnWidthsHwpUnit = tableColumnWidths(rows);
-  return { ...normalized, rows, columnWidthsHwpUnit, rowHeightsHwpUnit: tableRowHeights(rows, columnWidthsHwpUnit), widthHwpUnit: layoutTokens.page.bodyWidthHwpUnit };
+  const sourceTable = normalized.layout?.table;
+  const sourceWidths = sourceTable?.columnWidthsHwpUnit;
+  const useSourceWidths = Array.isArray(sourceWidths)
+    && sourceWidths.length === Math.max(1, ...rows.map((row) => row.length))
+    && sourceWidths.every((width) => Number(width) > 0);
+  const columnWidthsHwpUnit = useSourceWidths ? sourceWidths.map(Number) : tableColumnWidths(rows);
+  const sourceHeights = sourceTable?.rowHeightsHwpUnit;
+  const rowHeightsHwpUnit = Array.isArray(sourceHeights)
+    && sourceHeights.length === rows.length
+    && sourceHeights.every((height) => Number(height) > 0)
+    ? sourceHeights.map(Number)
+    : tableRowHeights(rows, columnWidthsHwpUnit);
+  const measuredWidth = columnWidthsHwpUnit.reduce((sum, width) => sum + width, 0);
+  return {
+    ...normalized,
+    rows,
+    columnWidthsHwpUnit,
+    rowHeightsHwpUnit,
+    widthHwpUnit: Number(sourceTable?.widthHwpUnit) || measuredWidth || layoutTokens.page.bodyWidthHwpUnit,
+  };
 }
 
 export function createPreviewProjection(model) {
@@ -75,11 +140,18 @@ export function createPreviewProjection(model) {
   const requestedPages = pageSequence(model, profile);
   const bodyStartIndex = requestedPages.findIndex((page) => page.type === "body-opening" || page.type === "body");
   const pages = requestedPages.map((page, index) => {
-    const pageBlocks = page.type === "body-continuation"
+    const rawPageBlocks = page.type === "body-continuation"
       ? (page.blocks || [])
       : ["body", "body-opening"].includes(page.type)
         ? (Object.hasOwn(page, "blocks") ? page.blocks : model?.blocks || [])
         : (page.blocks || placeholders(page.type));
+    const pageBlocks = (
+      page.type === "toc"
+      && tocBlocksEffectivelyEmpty(rawPageBlocks)
+      && (model?.source?.format === "hwpx" || (metadata.sourcePages || []).length > 0)
+    )
+      ? [automaticTocBlock(model)]
+      : rawPageBlocks;
     const blocks = pageBlocks.map(normalizeBlock).map((block) => block.type === "table" ? projectTable(block) : block);
     const title = page.title || (["body", "body-opening", "body-continuation"].includes(page.type) ? metadata.title || "일반 본문" : layoutTokens.pageTypes[page.type]);
     const isBodyPage = ["body", "body-opening", "body-continuation"].includes(page.type);
@@ -116,6 +188,8 @@ export function createPreviewProjection(model) {
     },
     profile: { id: profileId, ...profile, englishName: resolvedEnglishName },
     layoutProfile: layoutProfileId ? { id: layoutProfileId, ...layoutTokens.layoutProfiles?.[layoutProfileId] } : null,
+    sourceFormat: model?.source?.format || null,
+    sourceLayout: metadata.sourceLayout || null,
     pages,
     bodyWidthMm: layoutTokens.page.bodyWidthHwpUnit / layoutTokens.page.hwpUnitPerMm,
   };

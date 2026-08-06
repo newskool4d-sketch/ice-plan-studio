@@ -1,9 +1,15 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const AdmZip = require('adm-zip');
-const { parse, VERSION: kordocVersion } = require('kordoc');
+const { parse, renderHwpxToSvg, VERSION: kordocVersion } = require('kordoc');
 const { chunkBuffers } = require('./preview-split.cjs');
-const { kordocResultToPlanIR, kordocResultsToPlanIR, parseTextToPlanIR } = require('./plan-ir.cjs');
+const { applyHwpxLayout, extractHwpxLayout, stripReviewAnnotations } = require('./hwpx-layout.cjs');
+const {
+  kordocResultToPlanIR,
+  kordocResultsToPlanIR,
+  normalizeImportedHeadings,
+  parseTextToPlanIR,
+} = require('./plan-ir.cjs');
 
 const SUPPORTED_EXTENSIONS = new Set(['.md', '.txt', '.hwp', '.hwpx']);
 
@@ -51,11 +57,19 @@ async function loadPlanInput(filePath) {
   }
 
   const source = await fs.readFile(filePath);
+  const sanitized = format === 'hwpx' ? stripReviewAnnotations(source) : null;
+  let hwpxPhysicalPageCount = null;
   if (format === 'hwpx') {
-    const chunks = hardPageChunks(source);
+    const importSource = sanitized.buffer;
+    const layout = extractHwpxLayout(importSource);
+    const physicalPageCount = await renderHwpxToSvg(importSource, { reflow: true, reflowMode: 'keep' })
+      .then((rendered) => rendered.pageCount)
+      .catch(() => layout.hardPageCount);
+    hwpxPhysicalPageCount = physicalPageCount;
+    const chunks = hardPageChunks(importSource);
     if (chunks) {
       const results = await Promise.all(chunks.map((chunk) => parse(chunk.buffer, { filePath, keepTrailingEmptyCols: true })));
-      return kordocResultsToPlanIR(
+      const model = kordocResultsToPlanIR(
         results.map((result, index) => ({
           result,
           sourcePage: index + 1,
@@ -63,10 +77,39 @@ async function loadPlanInput(filePath) {
         })),
         { filePath, title, inferPageRoles: true },
       );
+      const prepared = normalizeImportedHeadings(applyHwpxLayout(model, layout, physicalPageCount));
+      return {
+        ...prepared,
+        metadata: {
+          ...prepared.metadata,
+          sourceLayout: {
+            ...prepared.metadata.sourceLayout,
+            reviewNoteCount: sanitized.count,
+          },
+        },
+      };
     }
   }
-  const result = await parse(source, { filePath, keepTrailingEmptyCols: true });
-  return kordocResultToPlanIR(result, { filePath, title });
+  const importSource = sanitized?.buffer || source;
+  const result = await parse(importSource, { filePath, keepTrailingEmptyCols: true });
+  const model = kordocResultToPlanIR(result, { filePath, title });
+  if (format !== 'hwpx') return model;
+  const layout = extractHwpxLayout(importSource);
+  const normalized = normalizeImportedHeadings(applyHwpxLayout(
+    model,
+    layout,
+    hwpxPhysicalPageCount ?? result.metadata?.pageCount,
+  ));
+  return {
+    ...normalized,
+    metadata: {
+      ...normalized.metadata,
+      sourceLayout: {
+        ...normalized.metadata?.sourceLayout,
+        reviewNoteCount: sanitized?.count || 0,
+      },
+    },
+  };
 }
 
 function kordocSmokeInfo() {
