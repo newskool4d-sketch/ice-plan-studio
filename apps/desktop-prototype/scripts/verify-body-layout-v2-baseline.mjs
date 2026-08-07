@@ -95,7 +95,15 @@ function evaluateFixture(fixture) {
 
   for (const type of fixture.expected.templateOnly || []) {
     const page = projection.pages.find((candidate) => candidate.type === type);
-    check(`blank-${type}-frame`, Boolean(page) && page.blocks.length === 0 && page.decisionMode === "template");
+    // 요약 템플릿 결정은 빈 틀이 아니라 본문 4요소 파생 표를 받는다
+    // (실물 양식 판정 2026-08-07 — 요소 미발견 칸만 빈 채로 남는다).
+    const frameOk = type === "summary"
+      ? page?.blocks?.length === 1
+        && page.blocks[0].type === "table"
+        && JSON.stringify(page.blocks[0].rows.map((row) => row[0]))
+          === JSON.stringify(["구분", "추진 근거", "추진 목적", "추진 과제", "기대 효과"])
+      : page?.blocks?.length === 0;
+    check(`blank-${type}-frame`, Boolean(page) && frameOk && page.decisionMode === "template");
   }
 
   if (fixture.id === "toc-missing-omitted") {

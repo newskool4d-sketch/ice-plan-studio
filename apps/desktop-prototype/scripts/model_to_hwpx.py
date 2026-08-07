@@ -356,14 +356,20 @@ def block_plain_text(block):
     return ' '.join(str(cell or '').strip() for cell in cells if str(cell or '').strip())
 
 
-def toc_entries(model):
-    """본문의 장 제목에서 실제 목차 행과 쪽 번호 치환표를 만든다."""
+def body_source_blocks(model):
+    """목차·요약 파생이 공유하는 본문 페이지 블록 수집(페이지 blocks 없으면 model.blocks 폴백)."""
     candidates = []
     for page in page_sequence(model.get('metadata', {}), resolve_profile(model.get('metadata', {}))):
         if page.get('type') not in {'body', 'body-opening', 'body-continuation'}:
             continue
         blocks = page.get('blocks') if 'blocks' in page else model.get('blocks', [])
         candidates.extend(blocks or [])
+    return candidates
+
+
+def toc_entries(model):
+    """본문의 장 제목에서 실제 목차 행과 쪽 번호 치환표를 만든다."""
+    candidates = body_source_blocks(model)
     entries = []
     seen = set()
     for block in candidates:
@@ -384,8 +390,82 @@ def toc_entries(model):
     return entries
 
 
+# 요약 발췌 상한(문자). LLM식 재작성 없이 원문 발췌만 쓰되, 요약 페이지 한 칸이
+# 본문 문단 전체를 삼켜 쪽을 넘기지 않도록 자른다. 수준 변경(전문 발췌 등)은
+# summary_rows만 고치면 되고, previewProjection.js와 값·알고리즘이 같아야
+# 빠른 미리보기와 HWPX 출력이 어긋나지 않는다.
+SUMMARY_EXCERPT_MAX_CHARS = 120
+SUMMARY_ELEMENT_KEYWORDS = (
+    ('추진 근거', re.compile(r'근거|배경')),
+    ('추진 목적', re.compile(r'목적|목표')),
+    ('기대 효과', re.compile(r'기대\s*효과')),
+)
+
+
+def summary_join(items):
+    joined = ''
+    for item in items:
+        candidate = item if not joined else f'{joined} / {item}'
+        if len(candidate) <= SUMMARY_EXCERPT_MAX_CHARS:
+            joined = candidate
+            continue
+        if not joined:
+            joined = item[:SUMMARY_EXCERPT_MAX_CHARS - 1] + '…'
+        break
+    return joined
+
+
+def summary_excerpt_text(block):
+    if block.get('type') not in {'paragraph', 'listItem'}:
+        return ''
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', str(block.get('text') or '')).strip()
+    if re.fullmatch(r'-{3,}', text):
+        return ''
+    return text
+
+
+def summary_rows(model):
+    """요약 페이지 4요소(근거·목적·과제·기대효과) 파생 — 실물 양식 판정(2026-08-07).
+
+    과제는 과제 제목 목록(그 자체가 요약), 나머지는 키워드가 일치하는 첫 장의
+    본문 발췌. 요소를 찾지 못하면 빈 칸으로 남겨 수기 입력 여지를 유지한다.
+    """
+    blocks = body_source_blocks(model)
+    chapters = []
+    tasks = []
+    seen_tasks = set()
+    for index, block in enumerate(blocks):
+        parts = structured_heading_parts(block_plain_text(block))
+        if not parts:
+            continue
+        if parts['kind'] == 'roman-chapter':
+            chapters.append({'title': parts['title'], 'index': index})
+        elif parts['kind'] == 'task-section':
+            entry = f"{parts['label']} {parts['title']}"
+            if entry not in seen_tasks:
+                seen_tasks.add(entry)
+                tasks.append(entry)
+
+    def excerpt_for(pattern):
+        for position, chapter in enumerate(chapters):
+            if not pattern.search(chapter['title']):
+                continue
+            end = chapters[position + 1]['index'] if position + 1 < len(chapters) else len(blocks)
+            items = [text for text in (summary_excerpt_text(block) for block in blocks[chapter['index'] + 1:end]) if text]
+            return summary_join(items)
+        return ''
+
+    contents = {label: excerpt_for(pattern) for label, pattern in SUMMARY_ELEMENT_KEYWORDS}
+    return [
+        ['추진 근거', contents['추진 근거']],
+        ['추진 목적', contents['추진 목적']],
+        ['추진 과제', summary_join(tasks)],
+        ['기대 효과', contents['기대 효과']],
+    ]
+
+
 def front_matter_frame_block(page_type, model=None):
-    """목차는 본문 장 제목으로 채우고, 요약은 빈 입력 틀을 유지한다."""
+    """목차는 본문 장 제목으로, 요약은 본문 4요소 파생 표로 채운다."""
     if page_type == 'toc':
         entries = toc_entries(model or {})
         return {
@@ -396,11 +476,7 @@ def front_matter_frame_block(page_type, model=None):
     return {
         'type': 'table',
         'header': ['구분', '내용'],
-        'rows': [
-            ['추진 배경', ''],
-            ['주요 내용', ''],
-            ['기대 효과', ''],
-        ],
+        'rows': summary_rows(model or {}),
     }
 
 

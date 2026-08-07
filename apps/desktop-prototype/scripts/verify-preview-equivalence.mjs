@@ -14,8 +14,13 @@ const preview = createPreviewProjection(model);
 const python = process.platform === "win32" ? "py" : "python3";
 const pythonArgs = process.platform === "win32" ? ["-3"] : [];
 const inspected = JSON.parse(execFileSync(python, [...pythonArgs, path.join(here, "inspect_hwpx_layout.py"), hwpxPath], { encoding: "utf8", env: { ...process.env, PYTHONIOENCODING: "utf-8" } }));
-const expectedTables = preview.pages.flatMap((page) => page.blocks).filter((block) => block.type === "table");
-const outputTables = inspected.tables.filter((table) => table.widthHwpUnit === preview.tokens.page.bodyWidthHwpUnit);
+// 비교 제외 2종: ① 구조 제목 틀(repeatHeader=0) — 표가 아니라 제목 표현이며
+// verify-body-layout-v2-hwpx.py가 서식까지 따로 검증한다. ② 목차 표 — HWPX는
+// 실제 조판 쪽번호, 미리보기는 "자동" 표기가 설계상 정답이라 셀 동등성이 성립
+// 하지 않는다. 요약 4요소 파생 표는 양쪽 동일해야 하므로 비교에 포함된다.
+const isTocTable = (rows) => JSON.stringify(rows[0] || []) === JSON.stringify(["구성 항목", "쪽"]);
+const expectedTables = preview.pages.flatMap((page) => page.blocks).filter((block) => block.type === "table" && !isTocTable(block.rows));
+const outputTables = inspected.tables.filter((table) => table.widthHwpUnit === preview.tokens.page.bodyWidthHwpUnit && table.repeatHeader && !isTocTable(table.rows));
 const failures = [];
 if (expectedTables.length !== outputTables.length) failures.push(`표 개수: preview=${expectedTables.length}, hwpx=${outputTables.length}`);
 for (const [index, expected] of expectedTables.entries()) {

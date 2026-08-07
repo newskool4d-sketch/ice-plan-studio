@@ -69,6 +69,9 @@ def main():
                     "blocks": [
                         {"type": "paragraph", "text": TITLE},
                         {"type": "heading", "level": 1, "text": "Ⅰ. 추진 배경"},
+                        {"type": "paragraph", "text": "체험교육 수요 증가에 대응한다."},
+                        {"type": "heading", "level": 1, "text": "Ⅱ. 추진 목적"},
+                        {"type": "paragraph", "text": "미래형 체험교육 체계를 구축한다."},
                         {"type": "heading", "level": 1, "text": "1. 추진 체계"},
                         {"type": "heading", "level": 2, "text": "[과제1] 체험교육 강화"},
                         {"type": "heading", "level": 3, "text": "[과제 1-1] 운영 기반 조성"},
@@ -92,6 +95,8 @@ def main():
                                 }
                             },
                         },
+                        {"type": "heading", "level": 1, "text": "Ⅲ. 기대 효과"},
+                        {"type": "paragraph", "text": "체험교육 만족도를 높인다."},
                     ],
                 },
                 {
@@ -207,6 +212,34 @@ def main():
         ("과제 2-1.", "안전 기반 조성", "14", "414", "315"),
     )
     section_tables = [element for element in section_root.iter() if local_name(element) == "tbl"]
+    # 요약 페이지는 빈 입력 틀이 아니라 본문 4요소(근거·목적·과제·기대효과) 파생
+    # 표여야 한다(실물 양식 판정 2026-08-07). 과제는 과제 제목 목록, 나머지는
+    # 해당 장 본문 발췌.
+    expected_summary_cells = [
+        "구분", "내용",
+        "추진 근거", "체험교육 수요 증가에 대응한다.",
+        "추진 목적", "미래형 체험교육 체계를 구축한다.",
+        "추진 과제", "[과제1] 체험교육 강화 / 과제 2. 운영 내실화",
+        # 마지막 장 발췌는 body-continuation 블록까지 잇는다 — 이어쓰기 쪽 본문도
+        # 같은 장의 연속이기 때문(목차 수집과 동일한 페이지 범위).
+        "기대 효과", "체험교육 만족도를 높인다. / 계속 본문",
+    ]
+    summary_table = next(
+        (
+            candidate for candidate in section_tables
+            if "".join((node.text or "") for node in candidate.iter() if local_name(node) == "t").startswith("구분내용추진 근거")
+        ),
+        None,
+    )
+    require(summary_table is not None, "summary four-element table is missing")
+    summary_cells = [
+        "".join((node.text or "") for node in cell.iter() if local_name(node) == "t")
+        for cell in summary_table.iter() if local_name(cell) == "tc"
+    ]
+    require(
+        summary_cells == expected_summary_cells,
+        f"summary four-element cells changed: {summary_cells}",
+    )
     for label, title, label_fill, label_charpr, title_charpr in structured_specs:
         table = next(
             (
@@ -331,6 +364,7 @@ def main():
             "table 11pt font and dimensions",
             "body-opening organization preserved and duplicate title removed",
             "populated TOC and summary frame",
+            "summary four-element derivation",
             "school-guidance 13pt body text",
             "school-guidance 13pt bold mapping",
             "front-matter page-number hiding",
