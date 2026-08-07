@@ -1,5 +1,5 @@
 import layoutTokens from "../../scripts/layout-tokens.json" with { type: "json" };
-import { isPlausibleHeadingTitle } from "./headingPresentation.js";
+import { classifyStructuredHeading, isPlausibleHeadingTitle } from "./headingPresentation.js";
 
 const PAGE_TYPES = new Set(Object.keys(layoutTokens.pageTypes));
 
@@ -106,6 +106,85 @@ function automaticTocBlocks(model) {
   }));
 }
 
+// 요약 발췌 상한(문자). model_to_hwpx.py의 SUMMARY_EXCERPT_MAX_CHARS·summary_rows와
+// 값·알고리즘이 같아야 빠른 미리보기와 HWPX 출력이 어긋나지 않는다.
+const SUMMARY_EXCERPT_MAX_CHARS = 120;
+const SUMMARY_ELEMENT_KEYWORDS = [
+  ["추진 근거", /근거|배경/],
+  ["추진 목적", /목적|목표/],
+  ["기대 효과", /기대\s*효과/],
+];
+
+function summaryJoin(items) {
+  let joined = "";
+  for (const item of items) {
+    const candidate = joined ? `${joined} / ${item}` : item;
+    if (candidate.length <= SUMMARY_EXCERPT_MAX_CHARS) {
+      joined = candidate;
+      continue;
+    }
+    if (!joined) joined = item.slice(0, SUMMARY_EXCERPT_MAX_CHARS - 1) + "…";
+    break;
+  }
+  return joined;
+}
+
+function summaryExcerptText(block) {
+  if (!["paragraph", "listItem"].includes(block?.type)) return "";
+  const text = String(block?.text || "").replace(/\*\*(.+?)\*\*/g, "$1").trim();
+  return /^-{3,}$/.test(text) ? "" : text;
+}
+
+function bodySourceBlocks(model, pages) {
+  return pages
+    .filter((page) => ["body", "body-opening", "body-continuation"].includes(page.type))
+    .flatMap((page) => (Object.hasOwn(page, "blocks") ? page.blocks || [] : model?.blocks || []));
+}
+
+// 요약 페이지 4요소(근거·목적·과제·기대효과) 파생 — 실물 양식 판정(2026-08-07).
+// 과제는 과제 제목 목록(그 자체가 요약), 나머지는 키워드가 일치하는 첫 장의 본문
+// 발췌. 요소를 찾지 못하면 빈 칸으로 남겨 수기 입력 여지를 유지한다.
+function summaryRows(model, pages) {
+  const blocks = bodySourceBlocks(model, pages);
+  const chapters = [];
+  const tasks = [];
+  const seenTasks = new Set();
+  blocks.forEach((block, index) => {
+    const parts = classifyStructuredHeading(blockPlainText(block));
+    if (!parts) return;
+    if (parts.kind === "roman-chapter") {
+      chapters.push({ title: parts.title, index });
+    } else if (parts.kind === "task-section") {
+      const entry = `${parts.label} ${parts.title}`;
+      if (!seenTasks.has(entry)) {
+        seenTasks.add(entry);
+        tasks.push(entry);
+      }
+    }
+  });
+  const excerptFor = (pattern) => {
+    const position = chapters.findIndex((chapter) => pattern.test(chapter.title));
+    if (position < 0) return "";
+    const end = position + 1 < chapters.length ? chapters[position + 1].index : blocks.length;
+    return summaryJoin(blocks.slice(chapters[position].index + 1, end).map(summaryExcerptText).filter(Boolean));
+  };
+  const contents = Object.fromEntries(SUMMARY_ELEMENT_KEYWORDS.map(([label, pattern]) => [label, excerptFor(pattern)]));
+  return [
+    ["추진 근거", contents["추진 근거"]],
+    ["추진 목적", contents["추진 목적"]],
+    ["추진 과제", summaryJoin(tasks)],
+    ["기대 효과", contents["기대 효과"]],
+  ];
+}
+
+function automaticSummaryBlock(model, pages) {
+  return {
+    type: "table",
+    header: ["구분", "내용"],
+    rows: summaryRows(model, pages),
+  };
+}
+
 function pageSequence(model, profile) {
   const metadata = model?.metadata || {};
   const requested = metadata.pages?.length ? metadata.pages : (metadata.pageTypes?.length ? metadata.pageTypes.map((type) => ({ type })) : (model?.pageTypes?.length ? model.pageTypes.map((type) => ({ type })) : [{ type: "cover" }, { type: "body" }]));
@@ -164,7 +243,11 @@ export function createPreviewProjection(model) {
       && (model?.source?.format === "hwpx" || (metadata.sourcePages || []).length > 0)
     )
       ? automaticTocBlocks(model)
-      : rawPageBlocks;
+      // HWPX 경로(model_to_hwpx.py)와 동일 조건: 빈 요약 페이지는 본문 4요소
+      // 파생 표로 채우고, 원문 요약 블록이 있으면 그대로 보존한다.
+      : page.type === "summary" && rawPageBlocks.length === 0
+        ? [automaticSummaryBlock(model, requestedPages)]
+        : rawPageBlocks;
     const blocks = pageBlocks.map(normalizeBlock).map((block) => block.type === "table" ? projectTable(block) : block);
     const title = page.title || (["body", "body-opening", "body-continuation"].includes(page.type) ? metadata.title || "일반 본문" : layoutTokens.pageTypes[page.type]);
     const isBodyPage = ["body", "body-opening", "body-continuation"].includes(page.type);
