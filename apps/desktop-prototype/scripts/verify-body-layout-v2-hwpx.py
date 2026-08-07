@@ -164,7 +164,14 @@ def main():
     )
     require(section.count(TITLE) == 2, "document title must appear only in the cover and body-opening title tables")
     require("전체 본문 폴백은 사용하지 않는다." not in section, "body continuation duplicated model.blocks")
-    require("구성 항목" in section and "기대 효과" in section, "TOC/summary frames are missing")
+    require("기대 효과" in section, "summary frame is missing")
+    # 목차는 표([구성 항목|쪽])가 아니라 문단형 `제목 ····· 쪽번호`가 정격이다
+    # (실물 양식 판정 2026-08-07). 표 머리글이 남아 있으면 회귀다.
+    require("구성 항목" not in section, "TOC was emitted as the legacy table form")
+    require(
+        "····" in section and 'paraPrIDRef="241"' in section,
+        "paragraph-form TOC with dot leaders is missing",
+    )
     require("오래된 목차 쪽" not in section, "source TOC text was emitted instead of the generated TOC")
     require("\ue000" not in section, "TOC page-number placeholder was not resolved")
     require(
@@ -330,7 +337,7 @@ def main():
             "imported HWPX receives normalized body-opening title",
             "table 11pt font and dimensions",
             "body-opening organization preserved and duplicate title removed",
-            "populated TOC and summary frame",
+            "paragraph-form dot-leader TOC and summary frame",
             "school-guidance 13pt body text",
             "school-guidance 13pt bold mapping",
             "front-matter page-number hiding",

@@ -235,6 +235,8 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .structured-heading-task-section .structured-heading-label { min-height: 30px; }
 .structured-heading-task-subsection .structured-heading-label { min-height: 27px; }
 .korean-subheading { margin-top: 1em !important; margin-bottom: 0.2em !important; padding-left: 8pt; text-indent: -8pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: 13pt !important; }
+/* 문단형 목차 항목 — HWPX 출력(charPr 27 = 18pt 굵은 제목, paraPr 241 = 좌측 여백·200%)과 같은 인상 유지 */
+.loaded-paragraph.toc-entry { margin: 0 0 14px; padding-left: 24pt; font-size: 15pt; font-weight: 700; line-height: 2; text-align: left; }
 .loaded-paragraph { margin: 0 0 6px; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item { margin: 0 0 6px; padding-left: 16pt; text-indent: -12pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item .list-marker { color: #74808a; margin-right: 2px; }

@@ -118,9 +118,17 @@ const importedWithEmptyToc = createPreviewProjection({
   },
 });
 const importedToc = importedWithEmptyToc.pages.find((page) => page.type === "toc");
+// 실물 양식 판정(2026-08-07): 자동 목차는 표가 아니라 `제목 ····· 자동` 문단형이다.
 assert(
-  importedToc.blocks.some((block) => block.type === "table" && JSON.stringify(block.rows).includes("추진 근거")),
-  "empty imported HWPX TOC was not populated from body headings",
+  importedToc.blocks.some((block) => block.type === "paragraph"
+    && block.tocEntry === true
+    && String(block.text).includes("추진 근거")
+    && String(block.text).includes("····")),
+  "empty imported HWPX TOC was not populated as dot-leader paragraphs",
+);
+assert(
+  !importedToc.blocks.some((block) => block.type === "table"),
+  "auto TOC regressed to the legacy table form",
 );
 
 const directPages = [

@@ -50,7 +50,7 @@ function PreviewBlock({ block, index, highlighted, normalizeTypography = false }
     </table>;
   }
   if (block.type === "image") return <p className={`loaded-paragraph ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>이미지 보존: {block.image?.filename || block.image?.sha256 || "원본 이미지"}</p>;
-  return <p className={`loaded-paragraph ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</p>;
+  return <p className={`loaded-paragraph ${block.tocEntry ? "toc-entry" : ""} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</p>;
 }
 
 function projectionBodyWidth(block) {

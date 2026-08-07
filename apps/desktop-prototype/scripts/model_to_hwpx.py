@@ -79,6 +79,9 @@ STYLE_SETS = {
         'heading': {1: ('9', '1'), 2: ('132', '73')},
         'heading_default': ('132', '73'),
         'korean_subheading': ('132', '240'),
+        # 목차 항목: 실물 양식 판정(2026-08-07)에 따라 표가 아닌 문단형으로 낸다.
+        # 27=18pt 굵은 제목 계열, 241=목차 전용 문단(왼쪽·여백·200% — presentation_header가 주입).
+        'toc_entry': ('27', '241'),
         'body': ('132', '238'),
         'list_parapr': '239',
         'cell_parapr': {'header': '64', 'body': '238'},
@@ -404,6 +407,31 @@ def front_matter_frame_block(page_type, model=None):
     }
 
 
+def toc_leader_dots(entry_text):
+    """항목과 쪽 번호 사이 가운뎃점(문자표 ·) 개수를 제목 폭에 맞춰 계산한다.
+
+    실물 양식 확인(2026-08-07): 목차의 정격은 표가 아니라 문단형이고, 점선은
+    오른쪽 탭 리더가 아닌 문자 점으로 넣는다 — 탭 리더는 kordoc 실조판
+    미리보기가 그리지 못해 미리보기와 실물이 어긋난다(스파이크 실증).
+    폭 계산은 전각(한글·로마숫자)=2, 반각=1 근사이며, 점을 전각으로 보수
+    계산해 줄바꿈 넘침을 막는다 — 쪽 번호 세로 정렬은 근사 수준이 한계.
+    """
+    half_units = sum(2 if ord(ch) > 0x2E80 or ord(ch) in range(0x2160, 0x2180) else 1
+                     for ch in str(entry_text))
+    # 18pt 기준 본문폭 약 26전각(52반각) — 좌측 여백·쪽번호 몫을 빼고 40을 목표로 잡는다.
+    return max(4, (40 - half_units - 4) // 2)
+
+
+def toc_paragraphs(model, style):
+    """본문 장 제목 기반 문단형 목차 — `제목 ····· {placeholder}` 줄들."""
+    charpr, parapr = style['toc_entry']
+    lines = []
+    for entry in toc_entries(model):
+        dots = '·' * toc_leader_dots(entry['text'])
+        lines.append(text_para(f"{entry['text']} {dots} {entry['placeholder']}", charpr, parapr, style))
+    return lines
+
+
 def toc_blocks_effectively_empty(blocks):
     if not blocks:
         return True
@@ -598,10 +626,13 @@ def page_type_paragraphs(
         # 기준으로 만든 목차 표를 사용한다. 원문 목차를 평문으로 다시 쓰면
         # 예전 쪽 번호가 남고, populate-toc-pages.cjs가 치환할 placeholder도
         # 생성되지 않는다. 본문 제목을 찾지 못한 경우에만 원문을 보존한다.
-        generated_toc = front_matter_frame_block(page_type, model)
-        has_generated_entries = bool(generated_toc.get('rows'))
-        if has_generated_entries or toc_blocks_effectively_empty(page_blocks):
-            parts.append(table_paragraph(generated_toc, styles, style))
+        generated_entries = toc_entries(model)
+        if generated_entries and style.get('toc_entry'):
+            # 실물 양식 판정(2026-08-07): 목차는 표가 아닌 문단형이 정격.
+            parts.extend(toc_paragraphs(model, style))
+        elif generated_entries or toc_blocks_effectively_empty(page_blocks):
+            # 문단형 스타일이 없는 템플릿(gonmun)은 종전 표 형태를 유지한다.
+            parts.append(table_paragraph(front_matter_frame_block(page_type, model), styles, style))
         else:
             parts.extend(render_blocks(page_blocks, styles, style))
     elif page_type == 'summary' and not page_blocks:
@@ -756,7 +787,7 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
         )
         if not para_properties:
             raise RuntimeError('header.xml에서 paraProperties를 찾지 못했습니다.')
-        custom_ids = {'238', '239', '240'}
+        custom_ids = {'238', '239', '240', '241'}
         if any(re.search(rf'<hh:paraPr id="{para_id}"\b', para_properties.group(4)) for para_id in custom_ids):
             raise RuntimeError('사용자 정의 문단 속성 ID 238~240이 이미 사용 중입니다.')
 
@@ -798,9 +829,15 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 '240', align='LEFT', left=800, intent=-800, prev=1000,
                 next_value=200, line_spacing=160, keep_with_next=1,
             ),
+            # 241: 문단형 목차 항목 — 왼쪽 정렬 + 좌측 여백으로 점·쪽번호 세로열을
+            # 맞추고, 샘플 실측(210%)에 준하는 넉넉한 줄간격을 준다.
+            custom_para_pr(
+                '241', align='LEFT', left=2400, intent=0, prev=400,
+                next_value=0, line_spacing=200, keep_with_next=0,
+            ),
         ])
         patched_para_properties = (
-            f'{para_properties.group(1)}{int(para_properties.group(2)) + 3}'
+            f'{para_properties.group(1)}{int(para_properties.group(2)) + 4}'
             f'{para_properties.group(3)}{para_properties.group(4)}{additions}{para_properties.group(5)}'
         )
         source = source.replace(para_properties.group(0), patched_para_properties, 1)

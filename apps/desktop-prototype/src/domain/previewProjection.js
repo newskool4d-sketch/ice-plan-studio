@@ -85,12 +85,25 @@ function tocBlocksEffectivelyEmpty(blocks) {
   return meaningful.length === 0;
 }
 
-function automaticTocBlock(model) {
-  return {
-    type: "table",
-    header: ["구성 항목", "쪽"],
-    rows: tocEntries(model).map((text) => [text, "자동"]),
-  };
+// 항목과 쪽 번호 사이 가운뎃점 개수 — model_to_hwpx.py toc_leader_dots와 같은
+// 근사(전각 2·반각 1, 목표 40반각)를 써야 미리보기와 HWPX 출력이 같은 모양이 된다.
+function tocLeaderDots(entryText) {
+  const halfUnits = [...String(entryText)]
+    .reduce((sum, ch) => {
+      const code = ch.codePointAt(0);
+      return sum + (code > 0x2e80 || (code >= 0x2160 && code < 0x2180) ? 2 : 1);
+    }, 0);
+  return Math.max(4, Math.floor((40 - halfUnits - 4) / 2));
+}
+
+// 실물 양식 판정(2026-08-07): 목차의 정격은 표가 아닌 문단형이다. 쪽 번호는
+// 내보내기 시점에 실제 조판으로 계산되므로 미리보기에서는 "자동"으로 표기한다.
+function automaticTocBlocks(model) {
+  return tocEntries(model).map((text) => ({
+    type: "paragraph",
+    text: `${text} ${"·".repeat(tocLeaderDots(text))} 자동`,
+    tocEntry: true,
+  }));
 }
 
 function pageSequence(model, profile) {
@@ -150,7 +163,7 @@ export function createPreviewProjection(model) {
       && tocBlocksEffectivelyEmpty(rawPageBlocks)
       && (model?.source?.format === "hwpx" || (metadata.sourcePages || []).length > 0)
     )
-      ? [automaticTocBlock(model)]
+      ? automaticTocBlocks(model)
       : rawPageBlocks;
     const blocks = pageBlocks.map(normalizeBlock).map((block) => block.type === "table" ? projectTable(block) : block);
     const title = page.title || (["body", "body-opening", "body-continuation"].includes(page.type) ? metadata.title || "일반 본문" : layoutTokens.pageTypes[page.type]);
