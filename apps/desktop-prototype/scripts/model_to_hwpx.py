@@ -23,6 +23,38 @@ TEMPLATE_HEADERS = {name: TOOLKIT / "templates" / name / "Contents" / "header.xm
 sys.path.insert(0, str(SCRIPTS))
 from hwpx_helpers import add_images_to_hwpx, make_image_para, next_id, reset_id, update_content_hpf, xml_escape  # noqa: E402
 from image_dimensions import image_dims_hwpunit  # noqa: E402
+
+# 본청 표지 하단: 기관명 텍스트를 대체하는 명칭 이미지 문단 (22991×3840 HU, 실물 실측)
+NAME_IMAGE_PARAGRAPH = (
+    '<hp:p id="2147483648" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+    '<hp:run charPrIDRef="0"><hp:pic id="2063551811" zOrder="4" numberingType="PICTURE" '
+    'textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" href="" '
+    'groupLevel="0" instid="989809988" reverse="0">'
+    '<hp:offset x="0" y="0"/>'
+    '<hp:orgSz width="22991" height="3840"/><hp:curSz width="22991" height="3840"/>'
+    '<hp:flip horizontal="0" vertical="0"/>'
+    '<hp:rotationInfo angle="0" centerX="11495" centerY="1920" rotateimage="0"/>'
+    '<hp:renderingInfo>'
+    '<hc:transMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/>'
+    '<hc:scaMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/>'
+    '<hc:rotMatrix e1="1" e2="0" e3="0" e4="0" e5="1" e6="0"/>'
+    '</hp:renderingInfo>'
+    '<hc:img binaryItemIDRef="image3" bright="0" contrast="0" effect="REAL_PIC" alpha="0"/>'
+    '<hp:imgRect><hc:pt0 x="0" y="0"/><hc:pt1 x="22991" y="0"/>'
+    '<hc:pt2 x="22991" y="3840"/><hc:pt3 x="0" y="3840"/></hp:imgRect>'
+    '<hp:imgClip left="0" right="22991" top="0" bottom="3840"/>'
+    '<hp:inMargin left="0" right="0" top="0" bottom="0"/>'
+    '<hp:imgDim dimwidth="22991" dimheight="3840"/><hp:effects/>'
+    '<hp:sz width="22991" widthRelTo="ABSOLUTE" height="3840" heightRelTo="ABSOLUTE" protect="0"/>'
+    '<hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" '
+    'holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" '
+    'vertOffset="0" horzOffset="0"/>'
+    '<hp:outMargin left="0" right="0" top="0" bottom="0"/>'
+    '</hp:pic><hp:t/></hp:run>'
+    '<hp:linesegarray><hp:lineseg textpos="0" vertpos="0" vertsize="3840" textheight="3840" '
+    'baseline="3264" spacing="1320" horzpos="0" horzsize="48188" flags="393216"/>'
+    '</hp:linesegarray></hp:p>'
+)
 from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, TOKENS, page_sequence, resolve_profile, table_column_widths, table_row_heights  # noqa: E402
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
@@ -84,6 +116,7 @@ STYLE_SETS = {
         'toc_entry': ('27', '241'),
         'body': ('132', '238'),
         'list_parapr': '239',
+        'group_leader_parapr': '242',
         'cell_parapr': {'header': '64', 'body': '238'},
         'cell_charpr': {'header': '82', 'body': '83'},
         'table_anchor_parapr': '1',
@@ -306,6 +339,15 @@ def boncheong_cover_paragraphs(model, profile):
         anchor_xml = anchor_xml.replace(placeholder, xml_escape(str(value)))
     title = replacements['2026 ○○○○ 기본 계획']
     parts = [anchor_xml]
+    direction = (cover.get('direction') or '').strip()
+    if not direction:
+        parts[0], removed = re.subn(
+            r'<hp:p [^>]*paraPrIDRef="23"[^>]*><hp:run charPrIDRef="18"><hp:t></hp:t></hp:run>'
+            r'<hp:linesegarray>.*?</hp:linesegarray></hp:p>',
+            '', parts[0], count=1, flags=re.S,
+        )
+        if removed != 1:
+            raise RuntimeError('Could not remove the empty direction paragraph from cover title cell')
     if not profile.banner_image:
         # 소유 banner asset(image1)만 제거하여 배너형/무배너형을 명시적으로 구분한다.
         parts[0], removed = re.subn(r'<hp:pic[^>]*>.*?<hc:img binaryItemIDRef="image1".*?</hp:pic>', '', parts[0], count=1, flags=re.S)
@@ -320,22 +362,30 @@ def boncheong_cover_paragraphs(model, profile):
         )
         if replaced != 1:
             raise RuntimeError('Could not replace the cover title-box anchor')
-    # 영문 기관명은 기관 레지스트리 값(metadata.cover.englishName)을 우선한다.
-    # 직속기관 다수가 같은 coverProfile(direct-g)을 공유하므로 프로필에 박힌
-    # 영문명을 그대로 쓰면 전부 학생교육원 영문명으로 나온다. cover에 englishName
-    # 키가 있으면(빈 값 포함) 그 값을 쓰고, 키 자체가 없을 때만 프로필 기본값으로
-    # 폴백한다(단독 model_to_hwpx 호출 하위 호환).
-    english_name = cover['englishName'] if 'englishName' in cover else profile.english_name
-    if english_name:
-        # 표지는 고정 레이아웃(결정사항 6)이므로 새 문단을 추가해 페이지 높이를
-        # 늘리지 않는다 — 앵커에 이미 있는 빈 여분 문단(부서명 줄과 동일한
-        # paraPr/charPr, 원본 문서의 미사용 여백 줄)을 재사용해 영문 기관명을 채운다.
-        trailing_slot = '<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="15"/>'
-        filled_slot = ('<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
-                        f'<hp:run charPrIDRef="15"><hp:t>{xml_escape(str(english_name))}</hp:t></hp:run>')
-        if trailing_slot not in parts[0]:
-            raise RuntimeError('Could not find the cover english-name anchor slot')
-        parts[0] = parts[0].replace(trailing_slot, filled_slot, 1)
+    trailing_slot = '<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0"><hp:run charPrIDRef="15"/>'
+    if profile.name_image:
+        # 본청: 기관명 텍스트 문단 → 명칭 이미지 (영문명은 이미지에 포함)
+        display_name = xml_escape(str(cover.get('displayName') or '인천광역시교육청'))
+        name_para_prefix = (
+            '<hp:p id="2147483648" paraPrIDRef="25" styleIDRef="0" pageBreak="0" '
+            'columnBreak="0" merged="0"><hp:run charPrIDRef="15"><hp:t>'
+            + display_name + '</hp:t></hp:run>')
+        start = parts[0].find(name_para_prefix)
+        if start < 0:
+            raise RuntimeError('Could not find the cover agency-name text paragraph for image replacement')
+        end = parts[0].find('</hp:p>', start + len(name_para_prefix))
+        if end < 0:
+            raise RuntimeError('Could not find closing tag of cover agency-name paragraph')
+        parts[0] = parts[0][:start] + NAME_IMAGE_PARAGRAPH + parts[0][end + 7:]
+    else:
+        # 직속기관: 영문 기관명을 trailing slot에 채움
+        english_name = cover['englishName'] if 'englishName' in cover else profile.english_name
+        if english_name:
+            if trailing_slot not in parts[0]:
+                raise RuntimeError('Could not find the cover english-name anchor slot')
+            filled_slot = ('<hp:p id="0" paraPrIDRef="25" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">'
+                           f'<hp:run charPrIDRef="15"><hp:t>{xml_escape(str(english_name))}</hp:t></hp:run>')
+            parts[0] = parts[0].replace(trailing_slot, filled_slot, 1)
     return parts
 
 
@@ -826,6 +876,8 @@ def render_blocks(blocks, styles, style):
                 charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
         elif block['type'] == 'listItem' and block.get('ordered') and int(block.get('level') or 0) == 0:
             charpr, parapr = style['heading'].get(1, style['heading_default'])
+        elif block['type'] == 'listItem' and not block.get('ordered') and int(block.get('level') or 0) == 0 and 'group_leader_parapr' in style:
+            charpr, parapr = style['body'][0], style['group_leader_parapr']
         elif block['type'] == 'listItem':
             charpr, parapr = style['body'][0], style['list_parapr']
         else:
@@ -863,9 +915,9 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
         )
         if not para_properties:
             raise RuntimeError('header.xml에서 paraProperties를 찾지 못했습니다.')
-        custom_ids = {'238', '239', '240', '241'}
+        custom_ids = {'238', '239', '240', '241', '242'}
         if any(re.search(rf'<hh:paraPr id="{para_id}"\b', para_properties.group(4)) for para_id in custom_ids):
-            raise RuntimeError('사용자 정의 문단 속성 ID 238~240이 이미 사용 중입니다.')
+            raise RuntimeError('사용자 정의 문단 속성 ID 238~242가 이미 사용 중입니다.')
 
         def custom_para_pr(para_id, *, align, left, intent, prev, next_value, line_spacing, keep_with_next):
             margin = (
@@ -911,9 +963,14 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 '241', align='LEFT', left=2400, intent=0, prev=400,
                 next_value=0, line_spacing=200, keep_with_next=0,
             ),
+            custom_para_pr(
+                '242', align='JUSTIFY', left=1600, intent=-1200,
+                prev=TOKENS['typography']['topicGroupLeader']['prevHwpUnit'],
+                next_value=0, line_spacing=170, keep_with_next=0,
+            ),
         ])
         patched_para_properties = (
-            f'{para_properties.group(1)}{int(para_properties.group(2)) + 4}'
+            f'{para_properties.group(1)}{int(para_properties.group(2)) + 5}'
             f'{para_properties.group(3)}{para_properties.group(4)}{additions}{para_properties.group(5)}'
         )
         source = source.replace(para_properties.group(0), patched_para_properties, 1)

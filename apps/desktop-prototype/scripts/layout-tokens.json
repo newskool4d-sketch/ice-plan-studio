@@ -22,7 +22,12 @@
     "body": { "font": "함초롬바탕", "sizePt": 13, "lineSpacingPercent": 170, "charPrId": "132", "paraPrId": "238" },
     "heading": { "font": "함초롬바탕", "sizePt": 14, "charPrId": "9", "paraPrId": "1" },
     "tableHeader": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "82", "charSpacingPercent": -15 },
-    "tableBody": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "83", "charSpacingPercent": -15 }
+    "tableBody": { "font": "맑은 고딕", "sizePt": 11, "charPrId": "83", "charSpacingPercent": -15 },
+    "topicGroupLeader": {
+      "_note": "최상위 항목(□/○ 등 level-0 unordered listItem) 전용 문단 속성. 주제 그룹 간 시각 분리를 만든다. 실물 실측치: 시행문서 paraPr 28 prev=300 next=300.",
+      "paraPrId": "242",
+      "prevHwpUnit": 300
+    }
   },
   "adaptiveSpacing": {
     "_note": "9단계 적응 조판. boncheong 템플릿 한정 — gonmun의 본문 paraPr 0·14는 표지·표와 공용이라 건드리면 회귀한다.",
@@ -98,9 +103,9 @@
     }
   },
   "coverProfiles": {
-    "metropolitan-a": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": null },
-    "direct-b": { "titleBox": false, "bannerImage": false, "innerCover": false, "englishName": "Incheon Student Education Institute" },
-    "direct-f": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": "Incheon Lifelong Learning Center" },
-    "direct-g": { "titleBox": true, "bannerImage": true, "innerCover": true, "englishName": "Incheon Student Education Institute" }
+    "metropolitan-a": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": null, "nameImage": true },
+    "direct-b": { "titleBox": false, "bannerImage": false, "innerCover": false, "englishName": "Incheon Student Education Institute", "nameImage": false },
+    "direct-f": { "titleBox": true, "bannerImage": true, "innerCover": false, "englishName": "Incheon Lifelong Learning Center", "nameImage": false },
+    "direct-g": { "titleBox": true, "bannerImage": true, "innerCover": true, "englishName": "Incheon Student Education Institute", "nameImage": false }
   }
 }

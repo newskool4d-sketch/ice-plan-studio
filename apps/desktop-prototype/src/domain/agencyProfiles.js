@@ -38,7 +38,7 @@ const HEADQUARTERS = [
     id: 'metropolitan', type: 'metropolitan',
     label: '인천광역시교육청 본청', displayName: '인천광역시교육청',
     coverProfile: 'metropolitan-a',
-    slogan: '함께 가는 인천교육, 세계로 나아가는 인천교육',
+    slogan: '읽걷쓰시로 학생성공시대 완성',
   }),
 ];
 

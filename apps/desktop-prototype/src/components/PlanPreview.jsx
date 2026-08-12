@@ -35,7 +35,8 @@ function PreviewBlock({ block, index, highlighted, normalizeTypography = false }
   }
   if (block.type === "listItem") {
     const sectionClass = block.ordered && Number(block.level || 0) === 0 ? "section-heading" : "";
-    return <p className={`loaded-list-item ${sectionClass} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
+    const groupLeaderClass = !block.ordered && Number(block.level || 0) === 0 ? "group-leader" : "";
+    return <p className={`loaded-list-item ${sectionClass} ${groupLeaderClass} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
   }
   if (block.type === "table") {
     const [header, ...body] = block.rows;
@@ -63,8 +64,10 @@ function CoverPage({ page, projection, agencyName }) {
     {profile.bannerImage && cover.direction ? <div className="preview-cover-banner">{cover.direction}</div> : null}
     <div className={`preview-cover-title ${profile.titleBox ? "has-title-box" : ""}`}><h1>{cover.title || projection.title}</h1></div>
     <p className="preview-cover-date">{cover.date || ""}</p>
-    <p className="preview-cover-agency">{cover.displayName || agencyName}</p>
-    {profile.englishName ? <p className="preview-cover-english">{profile.englishName}</p> : null}
+    {profile.nameImage
+      ? <img className="preview-cover-name-image" src="./branding/incheon-name.png" alt="인천광역시교육청" />
+      : <p className="preview-cover-agency">{cover.displayName || agencyName}</p>}
+    {!profile.nameImage && profile.englishName ? <p className="preview-cover-english">{profile.englishName}</p> : null}
   </>;
 }
 

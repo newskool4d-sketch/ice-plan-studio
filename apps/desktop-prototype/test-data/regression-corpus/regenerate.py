@@ -57,9 +57,9 @@ REFERENCES = {
 
 DISPLAY_NAMES = {
     'metropolitan-a': '인천광역시교육청',
-    'direct-b': '인천광역시교육청 학생교육원',
-    'direct-f': '인천광역시교육청 평생학습관',
-    'direct-g': '인천광역시교육청 학생교육원 교학과',
+    'direct-b': '인천광역시교육청학생교육원',
+    'direct-f': '인천광역시교육청평생학습관',
+    'direct-g': '인천광역시교육청학생교육원',
 }
 
 

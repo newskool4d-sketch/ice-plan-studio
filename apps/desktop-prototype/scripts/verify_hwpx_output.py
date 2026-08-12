@@ -12,10 +12,11 @@ TEMPLATE_DECORATION_TABLE_IDS = {'2063551796', '2063551804', '2063551812'}
 
 
 def content_tables(root: ET.Element) -> list[ET.Element]:
-    """모델의 table 블록에서 생성된 표만 추린다(표지 장식 표 제외)."""
+    """모델의 table 블록에서 생성된 표만 추린다(표지 장식 표·구조 제목 프레임 제외)."""
     return [
         table for table in root.iter(f'{{{HP_NS}}}tbl')
         if table.get('id') not in TEMPLATE_DECORATION_TABLE_IDS
+        and int(table.get('rowCnt') or 0) >= 2
     ]
 
 

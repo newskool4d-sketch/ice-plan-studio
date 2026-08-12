@@ -1,6 +1,6 @@
 {
   "schemaVersion": "0.2",
-  "generatedAt": "2026-07-23T00:19:27Z",
+  "generatedAt": "2026-08-12T06:47:36Z",
   "references": {
     "A": {
       "documentType": "본청 기본계획",
@@ -38,20 +38,14 @@
         }
       },
       "com": {
-        "expectedPages": 4,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 4,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "34d5fa68ecff3d30b737a2147da4ce4006756e0a02633fc01bbc5e3e5cf243a2"
         },
         "hwpx": {
-          "section0Sha256": "daf4eba127a8586cb73e06cb1ead744dd7cc18b76f1ca989d01dc73cc73e60a2",
+          "section0Sha256": "038de3fb242330ba95c431c4a9cee65d2e36b3ba180bda073169482c1ec9c2e4",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
@@ -93,20 +87,14 @@
         }
       },
       "com": {
-        "expectedPages": 3,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 3,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
-          "sha256": "82c862023c1968dffcc31033155d6b223553739b30a6ecbce512da30e86c2cda"
+          "sha256": "a4eee5c23acf8d0c91e746714ee2f02b3507a430f350d63114d18257a2c14c33"
         },
         "hwpx": {
-          "section0Sha256": "0456f31529350a29fad8f9c233a78e8f1d707264378dfdd8862e63c4ccbc3c8c",
+          "section0Sha256": "0ad95b8b91da27729d98a508d7457578a0f10756d9a216a2db2343c2d7f5f7af",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
@@ -145,27 +133,21 @@
           "model": "test-data\\regression-corpus\\reference-c.model.json",
           "hwpx": "test-data\\regression-corpus\\reference-c.hwpx",
           "pageCount": 7,
-          "expectedTableCount": 3,
-          "outputTableCount": 3,
+          "expectedTableCount": 4,
+          "outputTableCount": 4,
           "passed": true,
           "failures": []
         }
       },
       "com": {
-        "expectedPages": 7,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 7,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "7418a789c3638643cf360cf5ebb4c047f0cc8789182dd976089561a91e743a66"
         },
         "hwpx": {
-          "section0Sha256": "e2db2d2efa0464a0aac3854efdcc5fb1da9bce92d54aec67dfe6d82a7543ad3d",
+          "section0Sha256": "f5a5f7e20cbb2da16aab31771acea9fd172a2f5a37bf8fe551fd8b56c4e243db",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
@@ -207,27 +189,21 @@
           "model": "test-data\\regression-corpus\\reference-d.model.json",
           "hwpx": "test-data\\regression-corpus\\reference-d.hwpx",
           "pageCount": 9,
-          "expectedTableCount": 3,
-          "outputTableCount": 3,
+          "expectedTableCount": 4,
+          "outputTableCount": 4,
           "passed": true,
           "failures": []
         }
       },
       "com": {
-        "expectedPages": 9,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 9,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "d04defcb0f2357a14c63a609619ff13589a2bdcb5980f17f9774795fd5cb22f2"
         },
         "hwpx": {
-          "section0Sha256": "b9fc694aa962cf053b953cebc0d565b2c9869eb976ae5b204c028eb9cf94c8f0",
+          "section0Sha256": "e2019174b44a08b02010d1836b14587f1cd4e18f094b34c964514a3a9831cf6a",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
@@ -270,27 +246,21 @@
           "model": "test-data\\regression-corpus\\reference-e.model.json",
           "hwpx": "test-data\\regression-corpus\\reference-e.hwpx",
           "pageCount": 10,
-          "expectedTableCount": 3,
-          "outputTableCount": 3,
+          "expectedTableCount": 5,
+          "outputTableCount": 5,
           "passed": true,
           "failures": []
         }
       },
       "com": {
-        "expectedPages": 10,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 10,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
           "sha256": "cd1c2914d066e34fca474013927599a7b175b9031286e4bf7c365a29bd547c93"
         },
         "hwpx": {
-          "section0Sha256": "2d14c8b5f60f0a6882b6bf5d112d10f614a5d076cdb56bc7db4f888c25b18558",
+          "section0Sha256": "8a70f9af147a04c5d943d17c5cfce9a53bb84f220ca82f0d01d79e714e79cba4",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
@@ -331,20 +301,14 @@
         }
       },
       "com": {
-        "expectedPages": 3,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 3,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
-          "sha256": "b23014d8a35d3662eb277b16af13686294ff48665d8b8e5591b5004003a4dd63"
+          "sha256": "f5acfa085226bc97aeda524e0159541dfdd65e57456ea9758bc2a943b86c4155"
         },
         "hwpx": {
-          "section0Sha256": "3c7bb59d843acd9e0b156b3dd1538f1e9c1e933dc5083802c09e706c09b87afe",
+          "section0Sha256": "50c24d8cc9084f9834af84a3561c377d7810cb1b58e6fe479629453eb06e9ac1",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {
@@ -388,20 +352,14 @@
         }
       },
       "com": {
-        "expectedPages": 4,
-        "hwpVersion": "11, 0, 0, 9136",
-        "open": true,
-        "pages": 4,
-        "pdfSaved": true,
-        "pagesMatchExpected": true,
-        "ok": true
+        "skipped": true
       },
       "fingerprint": {
         "model.json": {
-          "sha256": "65bfe1e19529581326a1382e41cefcde21b4d9268a30d837f1b32c4d38cd60f2"
+          "sha256": "cb368dc3a7addb7cb4d86cab837c96130382c725e94ee30111b7c4e2129f6f50"
         },
         "hwpx": {
-          "section0Sha256": "87981e6f0aa144eb981ade09924f811723b44a9782ae9887852595c0ec613c07",
+          "section0Sha256": "5f9b17f2125df1e7357d1721861471256e6c30559a7adae647aba112dee4e5f0",
           "note": "ZIP 타임스탬프 때문에 .hwpx 바이트 해시는 재현되지 않는다. 조판 결과 비교는 section0.xml 해시로 한다."
         },
         "pdf": {

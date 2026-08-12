@@ -26,6 +26,7 @@ class CoverProfile:
     english_name: str | None = None
     inner_cover: bool = False
     banner_image: bool = True
+    name_image: bool = False
 
 
 COVER_PROFILES = {
@@ -35,6 +36,7 @@ COVER_PROFILES = {
         english_name=profile.get('englishName'),
         inner_cover=profile['innerCover'],
         banner_image=profile['bannerImage'],
+        name_image=profile.get('nameImage', False),
     )
     for profile_id, profile in TOKENS['coverProfiles'].items()
 }

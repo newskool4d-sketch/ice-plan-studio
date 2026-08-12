@@ -163,6 +163,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .preview-cover-date, .preview-cover-agency, .preview-cover-english { margin: 16px 0 0; text-align: center; font-size: 12px; }
 .preview-cover-agency { font-weight: 700; }
 .preview-cover-english { color: #657382; font-size: 10px; }
+.preview-cover-name-image { display: block; margin: 16px auto 0; max-width: 60%; height: auto; }
 .document-header { display: flex; justify-content: space-between; color: #74808a; font-size: 9px; }
 .document-meta { color: #9aa4ac; }
 .document-rule { height: 2px; background: #23313b; margin: 8px 0 24px; }
@@ -240,6 +241,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .loaded-paragraph { margin: 0 0 6px; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item { margin: 0 0 6px; padding-left: 16pt; text-indent: -12pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item .list-marker { color: #74808a; margin-right: 2px; }
+.loaded-list-item.group-leader { margin-top: 6px; }
 .loaded-list-item.section-heading { margin: 16px 0 7px; font-size: 18pt; line-height: 1.3; font-weight: 700; color: #17232c; }
 .loaded-list-item.section-heading .list-marker { color: inherit; margin-right: 5px; }
 .loaded-table { font-size: 9px; }
