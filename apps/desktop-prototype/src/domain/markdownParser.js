@@ -1,15 +1,32 @@
 import { createDocumentModel, validateDocumentModel } from './documentModel.js';
 import { inspectDocumentRules } from './ruleEngine.js';
 
-// `(...)+`(1회 이상)는 최소 2열을 요구해 1열 표 구분선(`| --- |`)을 인식하지
-// 못했다(electron/plan-ir.cjs에서 고친 것과 동일한 결함). `*`로 바꾸되, 파이프가
-// 전혀 없는 순수 "---"(수평선)를 표로 오인하지 않도록 파이프 포함을 별도 요구한다.
+// 1열 표와 현장 Markdown에서 쓰는 축약 정렬 구분선(`| :-: |`)도 인식한다.
+// 파이프가 전혀 없는 순수 "---"(수평선)는 표로 오인하지 않도록 제외한다.
 const isTableSeparator = (line) => {
   const trimmed = line.trim();
-  return trimmed.includes('|') && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(trimmed);
+  return trimmed.includes('|') && /^\|?\s*:?-{1,}:?\s*(\|\s*:?-{1,}:?\s*)*\|?\s*$/.test(trimmed);
 };
 
-const splitCells = (line) => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => cell.trim());
+const splitCells = (line) => {
+  const content = line.trim().replace(/^\|/, '').replace(/\|$/, '');
+  const cells = [];
+  let cell = '';
+  for (let index = 0; index < content.length; index += 1) {
+    const character = content[index];
+    if (character === '\\' && content[index + 1] === '|') {
+      cell += '|';
+      index += 1;
+    } else if (character === '|') {
+      cells.push(cell.trim());
+      cell = '';
+    } else {
+      cell += character;
+    }
+  }
+  cells.push(cell.trim());
+  return cells;
+};
 
 export function parseMarkdown(input, { title = '' } = {}) {
   const lines = String(input ?? '').replace(/\r\n?/g, '\n').split('\n');
@@ -55,4 +72,3 @@ export function parseMarkdown(input, { title = '' } = {}) {
   const model = validateDocumentModel(createDocumentModel({ title, blocks }));
   return { ...model, ruleFindings: inspectDocumentRules(model) };
 }
-

@@ -200,14 +200,31 @@ function parseTextToPlanIR(input, { format, title = '', filePath = null } = {}) 
     if (text) blocks.push({ type: 'paragraph', role: 'body', text, source: sourceOf(format, filePath, paragraphStart, paragraph.join('\n')) });
     paragraph = [];
   };
-  // 원래 정규식은 `(...)+`(1회 이상)라 1열 표 구분선(`| --- |`)을 인식하지 못했다.
-  // `*`(0회 이상)로 바꿔 1열도 인식하되, 파이프가 전혀 없는 순수 "---"(수평선으로
-  // 오인 가능)는 여전히 표로 오인하지 않도록 파이프 포함을 별도 조건으로 요구한다.
+  // 1열 표와 현장 Markdown에서 쓰는 축약 정렬 구분선(`| :-: |`)도 인식한다.
+  // 파이프가 전혀 없는 순수 "---"(수평선)는 표로 오인하지 않도록 제외한다.
   const isTableDivider = (line) => {
     const trimmed = line.trim();
-    return trimmed.includes('|') && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(trimmed);
+    return trimmed.includes('|') && /^\|?\s*:?-{1,}:?\s*(\|\s*:?-{1,}:?\s*)*\|?\s*$/.test(trimmed);
   };
-  const splitCells = (line) => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => ({ text: cell.trim(), rowSpan: 1, colSpan: 1 }));
+  const splitCells = (line) => {
+    const content = line.trim().replace(/^\|/, '').replace(/\|$/, '');
+    const cells = [];
+    let cell = '';
+    for (let index = 0; index < content.length; index += 1) {
+      const character = content[index];
+      if (character === '\\' && content[index + 1] === '|') {
+        cell += '|';
+        index += 1;
+      } else if (character === '|') {
+        cells.push({ text: cell.trim(), rowSpan: 1, colSpan: 1 });
+        cell = '';
+      } else {
+        cell += character;
+      }
+    }
+    cells.push({ text: cell.trim(), rowSpan: 1, colSpan: 1 });
+    return cells;
+  };
 
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];

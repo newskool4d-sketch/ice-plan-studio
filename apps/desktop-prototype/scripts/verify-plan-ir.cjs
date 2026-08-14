@@ -18,6 +18,12 @@ const FIXTURE = [
   '- 점검',
 ].join('\n');
 
+const ESCAPED_PIPE_FIXTURE = [
+  '| 항목 | 설명 |',
+  '| :-: | :-: |',
+  '| 1 | 학교 A \\| 학교 B |',
+].join('\n');
+
 function option(name) {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : null;
@@ -96,6 +102,16 @@ async function run() {
       loadPlanInput(txtPath),
       loadPlanInput(hwpxPath),
     ]);
+    const escapedPipePath = path.join(workDir, 'escaped-pipe.md');
+    await fs.writeFile(escapedPipePath, ESCAPED_PIPE_FIXTURE, 'utf8');
+    const escapedPipe = await loadPlanInput(escapedPipePath);
+    if (escapedPipe.blocks.length !== 1
+      || escapedPipe.blocks[0].type !== 'table'
+      || escapedPipe.blocks[0].header.length !== 2
+      || escapedPipe.blocks[0].table.cells.length !== 2
+      || escapedPipe.blocks[0].table.cells[1][1].text !== '학교 A | 학교 B') {
+      throw new Error('Markdown escaped pipe was not preserved as a single table cell');
+    }
     const comparisons = {
       markdownToText: comparePlanIR(markdown, text),
       markdownToHwpx: comparePlanIR(markdown, hwpx),
@@ -111,6 +127,7 @@ async function run() {
         md: countBlocks(markdown),
         txt: countBlocks(text),
         hwpx: countBlocks(hwpx),
+        escapedPipe: countBlocks(escapedPipe),
       },
     };
 
