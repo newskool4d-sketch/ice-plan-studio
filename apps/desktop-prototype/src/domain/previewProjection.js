@@ -199,23 +199,26 @@ function pageSequence(model, profile) {
 
 function projectTable(block) {
   const normalized = normalizeBlock(block);
-  const rows = [normalized.header || [], ...(normalized.rows || [])];
+  // grid는 치수 계산 전용 지역값이다. 반환 블록의 rows에 grid를 담으면(과거 결함)
+  // "rows = 머리글 제외 데이터 행" 모델 계약이 깨져, 쪽 초안 저장(withPagePlan) 후
+  // HWPX 내보내기에서 머리글이 물리 2행으로 중복되고 규칙 엔진 writeTarget이
+  // 한 행 위로 밀려 머리글·데이터가 치환된다. rows는 절대 덮어쓰지 않는다.
+  const grid = [normalized.header || [], ...(normalized.rows || [])];
   const sourceTable = normalized.layout?.table;
   const sourceWidths = sourceTable?.columnWidthsHwpUnit;
   const useSourceWidths = Array.isArray(sourceWidths)
-    && sourceWidths.length === Math.max(1, ...rows.map((row) => row.length))
+    && sourceWidths.length === Math.max(1, ...grid.map((row) => row.length))
     && sourceWidths.every((width) => Number(width) > 0);
-  const columnWidthsHwpUnit = useSourceWidths ? sourceWidths.map(Number) : tableColumnWidths(rows);
+  const columnWidthsHwpUnit = useSourceWidths ? sourceWidths.map(Number) : tableColumnWidths(grid);
   const sourceHeights = sourceTable?.rowHeightsHwpUnit;
   const rowHeightsHwpUnit = Array.isArray(sourceHeights)
-    && sourceHeights.length === rows.length
+    && sourceHeights.length === grid.length
     && sourceHeights.every((height) => Number(height) > 0)
     ? sourceHeights.map(Number)
-    : tableRowHeights(rows, columnWidthsHwpUnit);
+    : tableRowHeights(grid, columnWidthsHwpUnit);
   const measuredWidth = columnWidthsHwpUnit.reduce((sum, width) => sum + width, 0);
   return {
     ...normalized,
-    rows,
     columnWidthsHwpUnit,
     rowHeightsHwpUnit,
     widthHwpUnit: Number(sourceTable?.widthHwpUnit) || measuredWidth || layoutTokens.page.bodyWidthHwpUnit,

@@ -39,7 +39,8 @@ function PreviewBlock({ block, index, highlighted, normalizeTypography = false }
     return <p className={`loaded-list-item ${sectionClass} ${groupLeaderClass} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
   }
   if (block.type === "table") {
-    const [header, ...body] = block.rows;
+    const header = block.header || [];
+    const body = block.rows || [];
     const widthSum = block.columnWidthsHwpUnit.reduce((sum, width) => sum + Number(width || 0), 0) || block.widthHwpUnit;
     const tableStyle = { width: `${Math.min(100, (block.widthHwpUnit / projectionBodyWidth(block)) * 100)}%` };
     const cellStyle = (rowIndex) => ({

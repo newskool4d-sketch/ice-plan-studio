@@ -114,8 +114,12 @@ function normalizeDates(text) {
     `${year}. ${Number(month)}. ${Number(day)}.${weekday ? `(${weekday})` : ''}`);
 }
 
+// 시각 정규화 제외 2종(2026-08-14 결함 수정): ① 기간 표현 "N시간" — 시(?!간)으로
+// 차단하지 않으면 "2시간"이 "02:00간"으로 변조된다. ② 시간대(범위) 표현
+// "12~17시"·"9시~17시" — 물결표 앞뒤 어느 한쪽만 매칭되면 표기가 혼재되므로
+// 범위에 걸친 시각은 통째로 건드리지 않는다(물결표 계열 ~∼～〜, 공백 허용).
 function normalizeTimes(text) {
-  return text.replace(/(?<!\d)(?:(오전|오후)\s*)?(\d{1,2})(?:\s*시(?:\s*(\d{1,2})\s*분?)?|:(\d{1,2}))(?!\d)/g, (_match, meridiem, hourValue, minuteWord, minuteColon) => {
+  return text.replace(/(?<!\d)(?<![~∼～〜]\s*)(?:(오전|오후)\s*)?(\d{1,2})(?:\s*시(?!간)(?:\s*(\d{1,2})\s*분?)?(?!\s*[~∼～〜])|:(\d{1,2}))(?!\d)/g, (_match, meridiem, hourValue, minuteWord, minuteColon) => {
     let hour = Number(hourValue);
     const minute = Number(minuteWord ?? minuteColon ?? 0);
     if (meridiem === '오후' && hour < 12) hour += 12;
