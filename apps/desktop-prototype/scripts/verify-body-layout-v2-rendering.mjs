@@ -76,13 +76,11 @@ assert(
   }),
   "task subsection heading classification changed",
 );
+// 제목틀(표)은 로마숫자 장 전용 — 아라비아 숫자 제목은 길이와 무관하게 평문
+// 제목으로 낸다(실물 양식 판정 2026-08-14). 종전 기대값은 표 조판이었다.
 assert(
-  JSON.stringify(classifyStructuredHeading("1. 일반 항목")) === JSON.stringify({
-    kind: "roman-chapter",
-    label: "1.",
-    title: "일반 항목",
-  }),
-  "numeric chapter heading must use the roman-chapter frame",
+  classifyStructuredHeading("1. 일반 항목") === null,
+  "numeric chapter heading must not use a heading frame",
 );
 assert(
   JSON.stringify(classifyStructuredHeading("과제 1. 체험교육 강화")) === JSON.stringify({

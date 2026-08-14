@@ -210,9 +210,10 @@ def main():
         section.index('<hp:newNum num="1" numType="PAGE"/>') < section.rindex(TITLE),
         "page-number restart is not attached before the body-opening title",
     )
+    # 제목틀(표)을 쓰는 계열: 로마숫자 장과 과제 계열뿐이다. 아라비아 숫자 제목
+    # ("1. 추진 체계")은 2026-08-14 판정으로 제외됐다 — 아래에서 표가 없는지 따로 본다.
     structured_specs = (
         ("Ⅰ", "추진 배경", "12", "31", "27"),
-        ("1.", "추진 체계", "12", "31", "27"),
         ("[과제1]", "체험교육 강화", "10", "114", "19"),
         ("[과제 1-1]", "운영 기반 조성", "14", "414", "315"),
         ("과제 2.", "운영 내실화", "10", "114", "19"),
@@ -225,7 +226,11 @@ def main():
     expected_summary_cells = [
         "구분", "내용",
         "추진 근거", "체험교육 수요 증가에 대응한다.",
-        "추진 목적", "미래형 체험교육 체계를 구축한다.",
+        # 발췌 범위는 로마숫자 장 경계까지다. 아라비아 숫자 제목이 제목틀을 쓰지
+        # 않게 되면서(2026-08-14 판정) 더 이상 장 경계로 잡히지 않아, 같은 장의
+        # 뒤 문단까지 발췌에 포함된다 — 제목 길이에 따라 발췌가 갈리던 종전 동작
+        # (20자 초과 제목은 애초에 장으로 안 잡힘)이 함께 해소된다.
+        "추진 목적", "미래형 체험교육 체계를 구축한다. / 체험교육 프로그램을 고도화한다. / 일반 강조 일반",
         "추진 과제", "[과제1] 체험교육 강화 / 과제 2. 운영 내실화",
         # 마지막 장 발췌는 body-continuation 블록까지 잇는다 — 이어쓰기 쪽 본문도
         # 같은 장의 연속이기 때문(목차 수집과 동일한 페이지 범위).
@@ -246,6 +251,22 @@ def main():
     require(
         summary_cells == expected_summary_cells,
         f"summary four-element cells changed: {summary_cells}",
+    )
+    require(
+        not [
+            table for table in section_tables
+            if re.fullmatch(
+                r"\d+\.",
+                "".join(
+                    (node.text or "")
+                    for node in next(
+                        (cell for cell in table.iter() if local_name(cell) == "tc"), table
+                    ).iter()
+                    if local_name(node) == "t"
+                ).strip(),
+            )
+        ],
+        "아라비아 숫자 제목이 제목틀(표)로 조판되었습니다.",
     )
     for label, title, label_fill, label_charpr, title_charpr in structured_specs:
         table = next(

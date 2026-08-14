@@ -63,8 +63,11 @@ STRUCTURED_HEADING_PATTERNS = (
     ('task-subsection', re.compile(r'^\s*(\[?과제\s*\d+\s*-\s*\d+\]?[.]?)\s*(.+)$')),
     ('task-section', re.compile(r'^\s*(\[?과제\s*\d+\]?[.]?)\s*(.+)$')),
     ('roman-chapter', re.compile(r'^\s*([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+)\.\s*(.+)$')),
-    ('roman-chapter', re.compile(r'^\s*(\d+\.)\s*(?!\d)(.+)$')),
 )
+# 제목틀(표)은 로마숫자 장 전용이다(실물 양식 판정 2026-08-14). 아라비아 숫자
+# 제목도 이 표를 쓰던 때에는 NUMERIC_HEADING_MAX_TITLE_CHARS 상한 때문에 20자
+# 이하만 표가 되어, 같은 문서에서 "3. 문제점"은 표로 "2. 교직원·강사·운영요원
+# 대상(자체 운영 기준)"은 평문으로 갈렸다. 길이와 무관하게 문단으로 낸다.
 # 번호로 시작하는 일반 본문 문장이 장 제목으로 오인되는 것을 막는 상한(공백 제외).
 # 없으면 "1. 조판 측정기 교정을 위한 본문 문단으로…"가 목차 항목이 되고,
 # populate-toc-pages.cjs가 그 문장의 쪽을 찾지 못해 **빌드 전체가 실패**한다
@@ -108,8 +111,10 @@ STYLE_SETS = {
             '132', '204', '277', '307', '315', '338', '364', '414', '417', '512',
         },
         'bold_map': {'9': '19', '121': '364', '132': '364'},
-        'heading': {1: ('9', '1'), 2: ('132', '73')},
-        'heading_default': ('132', '73'),
+        # 제목 문단은 243을 쓴다(73과 기하는 같고 문단 위 간격만 있는 사본).
+        # 73을 직접 고치지 않는 이유: 표지·본문 시작 기관명 줄(:747)도 73을 쓴다.
+        'heading': {1: ('9', '1'), 2: ('132', '243')},
+        'heading_default': ('132', '243'),
         'korean_subheading': ('132', '240'),
         # 목차 항목: 실물 양식 판정(2026-08-07)에 따라 표가 아닌 문단형으로 낸다.
         # 27=18pt 굵은 제목 계열, 241=목차 전용 문단(왼쪽·여백·200% — presentation_header가 주입).
@@ -915,9 +920,11 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
         )
         if not para_properties:
             raise RuntimeError('header.xml에서 paraProperties를 찾지 못했습니다.')
-        custom_ids = {'238', '239', '240', '241', '242'}
-        if any(re.search(rf'<hh:paraPr id="{para_id}"\b', para_properties.group(4)) for para_id in custom_ids):
-            raise RuntimeError('사용자 정의 문단 속성 ID 238~242가 이미 사용 중입니다.')
+        custom_ids = {'238', '239', '240', '241', '242', '243'}
+        # id 뒤에 `\b`를 붙이면 닫는 따옴표와 공백이 모두 비단어 문자라 경계가
+        # 성립하지 않아 이 가드가 항상 통과했다. 닫는 따옴표만으로 이미 정확 일치다.
+        if any(re.search(rf'<hh:paraPr id="{para_id}"', para_properties.group(4)) for para_id in custom_ids):
+            raise RuntimeError(f'사용자 정의 문단 속성 ID {min(custom_ids)}~{max(custom_ids)}가 이미 사용 중입니다.')
 
         def custom_para_pr(para_id, *, align, left, intent, prev, next_value, line_spacing, keep_with_next):
             margin = (
@@ -944,7 +951,7 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 '</hh:paraPr>'
             )
 
-        additions = ''.join([
+        custom_definitions = [
             custom_para_pr(
                 '238', align='JUSTIFY', left=0, intent=0, prev=0,
                 next_value=0, line_spacing=170, keep_with_next=0,
@@ -968,9 +975,18 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 prev=TOKENS['typography']['topicGroupLeader']['prevHwpUnit'],
                 next_value=0, line_spacing=170, keep_with_next=0,
             ),
-        ])
+            # 243: 제목틀(표)을 쓰지 않는 제목 문단. 기하는 템플릿 paraPr 73과
+            # 같게 두고 문단 위 간격만 준다 — 번호 제목이 붙어 나오던 결함 해소.
+            # keep_with_next=1: 제목만 남고 본문이 다음 쪽으로 넘어가지 않게 한다.
+            custom_para_pr(
+                '243', align='LEFT', left=830, intent=-2130,
+                prev=TOKENS['typography']['numberedHeading']['prevHwpUnit'],
+                next_value=0, line_spacing=160, keep_with_next=1,
+            ),
+        ]
+        additions = ''.join(custom_definitions)
         patched_para_properties = (
-            f'{para_properties.group(1)}{int(para_properties.group(2)) + 5}'
+            f'{para_properties.group(1)}{int(para_properties.group(2)) + len(custom_definitions)}'
             f'{para_properties.group(3)}{para_properties.group(4)}{additions}{para_properties.group(5)}'
         )
         source = source.replace(para_properties.group(0), patched_para_properties, 1)

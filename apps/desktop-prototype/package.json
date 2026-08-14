@@ -16,6 +16,8 @@
     "verify:body-layout-v2-rendering": "node scripts/verify-body-layout-v2-rendering.mjs",
     "verify:body-layout-v2-hwpx": "python -B scripts/verify-body-layout-v2-hwpx.py",
     "verify:workspace-packages": "node scripts/verify-workspace-packages.cjs",
+    "verify:numbered-heading-presentation": "node scripts/verify-numbered-heading-presentation.mjs",
+    "verify:numbered-heading-layout": "python -B scripts/verify-numbered-heading-layout.py",
     "regenerate:migrated-fixtures": "node scripts/regenerate-migrated-fixtures.cjs",
     "regenerate:regression": "py test-data/regression-corpus/regenerate.py",
     "verify:app-render": "node scripts/verify-app-render.mjs \"release/win-unpacked/ICE Plan Studio.exe\"",

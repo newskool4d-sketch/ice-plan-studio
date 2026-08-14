@@ -27,6 +27,11 @@
       "_note": "최상위 항목(□/○ 등 level-0 unordered listItem) 전용 문단 속성. 주제 그룹 간 시각 분리를 만든다. 실물 실측치: 시행문서 paraPr 28 prev=300 next=300.",
       "paraPrId": "242",
       "prevHwpUnit": 300
+    },
+    "numberedHeading": {
+      "_note": "제목틀(표)을 쓰지 않는 제목 문단 전용 속성. 번호 제목이 연달아 나올 때 번호와 번호 사이를 띄운다(2026-08-14 사용자 검수 지적). 값 300은 topicGroupLeader와 같은 시행문서 실측치(paraPr 28 prev=300)를 가져온 것 — 번호 제목도 주제 그룹의 머리 문단이라 같은 간격을 적용한다. 제목 계층 자체의 별도 실측은 없으므로 가정이며, 실물 확인 후 조정 가능.",
+      "paraPrId": "243",
+      "prevHwpUnit": 300
     }
   },
   "adaptiveSpacing": {

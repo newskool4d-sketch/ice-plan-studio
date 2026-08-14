@@ -1,5 +1,8 @@
+// 제목틀(표)은 로마숫자 장 전용이다(실물 양식 판정 2026-08-14). 아라비아 숫자
+// 제목도 제목틀을 쓰던 때에는 MAX_STRUCTURED_TITLE_CHARS 상한 때문에 20자 이하만
+// 표가 되어, 같은 문서에서 표와 평문이 갈렸다. model_to_hwpx.py의
+// STRUCTURED_HEADING_PATTERNS와 같은 집합을 유지해야 한다.
 const ROMAN_CHAPTER = /^\s*([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+)\.\s*(.+)$/;
-const NUMERIC_CHAPTER = /^\s*(\d+\.)\s*(?!\d)(.+)$/;
 const TASK_SUBSECTION = /^\s*(\[?과제\s*\d+\s*-\s*\d+\]?[.]?)\s*(.+)$/;
 const TASK_SECTION = /^\s*(\[?과제\s*\d+\]?[.]?)\s*(.+)$/;
 // `[가-하]`는 유니코드 음절 1만여 자를 모두 포함해 평문까지 소제목으로 잡는다.
@@ -25,7 +28,6 @@ export function classifyStructuredHeading(text, hintedKind = null) {
     ["task-subsection", TASK_SUBSECTION],
     ["task-section", TASK_SECTION],
     ["roman-chapter", ROMAN_CHAPTER],
-    ["roman-chapter", NUMERIC_CHAPTER],
     ["korean-subheading", KOREAN_SUBHEADING],
   ];
   for (const [kind, pattern] of candidates) {
