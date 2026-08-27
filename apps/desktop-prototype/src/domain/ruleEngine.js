@@ -1,5 +1,6 @@
 const ITEM_MARKERS = ['□', '❍', '-', '·', '1.', '가.', '1)', '가)'];
 const TEXT_BLOCK_TYPES = new Set(['heading', 'paragraph', 'listItem']);
+const KOREAN_SUBHEADING = /^\s*[가나다라마바사아자차카타파하]\./;
 
 function cloneModel(model) {
   return typeof structuredClone === 'function'
@@ -237,34 +238,53 @@ function addListSuggestions(model, findings) {
     // 정규화 레벨은 얼마인지 추적한다(위계 건너뜀 검출용). heading을 만나면
     // 새 장이므로 위계 문맥을 초기화한다.
     let underConventionChapter = false;
+    let underKoreanSubheading = false;
     let prevListLevel = -1;
     for (const [blockIndex, block] of blocks.entries()) {
       if (block.type === 'heading') {
         underConventionChapter = isConventionChapter(block.text);
+        underKoreanSubheading = KOREAN_SUBHEADING.test(String(block.text || ''));
         prevListLevel = -1;
         continue;
       }
       if (block.type !== 'listItem') continue;
+      // 순번 목록은 불릿 팔레트가 아닌 문서 고유의 순서 의미를 가진다.
+      // marker를 □·○ 등으로 바꾸면 절차·단계 정보가 사라지므로 자동 치환하지 않는다.
       const level = Number(block.level ?? 0);
       const normalizedLevel = normalizeListLevel(level);
-      // 관용 장 하위의 최상위(level 0) 목록은 관용 기호 ○를 기본값으로 덮어쓴다.
-      // 팔레트 규칙과 별도 제안이 아니라 여기서 기대 기호만 바꿔, 한 항목에
-      // 상충하는 제안이 두 개 생기지 않게 한다(강제 아닌 suggestion — LIST-MARKER).
-      const expectedMarker = (underConventionChapter && normalizedLevel === 0)
-        ? CONVENTION_TOP_MARKER
-        : (markers[normalizedLevel] || ITEM_MARKERS[normalizedLevel]);
-      const isReviewOnlyMarker = reviewOnlyMarkersByLevel.get(normalizedLevel)?.has(String(block.marker || '').trim());
-      if (block.marker !== expectedMarker && !isReviewOnlyMarker) {
+      if (block.ordered && underKoreanSubheading && /^\d+\.$/.test(String(block.marker || '').trim())) {
+        const after = String(block.marker).trim().replace(/\.$/, ')');
         findings.push(finding({
-          code: 'LIST-MARKER',
-          title: '항목기호 계열',
-          message: `${normalizedLevel + 1}단계 항목기호를 현재 프로필 계열에 맞춥니다.`,
+          code: 'ORDERED-MARKER',
+          title: '하위 순번 표기',
+          message: '한글 항목 아래 절차 목록은 1) 형식으로 표기합니다.',
           kind: 'suggestion',
           target: blockFieldTarget(scope, blockIndex, 'marker'),
-          before: block.marker || (block.ordered ? '1.' : '-'),
-          after: expectedMarker,
-          evidence: '기준선 분석 §2.4 · 8단계 항목기호',
+          before: block.marker,
+          after,
+          evidence: '공문서 항목 위계 · 한글 항목 하위 순번 1) 형식',
         }));
+      }
+      if (!block.ordered) {
+        // 관용 장 하위의 최상위(level 0) 목록은 관용 기호 ○를 기본값으로 덮어쓴다.
+        // 팔레트 규칙과 별도 제안이 아니라 여기서 기대 기호만 바꿔, 한 항목에
+        // 상충하는 제안이 두 개 생기지 않게 한다(강제 아닌 suggestion — LIST-MARKER).
+        const expectedMarker = (underConventionChapter && normalizedLevel === 0)
+          ? CONVENTION_TOP_MARKER
+          : (markers[normalizedLevel] || ITEM_MARKERS[normalizedLevel]);
+        const isReviewOnlyMarker = reviewOnlyMarkersByLevel.get(normalizedLevel)?.has(String(block.marker || '').trim());
+        if (block.marker !== expectedMarker && !isReviewOnlyMarker) {
+          findings.push(finding({
+            code: 'LIST-MARKER',
+            title: '항목기호 계열',
+            message: `${normalizedLevel + 1}단계 항목기호를 현재 프로필 계열에 맞춥니다.`,
+            kind: 'suggestion',
+            target: blockFieldTarget(scope, blockIndex, 'marker'),
+            before: block.marker || '-',
+            after: expectedMarker,
+            evidence: '기준선 분석 §2.4 · 8단계 항목기호',
+          }));
+        }
       }
       if (level !== normalizedLevel) {
         findings.push(finding({

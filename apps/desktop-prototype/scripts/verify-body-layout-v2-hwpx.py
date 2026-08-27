@@ -322,17 +322,41 @@ def main():
     require(source_table is not None, "source-style table is missing")
     source_cells = [element for element in source_table.iter() if local_name(element) == "tc"]
     source_runs = [[run.attrib.get("charPrIDRef") for run in cell.iter() if local_name(run) == "run"] for cell in source_cells]
-    require(source_runs == [["82"], ["83"]], f"table header/body fonts are not normalized to 11pt: {source_runs}")
+    require(source_runs == [["513"], ["514"]], f"table header/body fonts are not normalized to 12pt: {source_runs}")
+    for charpr_id, expected_bold in (("513", True), ("514", False)):
+        charpr = next(
+            element for element in header_root.iter()
+            if local_name(element) == "charPr" and element.attrib.get("id") == charpr_id
+        )
+        require(charpr.attrib.get("height") == "1200", f"table charPr {charpr_id} is not 12pt")
+        font_ref = next(element for element in charpr if local_name(element) == "fontRef")
+        require(
+            all(font_ref.attrib.get(name) == "1" for name in ("hangul", "latin", "hanja", "japanese", "other", "symbol", "user")),
+            f"table charPr {charpr_id} is not 맑은 고딕",
+        )
+        ratio = next(element for element in charpr if local_name(element) == "ratio")
+        spacing = next(element for element in charpr if local_name(element) == "spacing")
+        require(all(value == "100" for value in ratio.attrib.values()), f"table charPr {charpr_id} 장평이 100이 아님")
+        require(all(value == "0" for value in spacing.attrib.values()), f"table charPr {charpr_id} 자간이 0이 아님")
+        has_bold = any(local_name(element) == "bold" for element in charpr)
+        require(has_bold is expected_bold, f"table charPr {charpr_id} 굵기 속성이 바뀜")
     source_paragraphs = [
         next(element for element in cell.iter() if local_name(element) == "p")
         for cell in source_cells
     ]
     require(
-        [paragraph.attrib.get("paraPrIDRef") for paragraph in source_paragraphs] == ["64", "238"],
-        "table header/body alignment styles changed",
+        [paragraph.attrib.get("paraPrIDRef") for paragraph in source_paragraphs] == ["246", "247"],
+        "table header/body 160% line-spacing styles changed",
     )
+    for para_pr_id in ("246", "247"):
+        para_pr = next(
+            element for element in header_root.iter()
+            if local_name(element) == "paraPr" and element.attrib.get("id") == para_pr_id
+        )
+        line_spacings = [element.attrib.get("value") for element in para_pr.iter() if local_name(element) == "lineSpacing"]
+        require(line_spacings and set(line_spacings) == {"160"}, f"표 셀 paraPr {para_pr_id} 줄간격이 160%가 아님: {line_spacings}")
     source_sizes = [next(element for element in cell if local_name(element) == "cellSz") for cell in source_cells]
-    require([item.attrib.get("height") for item in source_sizes] == ["1800", "2200"], "source table row heights changed")
+    require([item.attrib.get("height") for item in source_sizes] == ["1900", "2200"], "12pt 표의 최소 행 높이가 보장되지 않음")
     bold_paragraph = next(
         (
             paragraph for paragraph in section_root.iter()
@@ -389,7 +413,7 @@ def main():
             "unbracketed task heading variants",
             "Korean subheading paragraph gap",
             "imported HWPX receives normalized body-opening title",
-            "table 11pt font and dimensions",
+    "table 12pt font, 100% width/ratio, 0% spacing, 160% line spacing, and readable row heights",
             "body-opening organization preserved and duplicate title removed",
             "paragraph-form dot-leader TOC and summary frame",
             "summary four-element derivation",

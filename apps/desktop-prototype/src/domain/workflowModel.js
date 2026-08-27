@@ -24,7 +24,11 @@ export function compositionModel(model, agency) {
       ...model.metadata,
       cover: {
         ...(model.metadata?.cover || {}),
-        title: model.metadata?.cover?.title || model.metadata?.title,
+        title: model.metadata?.cover?.title
+          || (model.source?.format === "hwpx" ? model.metadata?.title : model?.blocks?.find(
+            (block) => block.type === "heading" && block.level === 1,
+          )?.text)
+          || model.metadata?.title,
         displayName: model.metadata?.cover?.displayName || agency.displayName,
         // 표지 영문명은 기관 레지스트리 값으로 구동한다. 직속기관 10종이 같은
         // coverProfile(direct-g)을 공유하므로, 프로필에 박힌 영문명을 그대로 쓰면

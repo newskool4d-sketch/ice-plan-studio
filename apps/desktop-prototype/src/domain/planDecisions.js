@@ -8,6 +8,7 @@ export const FRONT_MATTER_MODES = new Set(["source", "template", "omitted", "unr
 
 const TOC_HEADING = /^(목\s*차|contents?)$/i;
 const SUMMARY_HEADING = /^(요약|summary|추진계획\s*\(\s*요약\s*\))$/i;
+const ROMAN_CHAPTER_HEADING = /^\s*[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.\s+\S/;
 const TEMPLATE_ARTIFACTS = new Set([
   "내용 입력 대기",
   "운영 계획",
@@ -24,7 +25,10 @@ function withoutKnownExtension(value) {
 
 function documentTitleCandidates(model) {
   const candidates = new Set();
-  for (const value of [model.metadata?.title, model.metadata?.cover?.title]) {
+  const firstHeading = (model?.blocks || []).find(
+    (block) => block?.type === "heading" && Number(block?.level) === 1,
+  )?.text;
+  for (const value of [firstHeading, model.metadata?.title, model.metadata?.cover?.title]) {
     const normalized = normalize(value);
     const withoutExtension = withoutKnownExtension(value);
     if (normalized) candidates.add(normalized);
@@ -48,8 +52,8 @@ function sourcePageOf(block) {
 function isBodySectionStart(block) {
   const text = blockText(block);
   if (block?.type === "heading") return !TOC_HEADING.test(text) && !SUMMARY_HEADING.test(text);
-  if (block?.type === "listItem" && /^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+\.)$/.test(normalize(block.marker))) return true;
-  return /^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+\.)\s+\S/.test(text);
+  if (block?.type === "listItem" && /^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+[.)])$/.test(normalize(block.marker))) return true;
+  return /^(?:[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.|\d+[.)])\s+\S/.test(text);
 }
 
 function detectedSection(blocks, headingPattern) {
@@ -245,7 +249,11 @@ function cleanedBodyPageBlocks(blocks, model, opening) {
     }
   };
   if (opening) {
-    const bodyStart = bodyBlocks.findIndex(isBodySectionStart);
+    // Markdown 변환 결과의 H1·슬로건은 표지 래퍼다. 실제 본문이 로마숫자
+    // 장으로 시작하는 공문서에서는 그 장을 본문 시작점으로 삼아 래퍼가
+    // 본문 첫 페이지에 복제되지 않게 한다.
+    const romanStart = bodyBlocks.findIndex((block) => ROMAN_CHAPTER_HEADING.test(blockText(block)));
+    const bodyStart = romanStart >= 0 ? romanStart : bodyBlocks.findIndex(isBodySectionStart);
     if (bodyStart >= 0) bodyBlocks = bodyBlocks.slice(bodyStart);
     else if (repeatedDocumentTitle) stripLeadingWrapper();
   } else if (repeatedDocumentTitle) {

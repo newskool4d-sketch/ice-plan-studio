@@ -236,17 +236,16 @@ button:focus-visible, select:focus-visible, input:focus-visible, [tabindex="0"]:
 .structured-heading-task-section .structured-heading-label { min-height: 30px; }
 .structured-heading-task-subsection .structured-heading-label { min-height: 27px; }
 .korean-subheading { margin-top: 1em !important; margin-bottom: 0.2em !important; padding-left: 8pt; text-indent: -8pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: 13pt !important; }
+.loaded-paragraph.blockquote { margin: 6px 0; padding-left: 8pt; text-indent: -8pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: 13pt; line-height: 1.6; text-align: left; }
 /* 문단형 목차 항목 — HWPX 출력(charPr 27 = 18pt 굵은 제목, paraPr 241 = 좌측 여백·200%)과 같은 인상 유지 */
 .loaded-paragraph.toc-entry { margin: 0 0 14px; padding-left: 24pt; font-size: 15pt; font-weight: 700; line-height: 2; text-align: left; }
 .loaded-paragraph { margin: 0 0 6px; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item { margin: 0 0 6px; padding-left: 16pt; text-indent: -12pt; font-family: "함초롬바탕", "휴먼명조", serif; font-size: var(--plan-body-size, 13pt); line-height: 1.7; text-align: justify; color: #2a3942; }
 .loaded-list-item .list-marker { color: #74808a; margin-right: 2px; }
 .loaded-list-item.group-leader { margin-top: 6px; }
-.loaded-list-item.section-heading { margin: 16px 0 7px; font-size: 18pt; line-height: 1.3; font-weight: 700; color: #17232c; }
-.loaded-list-item.section-heading .list-marker { color: inherit; margin-right: 5px; }
 .loaded-table { font-size: 9px; }
-.plan-table.loaded-table { font-family: "맑은 고딕", sans-serif; font-size: 11pt; }
-.loaded-table th, .loaded-table td { word-break: keep-all; }
+.plan-table.loaded-table { font-family: "맑은 고딕", sans-serif; font-size: 12pt; line-height: 1.6; letter-spacing: 0; font-stretch: 100%; }
+.loaded-table th, .loaded-table td { word-break: keep-all; letter-spacing: 0; line-height: 1.6; }
 .loaded-table th { font-family: inherit; font-size: inherit; font-weight: 700; text-align: center; }
 .loaded-table td { font-family: inherit; font-size: inherit; font-weight: 400; text-align: justify; }
 .thumbnail-note { padding: 12px 10px; font-size: 11px; line-height: 1.5; color: var(--muted); }

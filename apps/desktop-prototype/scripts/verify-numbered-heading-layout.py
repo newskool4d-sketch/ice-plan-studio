@@ -20,6 +20,9 @@ from pathlib import Path
 ROMAN_HEADING = "Ⅰ. 목적"
 ARABIC_SHORT = "2. 본원 프로그램의 야외 의존도"
 ARABIC_LONG = "1. 폭염특보 체계 개편에 따른 야외활동 운영 기준 재정비 방안"
+KOREAN_SUBHEADING = "가. 세부 운영 내용"
+BLOCKQUOTE_TEXT = "학생성공시대를 여는 읽걷쓰배움터"
+KOREAN_LIST_TEXT = "학교별 교육목표와 학습장 특화모듈 사전 선택"
 
 
 def require(condition, message):
@@ -58,6 +61,18 @@ def paragraph_para_pr(root, text):
     return matches[0].get("paraPrIDRef")
 
 
+def table_anchor_para_pr(root, first_cell_label):
+    matches = []
+    for paragraph in root.iter():
+        if local_name(paragraph) != "p":
+            continue
+        for table in paragraph.iter():
+            if local_name(table) == "tbl" and first_cell_text(table) == first_cell_label:
+                matches.append(paragraph.get("paraPrIDRef"))
+    require(len(matches) == 1, f"표 앵커 문단을 정확히 하나 찾지 못했습니다: {first_cell_label!r} ({len(matches)}건)")
+    return matches[0]
+
+
 def para_pr_prev(header_xml, para_pr_id):
     match = re.search(
         r'<hh:paraPr id="%s".*?</hh:paraPr>' % re.escape(para_pr_id),
@@ -91,11 +106,16 @@ def build_model():
                     "type": "body",
                     "role": "body",
                     "blocks": [
+                        {"type": "paragraph", "text": "앞 본문 문장이다."},
                         {"type": "heading", "level": 2, "text": ROMAN_HEADING},
                         {"type": "heading", "level": 3, "text": ARABIC_LONG},
                         {"type": "paragraph", "text": "첫째 항목의 본문 문장이다."},
                         {"type": "heading", "level": 3, "text": ARABIC_SHORT},
                         {"type": "paragraph", "text": "둘째 항목의 본문 문장이다."},
+                        {"type": "heading", "level": 4, "text": KOREAN_SUBHEADING},
+                        {"type": "listItem", "ordered": True, "marker": "1)", "level": 0, "text": KOREAN_LIST_TEXT},
+                        {"type": "paragraph", "text": "세부 운영 내용의 본문 문장이다."},
+                        {"type": "paragraph", "blockquote": True, "text": BLOCKQUOTE_TEXT},
                     ],
                 },
             ],
@@ -137,6 +157,31 @@ def main():
     require(
         para_pr_prev(header, short_para_pr) > 0,
         f"번호 제목 문단(paraPr {short_para_pr})에 문단 위 간격이 없습니다.",
+    )
+    korean_para_pr = paragraph_para_pr(root, KOREAN_SUBHEADING)
+    require(
+        korean_para_pr != short_para_pr,
+        f"한글 항목 제목이 아라비아 번호 제목과 같은 문단 속성을 사용합니다: {korean_para_pr}",
+    )
+    require(
+        para_pr_prev(header, korean_para_pr) > 0,
+        f"한글 항목 제목 문단(paraPr {korean_para_pr})에 문단 위 간격이 없습니다.",
+    )
+    roman_anchor_pr = table_anchor_para_pr(root, "Ⅰ")
+    require(roman_anchor_pr == "245", f"본문 뒤 로마숫자 장 표 앵커가 전용 간격 문단(245)을 사용하지 않습니다: {roman_anchor_pr}")
+    require(para_pr_prev(header, roman_anchor_pr) > 0, "본문과 로마숫자 장 제목 사이 문단 위 간격이 없습니다.")
+    quote_para_pr = paragraph_para_pr(root, BLOCKQUOTE_TEXT)
+    require(quote_para_pr == "244", f"인용문이 전용 문단 속성(244)을 사용하지 않습니다: {quote_para_pr}")
+    require(">" not in paragraph_text(next(
+        paragraph for paragraph in root.iter()
+        if local_name(paragraph) == "p" and paragraph_text(paragraph).strip() == BLOCKQUOTE_TEXT
+    )), "인용문에 Markdown 접두어가 그대로 출력되었습니다.")
+    require(
+        any(
+            paragraph_text(paragraph).strip() == f"1) {KOREAN_LIST_TEXT}"
+            for paragraph in root.iter() if local_name(paragraph) == "p"
+        ),
+        "한글 항목 아래 순번 1) 표기가 HWPX 본문에 보존되지 않았습니다.",
     )
     print("verify-numbered-heading-layout: OK")
 

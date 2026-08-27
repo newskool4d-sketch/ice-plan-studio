@@ -3,7 +3,7 @@ import { parseMarkdown } from "../src/domain/markdownParser.js";
 import { classifyStructuredHeading } from "../src/domain/headingPresentation.js";
 import { applyFrontMatterDecision, ensurePlanDecisions, pagePlanFromDecisions } from "../src/domain/planDecisions.js";
 import { createPreviewProjection } from "../src/domain/previewProjection.js";
-import { modelTitle, pageDraftsFrom, withPagePlan } from "../src/domain/workflowModel.js";
+import { compositionModel, modelTitle, pageDraftsFrom, withPagePlan } from "../src/domain/workflowModel.js";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -24,6 +24,46 @@ const source = parseMarkdown([
   "",
   "교육 목적과 추진 방향",
 ].join("\n"), { title: "2026 인천세계로배움학교 추진 계획" });
+const quoteSource = parseMarkdown("> 학생성공시대를 여는 읽걷쓰배움터\n\n> 마리관 중심 1허브·4현장캠퍼스");
+assert(
+  quoteSource.blocks.length === 2
+    && quoteSource.blocks.every((block) => block.type === "paragraph" && block.blockquote === true)
+    && quoteSource.blocks.map((block) => block.text).join("|") === "학생성공시대를 여는 읽걷쓰배움터|마리관 중심 1허브·4현장캠퍼스",
+  "Markdown blockquote must become a marked paragraph without a literal > prefix",
+);
+const orderedParenSource = parseMarkdown("# 절차\n\n1) 첫 단계\n2) 둘째 단계");
+assert(
+  orderedParenSource.blocks.filter((block) => block.type === "listItem").every((block) => block.ordered)
+    && orderedParenSource.blocks.filter((block) => block.type === "listItem").map((block) => block.marker).join("|") === "1)|2)",
+  "Markdown 1) 순번은 ordered list marker로 보존되어야 함",
+);
+
+// ICE Plan Studio가 본문 시작 페이지를 만들 때 Markdown의 H1·슬로건 래퍼를
+// 본문으로 복제하지 않고, 로마숫자 장 제목을 첫 본문으로 삼아야 한다.
+const wrapperTitle = "2026~2028 인천광역시교육청학생교육원 중기 발전 계획(수정안)";
+const wrapperSource = parseMarkdown([
+  `# ${wrapperTitle}`,
+  "",
+  "## 마리관 중심 1허브·4현장캠퍼스 전환",
+  "",
+  "## Ⅰ. 추진 개요",
+  "",
+  "마리관 운영 방향을 정한다.",
+].join("\n"), { title: "원본.md" });
+const wrapperDecided = ensurePlanDecisions(wrapperSource, { documentKind: "internal-plan" });
+const wrapperPages = pagePlanFromDecisions(wrapperDecided);
+const wrapperOpening = wrapperPages.find((page) => page.type === "body-opening");
+assert(wrapperOpening?.blocks?.[0]?.text === "Ⅰ. 추진 개요", "본문 시작이 로마숫자 장 제목에서 시작해야 함");
+assert(!wrapperOpening.blocks.some((block) => block.text === wrapperTitle), "본문에 문서 제목 래퍼가 중복되면 안 됨");
+assert(!wrapperOpening.blocks.some((block) => block.text === "마리관 중심 1허브·4현장캠퍼스 전환"), "본문에 표지 슬로건이 중복되면 안 됨");
+const composedWrapper = compositionModel(wrapperDecided, {
+  displayName: "인천광역시교육청학생교육원",
+  coverProfile: "direct-g",
+  innerCover: false,
+  englishName: "Incheon Student Education Institute",
+});
+assert(composedWrapper.metadata.cover.title === wrapperTitle, "본문 H1이 표지·본문 제목 프레임의 정식 제목이어야 함");
+assert(composedWrapper.metadata.organization.displayName === "인천광역시교육청학생교육원", "본문 기관명은 기관 메타데이터로 내려가야 함");
 const prepared = ensurePlanDecisions(source, { documentKind: "school-guidance-basic-plan" });
 const decided = applyFrontMatterDecision(prepared, "summary", { mode: "source" });
 const pages = pagePlanFromDecisions(decided);

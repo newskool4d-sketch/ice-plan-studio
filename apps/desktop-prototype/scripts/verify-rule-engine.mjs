@@ -42,6 +42,59 @@ assert.equal(all.model.blocks[3].marker, '□');
 assert.equal(all.model.approval.edits.length, all.edits.length);
 assert.ok(inspectDocumentRules(all.model).some((item) => item.code === 'AMBIGUOUS-001' && item.kind === 'warning'), 'warning-only finding must remain');
 
+// 공문서의 순번 목록은 불릿 팔레트의 자동 치환 대상이 아니며,
+// 원문 순번(1., 2. 등)을 보존해야 한다.
+const orderedModel = {
+  schemaVersion: '0.2', kind: 'plan-ir', metadata: {}, approval: { status: 'unapproved' },
+  blocks: [
+    { type: 'heading', level: 1, text: 'Ⅳ. 추진 내용' },
+    { type: 'listItem', level: 0, ordered: true, marker: '1.', text: '첫 번째 절차' },
+    { type: 'listItem', level: 0, ordered: true, marker: '2.', text: '두 번째 절차' },
+  ],
+};
+const orderedOriginal = JSON.stringify(orderedModel);
+const orderedApplied = applyAllRuleSuggestions(orderedModel);
+assert.equal(JSON.stringify(orderedModel), orderedOriginal, '순번 목록 적용도 원문을 변경하지 않아야 함');
+assert.deepEqual(
+  orderedApplied.model.blocks.filter((block) => block.type === 'listItem').map((block) => block.marker),
+  ['1.', '2.'],
+  '순번 목록은 불릿 기호로 자동 치환하지 않고 원문 순번을 보존해야 함',
+);
+assert.ok(
+  !orderedApplied.edits.some((edit) => edit.code === 'LIST-MARKER'),
+  '순번 목록에는 LIST-MARKER 자동 수정이 없어야 함',
+);
+
+// 한글 항목(가.) 아래 절차 목록은 공문서 하위 순번인 1) 형식으로 통일한다.
+// 일반 장의 순번 1.은 의미를 보존하고 자동 치환하지 않는다.
+const koreanChildModel = {
+  schemaVersion: '0.2', kind: 'plan-ir', metadata: {}, approval: { status: 'unapproved' },
+  blocks: [
+    { type: 'heading', level: 2, text: '가. 마리관 경유형' },
+    { type: 'listItem', level: 0, ordered: true, marker: '1.', text: '첫 번째 절차' },
+    { type: 'listItem', level: 0, ordered: true, marker: '2.', text: '두 번째 절차' },
+    { type: 'heading', level: 2, text: '나. 학습장 완결형' },
+    { type: 'listItem', level: 0, ordered: true, marker: '1)', text: '이미 정격인 절차' },
+    { type: 'heading', level: 1, text: 'Ⅳ. 추진 내용' },
+    { type: 'listItem', level: 0, ordered: true, marker: '1.', text: '일반 장 절차' },
+  ],
+};
+const koreanChildApplied = applyAllRuleSuggestions(koreanChildModel);
+assert.deepEqual(
+  koreanChildApplied.model.blocks.filter((block) => block.type === 'listItem').map((block) => block.marker),
+  ['1)', '2)', '1)', '1.'],
+  '가·나 항목 아래 순번은 1)로, 일반 장 순번은 1.로 보존해야 함',
+);
+assert.equal(
+  koreanChildApplied.edits.filter((edit) => edit.code === 'ORDERED-MARKER').length,
+  2,
+  '가·나 항목 아래 1. 순번 두 건이 ORDERED-MARKER로 기록돼야 함',
+);
+assert.ok(
+  !koreanChildApplied.edits.some((edit) => edit.code === 'LIST-MARKER'),
+  '순번 목록은 1) 변환과 별개로 불릿 팔레트 치환을 만들지 않아야 함',
+);
+
 const implicitMarkerModel = {
   ...model,
   approval: { status: 'unapproved' },

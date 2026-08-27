@@ -42,6 +42,12 @@ export function parseMarkdown(input, { title = '' } = {}) {
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
     if (!line.trim()) { flushParagraph(); continue; }
+    const blockquote = /^\s*>\s?(.*)$/.exec(line);
+    if (blockquote) {
+      flushParagraph();
+      blocks.push({ type: 'paragraph', blockquote: true, text: blockquote[1].trim() });
+      continue;
+    }
     const heading = /^(#{1,4})\s+(.+)$/.exec(line);
     if (heading) { flushParagraph(); blocks.push({ type: 'heading', level: heading[1].length, text: heading[2].trim() }); continue; }
     if (line.includes('|') && index + 1 < lines.length && isTableSeparator(lines[index + 1])) {
@@ -58,12 +64,12 @@ export function parseMarkdown(input, { title = '' } = {}) {
     // 인식해 공문 불릿(□ ○ ❍ 등)이 문단으로 병합됐고, 그 결과 항목기호 규칙·
     // 팔레트가 전혀 동작하지 않았다(Electron 38이 File.path를 제거해 앱이 이
     // 렌더러 파서로 폴백하므로 실사용 경로임). 마커도 함께 보존한다.
-    const list = /^\s*((?:[-*]|\d+\.|[□○❍▪■◈❖◎◦￭∙ㆍ])\s+)\s*(.+)$/.exec(line);
+    const list = /^\s*((?:[-*]|\d+[.)]|[□○❍▪■◈❖◎◦￭∙ㆍ])\s+)\s*(.+)$/.exec(line);
     if (list) {
       flushParagraph();
       const marker = list[1].trim();
       const level = Math.floor(line.search(/\S/) / 2);
-      blocks.push({ type: 'listItem', marker, ordered: /^\d+\.$/.test(marker), level, text: list[2].trim() });
+      blocks.push({ type: 'listItem', marker, ordered: /^\d+[.)]$/.test(marker), level, text: list[2].trim() });
       continue;
     }
     paragraph.push(line.trim());

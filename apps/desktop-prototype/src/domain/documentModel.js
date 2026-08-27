@@ -8,8 +8,8 @@ export function createDocumentModel({ title = '', blocks = [], metadata = {} } =
       coverTitle: { fontFamily: '맑은 고딕', fontSizePt: 22, charPrId: '7' },
       heading: { fontFamily: '맑은 고딕', fontSizePt: 16, charPrId: '7' },
       body: { fontFamily: '맑은 고딕', fontSizePt: 11, charPrId: '38' },
-      tableHeader: { fontFamily: '맑은 고딕', fontSizePt: 10, bold: true, charPrId: '9' },
-      tableBody: { fontFamily: '맑은 고딕', fontSizePt: 10, charPrId: '0' },
+      tableHeader: { fontFamily: '맑은 고딕', fontSizePt: 12, bold: true, charPrId: '513', charSpacingPercent: 0, lineSpacingPercent: 160 },
+      tableBody: { fontFamily: '맑은 고딕', fontSizePt: 12, charPrId: '514', charSpacingPercent: 0, lineSpacingPercent: 160 },
       paragraph: { lineSpacingPercent: 160, bodyParaPrId: '4', headingParaPrId: '20', firstLineIndentHwpUnit: 0, hangingIndentHwpUnit: 0, charSpacingPercent: 0 },
     },
     layout: {

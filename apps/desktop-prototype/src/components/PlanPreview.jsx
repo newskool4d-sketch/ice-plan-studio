@@ -34,9 +34,9 @@ function PreviewBlock({ block, index, highlighted, normalizeTypography = false }
     return <Tag className={`${structured?.kind === "korean-subheading" ? "korean-subheading" : ""} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</Tag>;
   }
   if (block.type === "listItem") {
-    const sectionClass = block.ordered && Number(block.level || 0) === 0 ? "section-heading" : "";
     const groupLeaderClass = !block.ordered && Number(block.level || 0) === 0 ? "group-leader" : "";
-    return <p className={`loaded-list-item ${sectionClass} ${groupLeaderClass} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
+    const orderedClass = block.ordered ? "ordered-list" : "";
+    return <p className={`loaded-list-item ${orderedClass} ${groupLeaderClass} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
   }
   if (block.type === "table") {
     const [header, ...body] = block.rows;
@@ -51,7 +51,7 @@ function PreviewBlock({ block, index, highlighted, normalizeTypography = false }
     </table>;
   }
   if (block.type === "image") return <p className={`loaded-paragraph ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>이미지 보존: {block.image?.filename || block.image?.sha256 || "원본 이미지"}</p>;
-  return <p className={`loaded-paragraph ${block.tocEntry ? "toc-entry" : ""} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</p>;
+  return <p className={`loaded-paragraph ${block.tocEntry ? "toc-entry" : ""} ${block.blockquote ? "blockquote" : ""} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</p>;
 }
 
 function projectionBodyWidth(block) {

@@ -18,8 +18,10 @@ SCRIPTS = TOOLKIT / "scripts"
 GONMUN_SECTION = TOOLKIT / "templates" / "gonmun" / "section0.xml"
 BONCHEONG_ANCHOR = TOOLKIT / "templates" / "boncheong" / "cover-anchor.xml"
 TEMPLATE_CHOICES = ("gonmun", "boncheong")
-TEMPLATE_HEADERS = {name: TOOLKIT / "templates" / name / "Contents" / "header.xml"
-                    for name in TEMPLATE_CHOICES}
+TEMPLATE_HEADERS = {
+    'gonmun': TOOLKIT / 'templates' / 'gonmun' / 'header.xml',
+    'boncheong': TOOLKIT / 'templates' / 'boncheong' / 'Contents' / 'header.xml',
+}
 sys.path.insert(0, str(SCRIPTS))
 from hwpx_helpers import add_images_to_hwpx, make_image_para, next_id, reset_id, update_content_hpf, xml_escape  # noqa: E402
 from image_dimensions import image_dims_hwpunit  # noqa: E402
@@ -63,6 +65,7 @@ STRUCTURED_HEADING_PATTERNS = (
     ('task-subsection', re.compile(r'^\s*(\[?과제\s*\d+\s*-\s*\d+\]?[.]?)\s*(.+)$')),
     ('task-section', re.compile(r'^\s*(\[?과제\s*\d+\]?[.]?)\s*(.+)$')),
     ('roman-chapter', re.compile(r'^\s*([ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+)\.\s*(.+)$')),
+    ('korean-subheading', re.compile(r'^\s*([가나다라마바사아자차카타파하])\.\s*(.+)$')),
 )
 # 제목틀(표)은 로마숫자 장 전용이다(실물 양식 판정 2026-08-14). 아라비아 숫자
 # 제목도 이 표를 쓰던 때에는 NUMERIC_HEADING_MAX_TITLE_CHARS 상한 때문에 20자
@@ -92,28 +95,29 @@ def plausible_heading_title(title):
 # boncheong: 레퍼런스 A(세계로배움학교) 실측값 — docs/BASELINE_ANALYSIS.md §4 참조
 STYLE_SETS = {
     'gonmun': {
-        'valid_charpr': {str(i) for i in range(11)},
+        'valid_charpr': {str(i) for i in range(13)},
         'bold_map': {'0': '10', '1': '10', '9': '10'},
         'heading': {1: ('7', '20'), 2: ('8', '11')},
         'heading_default': ('10', '11'),
         'body': ('0', '0'),
         'list_parapr': '14',
-        'cell_parapr': '22',
-        'cell_charpr': {'header': '10', 'body': '0'},
+        'blockquote_parapr': '11',
+        'cell_parapr': {'header': '23', 'body': '24'},
+        'cell_charpr': {'header': '11', 'body': '12'},
         'table_anchor_parapr': '0',
     },
     'boncheong': {
-        # 실측 ID 맵: 132=함초롬바탕 13pt 본문, 364=동일 계열 굵게,
-        # 82/83=표 머리글/본문 맑은고딕 11pt, 34=양쪽정렬 170%,
-        # 64=표 머리글 가운데정렬 120%.
+        # 실측 ID 맵: 132=함초롬바탕 13pt 본문, 364=동일 계열 굵게.
+        # 표는 513/514(맑은 고딕 12pt, 장평 100, 자간 0)와
+        # 246/247(셀 줄간격 160%) 전용 속성을 사용한다.
         'valid_charpr': {
             '9', '11', '15', '18', '19', '27', '31', '82', '83', '114', '121',
-            '132', '204', '277', '307', '315', '338', '364', '414', '417', '512',
+            '132', '204', '277', '307', '315', '338', '364', '414', '417', '512', '513', '514',
         },
         'bold_map': {'9': '19', '121': '364', '132': '364'},
         # 제목 문단은 243을 쓴다(73과 기하는 같고 문단 위 간격만 있는 사본).
         # 73을 직접 고치지 않는 이유: 표지·본문 시작 기관명 줄(:747)도 73을 쓴다.
-        'heading': {1: ('9', '1'), 2: ('132', '243')},
+        'heading': {1: ('9', '1'), 2: ('132', '243'), 3: ('132', '243'), 4: ('132', '240')},
         'heading_default': ('132', '243'),
         'korean_subheading': ('132', '240'),
         # 목차 항목: 실물 양식 판정(2026-08-07)에 따라 표가 아닌 문단형으로 낸다.
@@ -121,10 +125,12 @@ STYLE_SETS = {
         'toc_entry': ('27', '241'),
         'body': ('132', '238'),
         'list_parapr': '239',
+        'blockquote_parapr': '244',
         'group_leader_parapr': '242',
-        'cell_parapr': {'header': '64', 'body': '238'},
-        'cell_charpr': {'header': '82', 'body': '83'},
+        'cell_parapr': {'header': '246', 'body': '247'},
+        'cell_charpr': {'header': '513', 'body': '514'},
         'table_anchor_parapr': '1',
+        'structured_heading_anchor_parapr': '245',
         # bf4·bf13·bf17 모두 4면 실선. 표 셀에는 bf13 사용(레퍼런스 표 셀 계열)
         'cell_borderfill': {'header': '13', 'body': '13'},
         'table_borderfill': '13',
@@ -635,8 +641,13 @@ def structured_heading_table(text, style):
     label_para_id = next_id()
     title_cell_id = next_id()
     title_para_id = next_id()
+    anchor_parapr = (
+        style.get('structured_heading_anchor_parapr', style['table_anchor_parapr'])
+        if parts['kind'] == 'roman-chapter'
+        else style['table_anchor_parapr']
+    )
     return (
-        f'<hp:p id="{next_id()}" paraPrIDRef="{style["table_anchor_parapr"]}" styleIDRef="0" '
+        f'<hp:p id="{next_id()}" paraPrIDRef="{anchor_parapr}" styleIDRef="0" '
         'pageBreak="0" columnBreak="0" merged="0">'
         f'<hp:run charPrIDRef="{config["title_charpr"]}"><hp:tbl id="{table_id}" zOrder="0" '
         'numberingType="TABLE" textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" '
@@ -687,7 +698,17 @@ def page_type_paragraphs(
     if page_type == 'cover':
         return boncheong_cover_paragraphs(model, profile)
     if page_type in ('body', 'body-opening', 'body-continuation'):
-        document_title = metadata.get('cover', {}).get('title') or metadata.get('title') or '추진 계획'
+        first_heading = next(
+            (block.get('text') for block in model.get('blocks', [])
+             if block.get('type') == 'heading' and block.get('level') == 1 and block.get('text')),
+            '',
+        )
+        document_title = (
+            metadata.get('cover', {}).get('title')
+            or (metadata.get('title') if model.get('source', {}).get('format') == 'hwpx' else first_heading)
+            or metadata.get('title')
+            or '추진 계획'
+        )
         document_title = re.sub(r'\.(md|txt|hwpx?|iceplan)$', '', str(document_title), flags=re.I).strip()
         parts = [
             page_boundary_para(
@@ -793,9 +814,14 @@ def table_xml(block, styles, style=None):
         total_width = style.get('body_width', BODY_WIDTH_HWPUNIT)
         widths = table_column_widths(rows, total_width=total_width)
     source_heights = source_table.get('rowHeightsHwpUnit') or []
-    row_heights = ([int(height) for height in source_heights]
-                   if len(source_heights) == len(rows) and all(int(height or 0) > 0 for height in source_heights)
-                   else table_row_heights(rows, widths))
+    estimated_heights = table_row_heights(rows, widths)
+    if len(source_heights) == len(rows) and all(int(height or 0) > 0 for height in source_heights):
+        # 원문 행 높이는 보존하되 12pt·160% 표 셀에 필요한 최소 높이보다
+        # 작으면 늘린다. 고정 높이를 그대로 쓰면 줄바꿈 문장이 셀 안에서
+        # 겹쳐 읽을 수 없는 표가 된다.
+        row_heights = [max(int(height), estimated_heights[index]) for index, height in enumerate(source_heights)]
+    else:
+        row_heights = estimated_heights
     table_id = next_id()
     cells = []
     for row_index, row in enumerate(rows):
@@ -806,10 +832,10 @@ def table_xml(block, styles, style=None):
             borders = style.get('cell_borderfill', {'header': '4', 'body': '3'})
             cell_border = borders['header'] if row_index == 0 else borders['body']
             para_id = next_id()
-            style_key = 'tableHeader' if row_index == 0 else 'tableBody'
-            charpr = styles.get(style_key, {}).get('charPrId')
-            if charpr not in style['valid_charpr']:
-                charpr = style['cell_charpr']['header' if row_index == 0 else 'body']
+            # 표는 원문 블록의 스타일 토큰이 아니라 기관 양식의 표 전용
+            # 글자 속성을 사용한다. 가져온 Markdown/HWPX의 10·11pt 잔여
+            # 토큰이 표 전체 서식을 덮어쓰지 않도록 항상 강제한다.
+            charpr = style['cell_charpr']['header' if row_index == 0 else 'body']
             cell_parapr = style['cell_parapr']
             if isinstance(cell_parapr, dict):
                 cell_parapr = cell_parapr['header' if row_index == 0 else 'body']
@@ -875,12 +901,13 @@ def render_blocks(blocks, styles, style):
         if not text:
             continue
         if block['type'] == 'heading':
-            if block.get('headingKind') == 'korean-subheading':
+            heading_kind = block.get('headingKind') or ((structured_heading_parts(text) or {}).get('kind'))
+            if heading_kind == 'korean-subheading':
                 charpr, parapr = style.get('korean_subheading', style['heading_default'])
             else:
                 charpr, parapr = style['heading'].get(block.get('level', 1), style['heading_default'])
-        elif block['type'] == 'listItem' and block.get('ordered') and int(block.get('level') or 0) == 0:
-            charpr, parapr = style['heading'].get(1, style['heading_default'])
+        elif block['type'] == 'paragraph' and block.get('blockquote'):
+            charpr, parapr = style['body'][0], style.get('blockquote_parapr', style['body'][1])
         elif block['type'] == 'listItem' and not block.get('ordered') and int(block.get('level') or 0) == 0 and 'group_leader_parapr' in style:
             charpr, parapr = style['body'][0], style['group_leader_parapr']
         elif block['type'] == 'listItem':
@@ -899,10 +926,42 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
     본문·목록·중제목이 공유하지만 표지 앵커(cover-anchor.xml)는 쓰지 않는 것을
     확인했으므로(paraPr 1·22·23·25·26만 사용) 표지 조판에 영향이 없다.
 
-    gonmun은 대상이 아니다 — 본문 paraPr 0·14를 표지·표 문단도 함께 쓰기 때문에
-    같은 방식으로 조이면 표까지 눌린다.
+    표 셀은 본문 적응 간격과 분리된 전용 paraPr를 사용한다. gonmun은 본문
+    적응 조판 대상이 아니지만, 표 12pt·160% 속성은 별도로 주입한다.
     """
     source = TEMPLATE_HEADERS[template].read_text(encoding='utf-8')
+
+    def add_custom_char_properties(source_xml, specifications):
+        properties = re.search(
+            r'(<hh:charProperties itemCnt=")(\d+)(".*?>)(.*?)(</hh:charProperties>)',
+            source_xml,
+            flags=re.S,
+        )
+        if not properties:
+            raise RuntimeError(f'{template} header.xml에서 charProperties를 찾지 못했습니다.')
+        body = properties.group(4)
+        additions = []
+        for source_id, target_id, height in specifications:
+            if re.search(rf'<hh:charPr id="{target_id}"', body):
+                raise RuntimeError(f'사용자 정의 글자 속성 ID {target_id}가 이미 사용 중입니다.')
+            original = re.search(rf'<hh:charPr id="{source_id}".*?</hh:charPr>', body, flags=re.S)
+            if not original:
+                raise RuntimeError(f'{template} header.xml에서 charPr {source_id}를 찾지 못했습니다.')
+            cloned = original.group(0).replace(
+                f'id="{source_id}"', f'id="{target_id}"', 1,
+            )
+            cloned = re.sub(r'height="\d+"', f'height="{height}"', cloned, count=1)
+            spacing = re.search(r'<hh:spacing\b[^>]*/>', cloned)
+            if spacing:
+                normalized_spacing = re.sub(r'="-?\d+"', '="0"', spacing.group(0))
+                cloned = cloned.replace(spacing.group(0), normalized_spacing, 1)
+            additions.append(cloned)
+        patched = (
+            f'{properties.group(1)}{int(properties.group(2)) + len(additions)}'
+            f'{properties.group(3)}{properties.group(4)}{"".join(additions)}{properties.group(5)}'
+        )
+        return source_xml.replace(properties.group(0), patched, 1)
+
     if template == 'boncheong':
         cover_charpr = re.search(r'<hh:charPr id="512".*?</hh:charPr>', source, flags=re.S)
         if not cover_charpr:
@@ -920,7 +979,7 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
         )
         if not para_properties:
             raise RuntimeError('header.xml에서 paraProperties를 찾지 못했습니다.')
-        custom_ids = {'238', '239', '240', '241', '242', '243'}
+        custom_ids = {'238', '239', '240', '241', '242', '243', '244', '245', '246', '247'}
         # id 뒤에 `\b`를 붙이면 닫는 따옴표와 공백이 모두 비단어 문자라 경계가
         # 성립하지 않아 이 가드가 항상 통과했다. 닫는 따옴표만으로 이미 정확 일치다.
         if any(re.search(rf'<hh:paraPr id="{para_id}"', para_properties.group(4)) for para_id in custom_ids):
@@ -983,6 +1042,27 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 prev=TOKENS['typography']['numberedHeading']['prevHwpUnit'],
                 next_value=0, line_spacing=160, keep_with_next=1,
             ),
+            # 244: 인용문·비전 문구 — 본문보다 한 단계 안쪽으로 들여쓰되,
+            # 다음 문단을 제목처럼 붙이지 않는다.
+            custom_para_pr(
+                '244', align='LEFT', left=800, intent=-800, prev=300,
+                next_value=300, line_spacing=160, keep_with_next=0,
+            ),
+            # 245: 본문 문단 다음 로마숫자 장 제목틀의 앵커 간격. 표 내부는
+            # 기존 앵커(1)를 유지하고, 장 제목 표 바깥에서만 위 간격을 준다.
+            custom_para_pr(
+                '245', align='LEFT', left=0, intent=0, prev=300,
+                next_value=0, line_spacing=160, keep_with_next=1,
+            ),
+            # 246·247: 모든 표 셀의 160% 줄간격(머리글 가운데·본문 양쪽정렬).
+            custom_para_pr(
+                '246', align='CENTER', left=0, intent=0, prev=0,
+                next_value=0, line_spacing=160, keep_with_next=0,
+            ),
+            custom_para_pr(
+                '247', align='JUSTIFY', left=0, intent=0, prev=0,
+                next_value=0, line_spacing=160, keep_with_next=0,
+            ),
         ]
         additions = ''.join(custom_definitions)
         patched_para_properties = (
@@ -990,14 +1070,57 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
             f'{para_properties.group(3)}{para_properties.group(4)}{additions}{para_properties.group(5)}'
         )
         source = source.replace(para_properties.group(0), patched_para_properties, 1)
+        source = add_custom_char_properties(source, [('82', '513', 1200), ('83', '514', 1200)])
+    elif template == 'gonmun':
+        # 공문 템플릿도 표 셀 전용 12pt 글자·160% 문단 속성을 사용한다.
+        para_properties = re.search(
+            r'(<hh:paraProperties itemCnt=")(\d+)(".*?>)(.*?)(</hh:paraProperties>)',
+            source,
+            flags=re.S,
+        )
+        if not para_properties:
+            raise RuntimeError('gonmun header.xml에서 paraProperties를 찾지 못했습니다.')
+        custom_ids = {'23', '24'}
+        if any(re.search(rf'<hh:paraPr id="{para_id}"', para_properties.group(4)) for para_id in custom_ids):
+            raise RuntimeError('gonmun 사용자 정의 문단 속성 ID 23·24가 이미 사용 중입니다.')
+
+        def gonmun_cell_para(para_id, align):
+            margin = (
+                '<hh:margin><hc:intent value="0" unit="HWPUNIT"/>'
+                '<hc:left value="0" unit="HWPUNIT"/><hc:right value="0" unit="HWPUNIT"/>'
+                '<hc:prev value="0" unit="HWPUNIT"/><hc:next value="0" unit="HWPUNIT"/></hh:margin>'
+            )
+            return (
+                f'<hh:paraPr id="{para_id}" tabPrIDRef="0" condense="0" fontLineHeight="0" '
+                'snapToGrid="0" suppressLineNumbers="0" checked="0">'
+                f'<hh:align horizontal="{align}" vertical="BASELINE"/>'
+                '<hh:heading type="NONE" idRef="0" level="0"/>'
+                '<hh:breakSetting breakLatinWord="KEEP_WORD" breakNonLatinWord="KEEP_WORD" '
+                'widowOrphan="0" keepWithNext="0" keepLines="0" pageBreakBefore="0" lineWrap="BREAK"/>'
+                '<hh:autoSpacing eAsianEng="0" eAsianNum="0"/>'
+                f'<hp:switch><hp:case hp:required-namespace="http://www.hancom.co.kr/hwpml/2016/HwpUnitChar">'
+                f'{margin}<hh:lineSpacing type="PERCENT" value="160" unit="HWPUNIT"/>'
+                f'</hp:case><hp:default>{margin}<hh:lineSpacing type="PERCENT" value="160" unit="HWPUNIT"/>'
+                '</hp:default></hp:switch>'
+                '<hh:border borderFillIDRef="2" offsetLeft="0" offsetRight="0" '
+                'offsetTop="0" offsetBottom="0" connect="0" ignoreMargin="0"/>'
+                '</hh:paraPr>'
+            )
+
+        custom_definitions = gonmun_cell_para('23', 'CENTER') + gonmun_cell_para('24', 'JUSTIFY')
+        patched_para_properties = (
+            f'{para_properties.group(1)}{int(para_properties.group(2)) + 2}'
+            f'{para_properties.group(3)}{para_properties.group(4)}{custom_definitions}{para_properties.group(5)}'
+        )
+        source = source.replace(para_properties.group(0), patched_para_properties, 1)
+        source = add_custom_char_properties(source, [('10', '11', 1200), ('0', '12', 1200)])
     if line_spacing_percent is not None:
         tokens = TOKENS['adaptiveSpacing']
         if template != tokens['template']:
             raise ValueError(f'적응 조판은 {tokens["template"]} 템플릿에서만 지원합니다 (요청: {template}).')
         # boncheong 실제 본문 문단은 STYLE_SETS['boncheong']['body']가 가리키는
-        # paraPr 238을 쓴다(paraPr 34가 아니다 — 34는 미사용 유물). 238은 표 셀
-        # 본문(cell_parapr.body)도 함께 참조하므로 조이기가 표 셀 줄간격에도
-        # 적용된다(의도된 동작으로 확인됨).
+        # paraPr 238을 쓴다(paraPr 34가 아니다 — 34는 미사용 유물). 표 셀은
+        # 246·247 전용 paraPr이므로 적응 조판의 본문 간격을 상속하지 않는다.
         target_id = '238' if template == 'boncheong' else tokens['targetParaPrId']
         match = re.search(r'<hh:paraPr id="%s".*?</hh:paraPr>' % re.escape(target_id), source, flags=re.S)
         if not match:
@@ -1067,11 +1190,8 @@ def build(model_path, output, template='gonmun', line_spacing_percent=None, para
                'xmlns:hc="http://www.hancom.co.kr/hwpml/2011/core">' + ''.join(paragraphs) + '</hs:sec>')
     section_path = Path(output).with_suffix('.section0.xml')
     section_path.write_text(section, encoding='utf-8')
-    header_path = (
-        presentation_header(template, line_spacing_percent, para_next_hwpunit)
-        if template == 'boncheong' or line_spacing_percent is not None
-        else None
-    )
+    # 표 전용 글자·문단 속성은 두 템플릿 모두 header.xml에 주입한다.
+    header_path = presentation_header(template, line_spacing_percent, para_next_hwpunit)
     try:
         # metadata.title은 원본 파일명(예: "계획안.md")을 그대로 담고 있을 수 있어
         # 확장자를 제거한다 (내부 문서 속성에 ".md"가 그대로 노출되는 것 방지).
