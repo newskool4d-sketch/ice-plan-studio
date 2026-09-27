@@ -412,11 +412,30 @@ def page_placeholder_blocks(page_type):
     return [{'type': 'paragraph', 'text': label}] if label else []
 
 
+def table_grid(block):
+    """표 텍스트의 단일 원천 — src/domain/tableGrid.js tableGrid와 같은 규칙.
+
+    table.cells가 있으면 원천이다(규칙 자동수정이 cells는 바르게 고쳤는데 header·rows만
+    한 행 밀린 저장본이 실재 — v0.12.0~0.12.11). cells가 없으면 header·rows를 쓰되,
+    미리보기 투영이 rows 앞에 머리글을 한 번 더 넣은 옛 저장 모양을 걸러낸다.
+    """
+    def text(value):
+        return '' if value is None else str(value)
+
+    cells = (block.get('table') or {}).get('cells')
+    if isinstance(cells, list) and cells:
+        return [[text((cell or {}).get('text')) for cell in row] for row in cells]
+    header = [text(value) for value in (block.get('header') or [])]
+    rows = [[text(value) for value in row] for row in (block.get('rows') or [])]
+    if rows and rows[0] == header:
+        rows = rows[1:]
+    return [header] + rows
+
+
 def block_plain_text(block):
     if block.get('type') != 'table':
         return str(block.get('text') or '').strip()
-    cells = list(block.get('header') or [])
-    cells.extend(cell for row in (block.get('rows') or []) for cell in row)
+    cells = [cell for row in table_grid(block) for cell in row]
     return ' '.join(str(cell or '').strip() for cell in cells if str(cell or '').strip())
 
 
@@ -579,8 +598,7 @@ def toc_blocks_effectively_empty(blocks):
             if text and not re.fullmatch(r'목\s*차', text):
                 meaningful.append(text)
             continue
-        cells = list(block.get('header') or [])
-        cells.extend(cell for row in (block.get('rows') or []) for cell in row)
+        cells = [cell for row in table_grid(block) for cell in row]
         values = [str(cell or '').strip() for cell in cells if str(cell or '').strip()]
         meaningful.extend(value for value in values if value not in {'구성 항목', '쪽'})
     return not meaningful
@@ -750,8 +768,7 @@ def page_type_paragraphs(
                     return True
                 if block.get('type') != 'table':
                     return False
-                cells = list(block.get('header') or [])
-                cells.extend(cell for row in (block.get('rows') or []) for cell in row)
+                cells = [cell for row in table_grid(block) for cell in row]
                 return ''.join(str(cell or '').strip() for cell in cells if str(cell or '').strip()) == document_title
             page_blocks = [block for block in page_blocks if not is_duplicate_title(block)]
         parts.extend(render_blocks(page_blocks, styles, style))
@@ -796,8 +813,7 @@ def page_type_paragraphs(
 
 def table_xml(block, styles, style=None):
     style = style or STYLE_SETS['gonmun']
-    header = block.get('header', [])
-    rows = [header] + block.get('rows', [])
+    rows = table_grid(block)
     columns = max((len(row) for row in rows), default=1)
     source_table = (block.get('layout') or {}).get('table') or {}
     source_widths = source_table.get('columnWidthsHwpUnit') or []

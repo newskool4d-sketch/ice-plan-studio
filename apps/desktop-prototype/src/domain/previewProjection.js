@@ -1,5 +1,6 @@
 import layoutTokens from "../../scripts/layout-tokens.json" with { type: "json" };
 import { classifyStructuredHeading, isPlausibleHeadingTitle } from "./headingPresentation.js";
+import { tableGrid, withTableGrid } from "./tableGrid.js";
 
 const PAGE_TYPES = new Set(Object.keys(layoutTokens.pageTypes));
 
@@ -11,13 +12,7 @@ function normalizePage(page) {
 
 function normalizeBlock(block) {
   if (block?.type !== "table") return block;
-  if (Array.isArray(block.header) && Array.isArray(block.rows)) return block;
-  const cells = block.table?.cells || [];
-  return {
-    ...block,
-    header: (cells[0] || []).map((cell) => cell?.text ?? ""),
-    rows: cells.slice(1).map((row) => row.map((cell) => cell?.text ?? "")),
-  };
+  return withTableGrid(block, tableGrid(block));
 }
 
 export function tableColumnWidths(rows, totalWidth = layoutTokens.page.bodyWidthHwpUnit) {
@@ -289,6 +284,16 @@ export function createPreviewProjection(model) {
     pages,
     bodyWidthMm: layoutTokens.page.bodyWidthHwpUnit / layoutTokens.page.hwpUnitPerMm,
   };
+}
+
+// 미리보기 투영 블록 → 저장 모델 블록. 투영은 PlanPreview 편의를 위해 표 rows 앞에
+// 머리글을 한 번 더 넣고(rows[0] === header) 폭·높이 추정치를 붙인다. 이 모양이
+// metadata.pages로 저장되면 HWPX 머리글이 중복되고(I-1) 규칙 자동수정이 한 행 위에
+// 기록된다(I-2). 저장 경계(pageDraftsFrom)는 반드시 이 함수를 거친다.
+export function modelBlockFromProjection(block) {
+  if (block?.type !== "table") return block;
+  const { rows = [], columnWidthsHwpUnit: _widths, rowHeightsHwpUnit: _heights, widthHwpUnit: _width, ...rest } = block;
+  return withTableGrid(rest, rows);
 }
 
 export { layoutTokens };

@@ -8,7 +8,7 @@ export function RulesPanel({
     {visibleFindings.length ? <>
       <div className="rule-review-list" role="listbox" aria-label="규칙 검토 항목">
         {visibleFindings.map((ruleFinding, index) => <button type="button" role="option" aria-selected={selectedFinding?.id === ruleFinding.id} className={`rule-review-item${selectedFinding?.id === ruleFinding.id ? " is-selected" : ""}`} data-rule-id={ruleFinding.id} data-rule-kind={ruleFinding.kind} onClick={() => onSelectRule(ruleFinding)} key={ruleFinding.id}>
-          <span>{index + 1}</span><span><strong>{ruleFinding.title}</strong><small>{ruleFinding.code} · {ruleFinding.kind === "suggestion" ? "수정 제안" : "확인 필요"}</small></span>
+          <span>{index + 1}</span><span><strong>{ruleFinding.title}</strong><small>{ruleFinding.code} · {ruleFinding.kind === "suggestion" ? (ruleFinding.bulkApply === false ? "수정 제안 · 개별 확인" : "수정 제안") : "확인 필요"}</small></span>
         </button>)}
       </div>
       {selectedFinding ? <div className="rule-diff-card" aria-live="polite">

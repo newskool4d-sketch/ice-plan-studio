@@ -1,3 +1,5 @@
+import { tableGrid } from './tableGrid.js';
+
 const ITEM_MARKERS = ['□', '❍', '-', '·', '1.', '가.', '1)', '가)'];
 const TEXT_BLOCK_TYPES = new Set(['heading', 'paragraph', 'listItem']);
 const KOREAN_SUBHEADING = /^\s*[가나다라마바사아자차카타파하]\./;
@@ -20,7 +22,7 @@ function targetKey(target) {
   return `block:${target.blockIndex}:${target.field}`;
 }
 
-function finding({ code, title, severity = 'warning', message, kind = 'warning', target = null, before = null, after = null, evidence }) {
+function finding({ code, title, severity = 'warning', message, kind = 'warning', target = null, before = null, after = null, evidence, bulkApply = true }) {
   return {
     id: `${code}:${target ? targetKey(target) : 'document'}`,
     code,
@@ -29,6 +31,7 @@ function finding({ code, title, severity = 'warning', message, kind = 'warning',
     message,
     kind,
     action: kind === 'suggestion' ? 'replace' : 'warning',
+    bulkApply: kind === 'suggestion' && bulkApply,
     target,
     before,
     after,
@@ -75,19 +78,9 @@ function textTargets(model) {
         continue;
       }
       if (block.type !== 'table') continue;
-      const cells = block.table?.cells;
-      if (Array.isArray(cells)) {
-        cells.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => targets.push({
-          target: tableCellTarget(scope, blockIndex, rowIndex, columnIndex),
-          text: String(cell?.text ?? ''),
-          block,
-        })));
-        continue;
-      }
-      const rows = [block.header || [], ...(block.rows || [])];
-      rows.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => targets.push({
+      tableGrid(block).forEach((row, rowIndex) => row.forEach((text, columnIndex) => targets.push({
         target: tableCellTarget(scope, blockIndex, rowIndex, columnIndex),
-        text: String(cell ?? ''),
+        text,
         block,
       })));
     }
@@ -111,19 +104,44 @@ function warningTextTargets(model) {
 }
 
 function normalizeDates(text) {
-  return text.replace(/\b(20\d{2})\s*(?:[./-]|년\s*)\s*(\d{1,2})\s*(?:[./-]|월\s*)\s*(\d{1,2})\s*(?:일)?\.?(?:\s*\(([월화수목금토일])\))?/g, (_match, year, month, day, weekday) =>
+  // 일(日) 앞 공백만 흡수한다 — `\s*`가 '일'과 무관하게 붙어 있으면 '2026-9-8 시작'의
+  // 뒤 공백까지 먹어 '2026. 9. 8.시작'으로 단어가 붙는다(2026-09-27 확인).
+  return text.replace(/\b(20\d{2})\s*(?:[./-]|년\s*)\s*(\d{1,2})\s*(?:[./-]|월\s*)\s*(\d{1,2})(?:\s*일)?\.?(?:\s*\(([월화수목금토일])\))?/g, (_match, year, month, day, weekday) =>
     `${year}. ${Number(month)}. ${Number(day)}.${weekday ? `(${weekday})` : ''}`);
 }
 
+// 영 제7조⑤는 시각(시·분) 표기 규정이다. '2시간'(기간)·'3시기'(일반어)·'1:1'(비율)을
+// 시각으로 바꾸면 내용이 훼손된다(v0.12.11 실사용 문서에서 '2시간'→'02:00간' 확인).
+// '시' 뒤에는 끝·비한글·조사만 허용하고, 범위('14~17시')는 통째로 바꾼다.
+const HOUR_FOLLOWER = /^(?:$|[^가-힣]|에|부터|까지|경|전|후|로|쯤|께)/;
+
+function clockText(hour, minute) {
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
 function normalizeTimes(text) {
-  return text.replace(/(?<!\d)(?:(오전|오후)\s*)?(\d{1,2})(?:\s*시(?:\s*(\d{1,2})\s*분?)?|:(\d{1,2}))(?!\d)/g, (_match, meridiem, hourValue, minuteWord, minuteColon) => {
-    let hour = Number(hourValue);
-    const minute = Number(minuteWord ?? minuteColon ?? 0);
-    if (meridiem === '오후' && hour < 12) hour += 12;
-    if (meridiem === '오전' && hour === 12) hour = 0;
-    if (hour > 23 || minute > 59) return _match;
-    return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+  const ranged = text.replace(/(?<![\d:.])(\d{1,2})\s*[~∼～〜]\s*(\d{1,2})\s*시/g, (match, from, to, offset, whole) => {
+    if (!HOUR_FOLLOWER.test(whole.slice(offset + match.length))) return match;
+    if (Number(from) > 23 || Number(to) > 23) return match;
+    return `${clockText(Number(from), 0)}~${clockText(Number(to), 0)}`;
   });
+  return ranged.replace(
+    /(?<![\d:])(?:(오전|오후)\s*)?(\d{1,2})(?:\s*시(?:\s*(\d{1,2})\s*분|\s*(반)(?![가-힣]))?|:(\d{1,2}))(?![\d:])/g,
+    (match, meridiem, hourValue, minuteWord, half, minuteColon, offset, whole) => {
+      if (minuteColon !== undefined) {
+        // 비율(1:1·3:7) 오탐 방지: 두 자리 분 또는 두 자리 시만 시각으로 본다.
+        if (minuteColon.length < 2 && hourValue.length < 2) return match;
+      } else if (!HOUR_FOLLOWER.test(whole.slice(offset + match.length))) {
+        return match;
+      }
+      let hour = Number(hourValue);
+      const minute = half ? 30 : Number(minuteWord ?? minuteColon ?? 0);
+      if (meridiem === '오후' && hour < 12) hour += 12;
+      if (meridiem === '오전' && hour === 12) hour = 0;
+      if (hour > 23 || minute > 59) return match;
+      return clockText(hour, minute);
+    },
+  );
 }
 
 function normalizeMoney(text) {
@@ -143,7 +161,7 @@ function normalizeTildes(text) {
 
 const TEXT_RULES = [
   { code: 'DATE-FORMAT', title: '날짜 표기', message: '날짜를 YYYY. M. D. 형식으로 표기합니다.', transform: normalizeDates },
-  { code: 'TIME-FORMAT', title: '시간 표기', message: '시간을 24시각제 HH:MM 형식으로 표기합니다.', transform: normalizeTimes },
+  { code: 'TIME-FORMAT', title: '시간 표기', message: '시간을 24시각제 HH:MM 형식으로 표기합니다.', transform: normalizeTimes, bulk: false },
   { code: 'MONEY-FORMAT', title: '금액 표기', message: '금액에 천 단위 구분과 원 표기를 적용합니다.', transform: normalizeMoney },
   { code: 'TITLE-MARK', title: '낫표 표기', message: '법령·작품·책 이름 후보의 큰따옴표를 낫표로 바꿉니다.', transform: normalizeTitleMarks },
   { code: 'TILDE-FORMAT', title: '물결표 표기', message: '기간 범위의 물결표 문자와 양옆 공백을 통일합니다.', transform: normalizeTildes },
@@ -161,6 +179,7 @@ function addTextSuggestions(model, findings) {
         before: text,
         after,
         evidence: '교육청 계획안 자동서식 구현계획 §12.1',
+        bulkApply: rule.bulk !== false,
       }));
     }
   }
@@ -415,8 +434,7 @@ function readTarget(model, target) {
     }
     return block?.[target.field];
   }
-  return block?.table?.cells?.[target.rowIndex]?.[target.columnIndex]?.text
-    ?? (target.rowIndex === 0 ? block?.header?.[target.columnIndex] : block?.rows?.[target.rowIndex - 1]?.[target.columnIndex]);
+  return tableGrid(block)[target.rowIndex]?.[target.columnIndex];
 }
 
 function writeTarget(model, target, value) {
@@ -427,9 +445,18 @@ function writeTarget(model, target, value) {
     block[target.field] = value;
     return;
   }
-  if (block.table?.cells?.[target.rowIndex]?.[target.columnIndex]) block.table.cells[target.rowIndex][target.columnIndex].text = value;
-  if (target.rowIndex === 0 && Array.isArray(block.header)) block.header[target.columnIndex] = value;
-  if (target.rowIndex > 0 && Array.isArray(block.rows?.[target.rowIndex - 1])) block.rows[target.rowIndex - 1][target.columnIndex] = value;
+  // 표는 원천(cells)에 쓰고 header·rows를 원천에서 다시 만든다. 인덱스 산수(rows[r-1])로
+  // 쓰면 투영형 rows(머리글 포함)에서 한 행 위에 기록된다(I-2, v0.12.0~0.12.11).
+  const cell = block.table?.cells?.[target.rowIndex]?.[target.columnIndex];
+  const grid = tableGrid(block);
+  if (cell) {
+    cell.text = value;
+    grid[target.rowIndex][target.columnIndex] = value;
+  } else if (grid[target.rowIndex]) {
+    grid[target.rowIndex][target.columnIndex] = value;
+  }
+  block.header = grid[0];
+  block.rows = grid.slice(1);
 }
 
 export function applyRuleSuggestion(model, ruleFinding) {
@@ -457,12 +484,17 @@ export function applyRuleSuggestion(model, ruleFinding) {
   return { model: next, edit };
 }
 
+// '전체 적용'은 오탐 없는 규칙만 — 시간 표기처럼 문맥 판단이 필요한 규칙은 개별 승인(V4 I-3).
+export function isBulkApplicable(ruleFinding) {
+  return ruleFinding?.kind === 'suggestion' && ruleFinding.bulkApply !== false;
+}
+
 export function applyAllRuleSuggestions(model, { excludeIds = [] } = {}) {
   let current = cloneModel(model);
   const edits = [];
   const excluded = new Set(excludeIds);
   for (let count = 0; count < 1000; count += 1) {
-    const suggestion = inspectDocumentRules(current).find((item) => item.kind === 'suggestion' && !excluded.has(item.id));
+    const suggestion = inspectDocumentRules(current).find((item) => isBulkApplicable(item) && !excluded.has(item.id));
     if (!suggestion) return { model: current, edits };
     const applied = applyRuleSuggestion(current, suggestion);
     current = applied.model;

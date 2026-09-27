@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from '../src/domain/ruleEngine.js';
+import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, isBulkApplicable, BULLET_PALETTES } from '../src/domain/ruleEngine.js';
 
 const model = {
   schemaVersion: '0.2',
@@ -32,11 +32,15 @@ assert.equal(single.model.approval.edits.length, 1, 'approved edit must be recor
 
 const all = applyAllRuleSuggestions(model);
 assert.equal(JSON.stringify(model), original, 'apply-all must not mutate the source model');
-assert.equal(inspectDocumentRules(all.model).filter((item) => item.kind === 'suggestion').length, 0, 'all suggestions must be resolved');
+assert.equal(inspectDocumentRules(all.model).filter(isBulkApplicable).length, 0, 'bulk suggestions must be resolved');
+// 시간 표기는 '전체 적용'에서 제외(V4 I-3) — 개별 승인으로만 바뀐다.
+const pendingTime = inspectDocumentRules(all.model).find((item) => item.code === 'TIME-FORMAT');
+assert.ok(pendingTime && pendingTime.bulkApply === false, 'TIME-FORMAT must stay for individual approval');
+const timed = applyRuleSuggestion(all.model, pendingTime).model;
 assert.match(all.model.blocks[2].text, /「교육기본법」/);
 assert.match(all.model.blocks[2].text, /2026\. 3\. 5\.~2026\. 3\. 7\./);
-assert.match(all.model.blocks[2].text, /09:00/);
-assert.match(all.model.blocks[2].text, /10:05/);
+assert.match(timed.blocks[2].text, /09:00/);
+assert.match(timed.blocks[2].text, /10:05/);
 assert.match(all.model.blocks[2].text, /10,000원/);
 assert.equal(all.model.blocks[3].marker, '□');
 assert.equal(all.model.approval.edits.length, all.edits.length);
@@ -299,6 +303,48 @@ const emptyPlannedPages = {
 assert.ok(!inspectDocumentRules(emptyPlannedPages).some((item) => item.code === 'PLACEHOLDER-RESIDUAL'),
   '빈 페이지 틀만 출력하는 모델에서 보존용 root blocks를 다시 검사하지 않아야 함');
 
+// V4 13단계 I-2: 쪽 초안 표(원천 cells + 투영형 rows 잔재)에 날짜 제안을 적용해도
+// 해당 칸만 바뀌고 머리글·행 순서가 보존되어야 한다.
+const tableCells = (rows) => rows.map((row) => row.map((text) => ({ text, rowSpan: 1, colSpan: 1 })));
+const legacyTableModel = {
+  schemaVersion: '0.2', kind: 'plan-ir', approval: { status: 'unapproved' }, blocks: [],
+  metadata: { pages: [{ type: 'body-opening', blocks: [{
+    type: 'table',
+    table: { cells: tableCells([['구분', '내용'], ['상담', '운영'], ['일정', '2026-9-8 시작']]) },
+    header: ['구분', '내용'],
+    rows: [['구분', '내용'], ['상담', '운영'], ['일정', '2026-9-8 시작']],
+  }] }] },
+};
+const legacyApplied = applyAllRuleSuggestions(legacyTableModel).model.metadata.pages[0].blocks[0];
+assert.deepEqual(legacyApplied.header, ['구분', '내용'], '머리글이 덮어써지면 안 됨(I-2)');
+assert.deepEqual(legacyApplied.rows, [['상담', '운영'], ['일정', '2026. 9. 8. 시작']], '수정은 해당 칸에만, 투영형 잔재는 정리');
+assert.notEqual(legacyApplied.rows[0], legacyApplied.header, '적용 후 배열 공유가 없어야 함');
+
+// DATE-FORMAT이 날짜 뒤 공백을 먹어 다음 단어와 붙이면 안 된다('2026-9-8 시작'→'2026. 9. 8.시작' 결함, 2026-09-27 확인).
+const dateSpacingModel = { schemaVersion: '0.2', kind: 'plan-ir', metadata: {}, approval: { status: 'unapproved' }, blocks: [{ type: 'paragraph', text: '2026-9-8 시작' }] };
+assert.equal(inspectDocumentRules(dateSpacingModel).find((item) => item.code === 'DATE-FORMAT')?.after, '2026. 9. 8. 시작', 'DATE-FORMAT이 뒤 공백을 지우면 안 됨');
+
+// V4 I-3: 영 제7조⑤는 시각 표기 규정 — 기간·일반어·비율은 바꾸지 않고, 범위는 통째로.
+const timeCases = [
+  ['2시간 이상 연속 배치 지양', null],
+  ['24시간 운영', null],
+  ['3~4시간 소요', null],
+  ['3시기 편성', null],
+  ['1:1 상담 운영', null],
+  ['2026-9-8 시작', null],
+  ['14~17시 옥외 업무 미배치', '14:00~17:00 옥외 업무 미배치'],
+  ['12~17시 자제', '12:00~17:00 자제'],
+  ['오후 3시 20분 시작', '15:20 시작'],
+  ['10시에 집합', '10:00에 집합'],
+  ['9시 반 출발', '09:30 출발'],
+  ['9시 반장 회의', '09:00 반장 회의'],
+];
+for (const [text, expected] of timeCases) {
+  const caseModel = { schemaVersion: '0.2', kind: 'plan-ir', metadata: {}, approval: { status: 'unapproved' }, blocks: [{ type: 'paragraph', text }] };
+  const found = inspectDocumentRules(caseModel).find((item) => item.code === 'TIME-FORMAT');
+  assert.equal(found?.after ?? null, expected, `TIME-FORMAT 표본: ${text}`);
+}
+
 console.log(JSON.stringify({
   gate: 'rule-engine-approval',
   detectedCodes: [...new Set(findings.map((item) => item.code))],
@@ -307,7 +353,7 @@ console.log(JSON.stringify({
   suggestionCount: findings.filter((item) => item.kind === 'suggestion').length,
   appliedCount: all.edits.length,
   sourceUnchanged: JSON.stringify(model) === original,
-  remainingSuggestions: inspectDocumentRules(all.model).filter((item) => item.kind === 'suggestion').length,
+  remainingSuggestions: inspectDocumentRules(all.model).filter(isBulkApplicable).length,
   conventionMarker: conventionSuggestion.after,
   hierarchySkipDetected: hierFinding.after,
   mixedMarkerWarning: mixedMarkerFinding.kind,

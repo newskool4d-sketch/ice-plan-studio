@@ -2,8 +2,9 @@
 //
 // WorkflowApp.jsx에서 분리했다(11단계 선행 리팩터링). 화면 상태에 의존하지 않는
 // 계산만 모아 두어야 시각 리디자인이 로직을 건드리지 않는다.
-import { createPreviewProjection } from "./previewProjection.js";
+import { createPreviewProjection, modelBlockFromProjection } from "./previewProjection.js";
 import { ensurePlanDecisions, pagePlanFromDecisions } from "./planDecisions.js";
+import { tableGrid, withTableGrid } from "./tableGrid.js";
 
 export function modelTitle(model, fallback) {
   if (model?.source?.format === "hwpx") {
@@ -86,9 +87,27 @@ export function pageDraftsFrom(model, agency) {
     sourceBlockCount: Number(page.sourceBlockCount) || 0,
     collapsedSourcePages: Array.isArray(page.collapsedSourcePages) ? [...page.collapsedSourcePages] : [],
     collapseReason: page.collapseReason || null,
-    blocks: page.blocks || [],
+    blocks: (page.blocks || []).map(modelBlockFromProjection),
     confirmed: false,
   }));
+}
+
+// 저장본(.iceplan) 쪽 초안의 표를 원천(cells) 기준으로 정리한다(V4 13단계 저장본 복구).
+// v0.12.0~0.12.11 저장본은 투영 모양(rows에 머리글 포함)과 자동수정 행 밀림을 담을 수
+// 있다. 바뀐 표 수를 돌려줘 불러오기 알림에 쓴다 — 묵시 변경 금지.
+export function normalizeStoredPageDrafts(drafts) {
+  let repairedTables = 0;
+  const normalized = (drafts || []).map((draft) => ({
+    ...draft,
+    blocks: (draft.blocks || []).map((block) => {
+      if (block?.type !== "table") return block;
+      const { columnWidthsHwpUnit: _widths, rowHeightsHwpUnit: _heights, widthHwpUnit: _width, ...rest } = block;
+      const next = withTableGrid(rest, tableGrid(rest));
+      if (JSON.stringify([block.header || [], ...(block.rows || [])]) !== JSON.stringify([next.header, ...next.rows])) repairedTables += 1;
+      return next;
+    }),
+  }));
+  return { drafts: normalized, repairedTables };
 }
 
 // 구조 패널의 쪽 초안을 저장 모델에 반영하는 순수 변환이다. 페이지 출처와
