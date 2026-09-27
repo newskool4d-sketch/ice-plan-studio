@@ -31,6 +31,10 @@ await fs.writeFile(SAMPLE, `# 2026 리팩터링 검증 계획
 
 ## Ⅱ. 추진 내용
 - 세 번째 항목입니다.
+
+| 기준칸 | 조치칸 |
+|---|---|
+| 31℃ 이상 | 2시간 이상 연속 배치 지양 |
 `, 'utf8');
 
 const child = spawn(EXE, [`--remote-debugging-port=${PORT}`], { stdio: 'ignore' });
@@ -160,7 +164,10 @@ try {
   await evaluate("document.querySelectorAll('.page-type-confirm').forEach((b) => { if (!b.disabled) b.click(); })");
   await sleep(2500);
   await clickAndRead('#structure-next', 'rules');
-  // 규칙검수: 남은 항목 모두 무시 후 완료
+  // 규칙검수: '제안 전체 적용'(표 셀 자동수정 경로 — V4 I-2·I-3 회귀 감시) 후
+  // 남은 항목 모두 무시하고 완료
+  await evaluate("document.querySelector('#rule-apply-all')?.click()");
+  await sleep(1500);
   await evaluate("document.querySelector('#rule-ignore-all')?.click()");
   await sleep(2000);
   await clickAndRead('#rules-confirm', 'export');
@@ -233,6 +240,37 @@ try {
     const svg = Boolean(document.querySelector('.compare-pane .composition-svg'));
     const quick = Boolean(document.querySelector('.compare-pane .a4-page'));
     return { present: true, enabled: true, panes, svg, quick, ok: panes === 2 && svg && quick };
+  })()`, 40_000);
+
+  // ── 표 무결성(V4 13단계): 본문 쪽 실조판 SVG·빠른 미리보기에서 표 머리글이 한 번만
+  // 나오고, 전체 적용이 기간('2시간')을 시각으로 바꾸거나 머리글을 덮어쓰지 않았는지 본다.
+  // 실조판은 <img src="data:image/svg+xml…">로 한 쪽씩 그려지므로 src를 풀어 센다.
+  report.tableIntegrity = await evaluate(`(async () => {
+    const thumbs = document.querySelectorAll('.page-thumbnail');
+    if (!thumbs.length) return { ok: false, reason: 'no-thumbnails' };
+    thumbs[thumbs.length - 1].click();
+    const svgText = () => {
+      const img = document.querySelector('.compare-pane .composition-svg');
+      const src = img?.getAttribute('src') || '';
+      return src ? decodeURIComponent(src.slice(src.indexOf(',') + 1)) : '';
+    };
+    let svg = '';
+    for (let i = 0; i < 40 && !svg.includes('기준칸'); i += 1) {
+      await new Promise((r) => setTimeout(r, 500));
+      svg = svgText();
+    }
+    const quick = document.querySelector('.compare-pane .a4-page')?.textContent || '';
+    const count = (text, value) => text.split(value).length - 1;
+    const result = {
+      svgHeaderCount: count(svg, '기준칸'),
+      svgHeaderIntact: count(svg, '조치칸'),
+      svgDurationKept: count(svg, '2시간'),
+      svgClockCorruption: count(svg, '02:00간'),
+      quickHeaderCount: count(quick, '기준칸'),
+    };
+    result.ok = result.svgHeaderCount === 1 && result.svgHeaderIntact === 1
+      && result.svgDurationKept >= 1 && result.svgClockCorruption === 0 && result.quickHeaderCount === 1;
+    return result;
   })()`, 40_000);
   // ── 보정 결정 캐시: 같은 모델의 두 번째 미리보기는 루프를 다시 돌지 않아야 한다.
   // (미리보기가 계산한 결정을 내보내기가 재사용하는 것과 같은 경로 — 지연 보고의 수정)
@@ -342,6 +380,7 @@ report.passed = !report.fatal && report.exceptions.length === 0 && report.allSix
   && report.progressBar === '100%'
   && report.themeToggle?.darkApplied === true && report.themeToggle?.restored === true
   && report.compareMode?.ok === true
+  && report.tableIntegrity?.ok === true
   && report.agencyCards?.count === 26 && report.agencyCards?.synced === true
   && report.microInteractions?.showInFolderBridge === true
   && report.microInteractions?.eyebrowColor === 'rgb(104, 120, 138)'

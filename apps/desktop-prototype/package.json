@@ -1,6 +1,6 @@
 {
   "name": "ice-plan-studio-prototype",
-  "version": "0.12.11",
+  "version": "0.12.12",
   "private": true,
   "type": "module",
   "main": "electron/main.cjs",
@@ -11,6 +11,8 @@
     "verify:plan-ir-source-pages": "node scripts/verify-plan-ir-source-pages.cjs",
     "verify:preview-equivalence": "node scripts/verify-preview-equivalence.mjs",
     "verify:rules": "node scripts/verify-rule-engine.mjs",
+    "verify:e2e-fidelity": "node scripts/verify-e2e-fidelity.mjs",
+    "verify:item-layout": "node scripts/verify-item-layout.mjs",
     "verify:body-layout-v2-baseline": "node scripts/verify-body-layout-v2-baseline.mjs",
     "verify:body-layout-v2-decisions": "node scripts/verify-body-layout-v2-decisions.mjs",
     "verify:body-layout-v2-rendering": "node scripts/verify-body-layout-v2-rendering.mjs",
@@ -26,7 +28,7 @@
     "calibrate:layout-measure": "py test-data/adaptive-layout/calibrate.py --com",
     "preview": "vite preview",
     "electron:dev": "npm run build && electron .",
-    "dist:win": "npm run build && electron-builder --win --dir && npm run verify:app-render && npm run verify:workflow-walk",
+    "dist:win": "npm run verify:e2e-fidelity && npm run verify:item-layout && npm run build && electron-builder --win --dir && npm run verify:app-render && npm run verify:workflow-walk",
     "dist:installer": "npm run dist:win && electron-builder --win nsis"
   },
   "dependencies": {

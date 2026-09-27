@@ -15,8 +15,8 @@ import {
   removePage,
 } from "../domain/planDecisions.js";
 import { createPreviewProjection, layoutTokens } from "../domain/previewProjection.js";
-import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, BULLET_PALETTES } from "../domain/ruleEngine.js";
-import { compositionModel, modelTitle, pageDraftsFrom, profilePackage, withPagePlan } from "../domain/workflowModel.js";
+import { applyAllRuleSuggestions, applyRuleSuggestion, inspectDocumentRules, isBulkApplicable, BULLET_PALETTES } from "../domain/ruleEngine.js";
+import { compositionModel, modelTitle, normalizeStoredPageDrafts, pageDraftsFrom, profilePackage, withPagePlan } from "../domain/workflowModel.js";
 import { AnalysisPanel } from "./workflow/AnalysisPanel.jsx";
 import { AppTopbar } from "./workflow/AppTopbar.jsx";
 import { DocumentStage, ThumbnailRail } from "./workflow/DocumentStage.jsx";
@@ -102,7 +102,8 @@ function WorkflowApp() {
   const findings = useMemo(() => model ? inspectDocumentRules(model) : [], [model]);
   const visibleFindings = useMemo(() => findings.filter((item) => !ignoredRuleIds.includes(item.id)), [findings, ignoredRuleIds]);
   const selectedFinding = visibleFindings.find((item) => item.id === selectedRuleId) || visibleFindings[0] || null;
-  const suggestionCount = visibleFindings.filter((item) => item.kind === "suggestion").length;
+  // '제안 전체 적용' 건수 — 개별 확인 규칙(시간 표기, V4 I-3)은 전체 적용 대상이 아니다.
+  const suggestionCount = visibleFindings.filter(isBulkApplicable).length;
   const approvalCount = model?.approval?.edits?.length || 0;
   const structureConfirmed = pageDrafts.length > 0 && pageDrafts.every((item) => item.confirmed);
   // 규칙 검토 항목이 있는 쪽에 썸네일 배지를 단다. 블록 대상 규칙은 본문 쪽 소속이다.
@@ -533,9 +534,12 @@ function WorkflowApp() {
       const settings = snapshot.project?.settings || {};
       const requestedAgencyId = settings.agencyId || snapshot.profile?.profile?.baseAgencyId || defaultAgencyProfile.id;
       const nextAgency = resolveAgency(requestedAgencyId);
-      const nextDrafts = Array.isArray(workflow.pageDrafts) && workflow.pageDrafts.length
-        ? workflow.pageDrafts.map((item) => ({ ...item, confirmed: Boolean(item.confirmed) }))
-        : pageDraftsFrom(nextModel, nextAgency);
+      // 저장된 쪽 초안은 v0.12.0~0.12.11의 투영형 표(머리글 중복·행 밀림)를 담을 수 있어
+      // 원천(cells) 기준으로 정리한다 — V4 13단계 저장본 복구.
+      const storedDrafts = Array.isArray(workflow.pageDrafts) && workflow.pageDrafts.length
+        ? normalizeStoredPageDrafts(workflow.pageDrafts.map((item) => ({ ...item, confirmed: Boolean(item.confirmed) })))
+        : null;
+      const nextDrafts = storedDrafts ? storedDrafts.drafts : pageDraftsFrom(nextModel, nextAgency);
       const nextAnalysisConfirmed = Boolean(workflow.analysisConfirmed);
       const nextInfoConfirmed = nextAnalysisConfirmed && Boolean(workflow.infoConfirmed);
       const nextStructureConfirmed = nextInfoConfirmed && nextDrafts.length > 0 && nextDrafts.every((item) => item.confirmed);
@@ -563,7 +567,10 @@ function WorkflowApp() {
       setZoom(Math.min(125, Math.max(50, Number(view.zoom) || 75)));
       setPreviewMode(view.previewMode === "rendered" ? "rendered" : "react");
       setActiveStep(restoredStep);
-      setNotice(`${result.migratedFrom ? `v${result.migratedFrom} 프로젝트를 v0.2로 승격해 ` : ""}불러왔습니다: ${result.filePath}`);
+      const repairedNote = storedDrafts?.repairedTables
+        ? ` · 표 ${storedDrafts.repairedTables}개를 원본 셀 기준으로 정리했습니다(머리글 중복·행 밀림 복구)`
+        : "";
+      setNotice(`${result.migratedFrom ? `v${result.migratedFrom} 프로젝트를 v0.2로 승격해 ` : ""}불러왔습니다: ${result.filePath}${repairedNote}`);
     } catch (error) {
       setNotice(`프로젝트를 읽지 못했습니다: ${error.message}`);
     }

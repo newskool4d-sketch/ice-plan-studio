@@ -189,6 +189,30 @@ function createPlanIR({
   };
 }
 
+// 공문서 항목기호(시행규칙 제2조①: 1. 가. 1) 가) (1) (가) ① ㉮)와 특수기호(□ ○ - ㆍ 등).
+// 과거엔 -·*·1.·□○❍▪■만 인식해, 전각 공백으로 들여쓴 1)·가)·① 줄이 Markdown 문단
+// 이어쓰기로 한 문단에 합쳐졌다(V4 G-1, 판단 절차 15줄 → 문단 1개).
+// src/domain/markdownParser.js와 같은 집합이어야 한다.
+const LIST_MARKER_KOREAN = '가나다라마바사아자차카타파하';
+const LIST_LINE = new RegExp(`^(\\s*)((?:[-*]|\\d+[.)]|\\(\\d+\\)|[${LIST_MARKER_KOREAN}][.)]|\\([${LIST_MARKER_KOREAN}]\\)|[①-⑮]|[㉮-㉻]|[□○❍▪■◈❖◎◦￭∙ㆍ])\\s+)\\s*(.+)$`);
+const ORDERED_MARKER = new RegExp(`^(?:\\d+[.)]|\\(\\d+\\)|[${LIST_MARKER_KOREAN}][.)]|\\([${LIST_MARKER_KOREAN}]\\)|[①-⑮]|[㉮-㉻])$`);
+
+// 들여쓰기 폭 2 = 1단계. 전각 공백은 2타라 폭 2로 센다 — 1로 세면 '　1)'·'　　가)'·'　　　①'이
+// 0·1·1단계로 뭉개진다. floor를 나눗셈 안에 둬 항상 정수 단계를 만든다.
+function indentWidth(indent) {
+  return [...indent].reduce((sum, character) => sum + (character === '　' ? 2 : character === '\t' ? 4 : 1), 0);
+}
+
+function listIndentLevel(indent) {
+  return Math.floor(indentWidth(indent) / 2);
+}
+
+// 항목 바로 아래(빈 줄 없이) 항목보다 깊게 들여쓴 줄은 그 항목의 이어지는 줄이다 — 붙임 안내문처럼
+// 줄을 나눠 쓴 `가.` 항목의 둘째 줄이 별도 문단으로 떨어지던 G-1 부작용 해소. 들여쓰지 않은 줄은
+// 새 문단으로 둔다: 텍스트 계획서는 `□ 추진 배경` 바로 아래에 본문을 붙여 쓰므로 무조건 합치면
+// 제목에 본문이 붙는다. 코드 울타리·구분선·인용은 이어지는 줄이 아니다(markdownParser.js와 같은 규칙).
+const NOT_CONTINUATION = /^\s*(?:```|~~~|>|(?:[-*_]\s*){3,}$)/;
+
 function parseTextToPlanIR(input, { format, title = '', filePath = null } = {}) {
   const lines = normalizeText(input).split('\n');
   const blocks = [];
@@ -226,17 +250,20 @@ function parseTextToPlanIR(input, { format, title = '', filePath = null } = {}) 
     return cells;
   };
 
+  let openItem = null;
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    if (!line.trim()) { pushParagraph(); continue; }
+    if (!line.trim()) { pushParagraph(); openItem = null; continue; }
     const heading = /^(#{1,4})\s+(.+)$/.exec(line);
     if (heading) {
       pushParagraph();
+      openItem = null;
       blocks.push({ type: 'heading', role: 'heading', level: heading[1].length, text: heading[2].trim(), source: sourceOf(format, filePath, index, line) });
       continue;
     }
     if (line.includes('|') && isTableDivider(lines[index + 1] || '')) {
       pushParagraph();
+      openItem = null;
       const cells = [splitCells(line)];
       index += 2;
       while (index < lines.length && lines[index].includes('|') && lines[index].trim()) { cells.push(splitCells(lines[index])); index += 1; }
@@ -245,17 +272,21 @@ function parseTextToPlanIR(input, { format, title = '', filePath = null } = {}) 
       blocks.push({ type: 'table', role: 'table', table, ...tableCompatibility(table), source: sourceOf(format, filePath, index - cells.length, cells.map((row) => row.map((cell) => cell.text).join('|')).join('\n')) });
       continue;
     }
-    const list = /^\s*((?:[-*]|\d+\.|[□○❍▪■])\s+)\s*(.+)$/.exec(line);
+    const list = LIST_LINE.exec(line);
     if (list) {
       pushParagraph();
-      const marker = list[1].trim();
-      // 들여쓰기 2칸 = 1단계. floor를 나눗셈 밖에 두면(Math.floor(x)/2) 홀수
-      // 들여쓰기에서 1.5 같은 소수 레벨이 나와 위계 검증의 전제가 깨진다 —
-      // floor를 나눗셈 안으로(Math.floor(x/2)) 넣어 항상 정수 레벨을 만든다.
-      const indentLevel = Math.floor(line.search(/\S/) / 2);
-      blocks.push({ type: 'listItem', role: 'list', marker, ordered: /^\d+\.$/.test(marker), level: indentLevel, text: list[2].trim(), source: sourceOf(format, filePath, index, line) });
+      const marker = list[2].trim();
+      const block = { type: 'listItem', role: 'list', marker, ordered: ORDERED_MARKER.test(marker), level: listIndentLevel(list[1]), text: list[3].trim(), source: sourceOf(format, filePath, index, line) };
+      blocks.push(block);
+      openItem = { block, width: indentWidth(list[1]) };
       continue;
     }
+    if (openItem && indentWidth(/^\s*/.exec(line)[0]) > openItem.width && !NOT_CONTINUATION.test(line)) {
+      openItem.block.text = `${openItem.block.text} ${line.trim()}`;
+      openItem.block.source.original += `\n${line}`;
+      continue;
+    }
+    openItem = null;
     if (!paragraph.length) paragraphStart = index;
     paragraph.push(line.trim());
   }
