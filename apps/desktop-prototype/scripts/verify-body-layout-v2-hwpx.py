@@ -8,8 +8,11 @@ import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from item_layout import ITEM, indent_position, marker_hang  # noqa: E402
 
-TITLE = "학생교육원 공약사업 이행을 위한 체험교육 프로그램 고도화 추진 계획(안)"
+
+TITLE ="학생교육원 공약사업 이행을 위한 체험교육 프로그램 고도화 추진 계획(안)"
 ORGANIZATION = "인천광역시교육청학생교육원"
 DEPARTMENT = "교학과"
 BODY_TITLE_MARKER = 'id="2063551812"'
@@ -306,9 +309,11 @@ def main():
         local_name(element): element.attrib.get("value")
         for element in korean_case_margin
     }
+    # 짧은 소제목(가.)은 샘플 1칸 들여쓰기·기호+공백 내어쓰기·척도 위 간격(V4, 2026-09-27 승인)
     require(
         korean_margin_values == {
-            "intent": "-800", "left": "800", "right": "0", "prev": "1000", "next": "200",
+            "intent": str(-marker_hang("가.")), "left": str(indent_position(1)), "right": "0",
+            "prev": str(ITEM["prevHwpUnit"]["koreanSubheading"]), "next": "0",
         },
         f"Korean subheading indent/spacing values changed: {korean_margin_values}",
     )

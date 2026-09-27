@@ -22,17 +22,20 @@
     "body": { "font": "함초롬바탕", "sizePt": 13, "lineSpacingPercent": 170, "charPrId": "132", "paraPrId": "238" },
     "heading": { "font": "함초롬바탕", "sizePt": 14, "charPrId": "9", "paraPrId": "1" },
     "tableHeader": { "font": "맑은 고딕", "sizePt": 12, "charPrId": "513", "charSpacingPercent": 0, "lineSpacingPercent": 160 },
-    "tableBody": { "font": "맑은 고딕", "sizePt": 12, "charPrId": "514", "charSpacingPercent": 0, "lineSpacingPercent": 160 },
-    "topicGroupLeader": {
-      "_note": "최상위 항목(□/○ 등 level-0 unordered listItem) 전용 문단 속성. 주제 그룹 간 시각 분리를 만든다. 실물 실측치: 시행문서 paraPr 28 prev=300 next=300.",
-      "paraPrId": "242",
-      "prevHwpUnit": 300
-    },
-    "numberedHeading": {
-      "_note": "제목틀(표)을 쓰지 않는 제목 문단 전용 속성. 번호 제목이 연달아 나올 때 번호와 번호 사이를 띄운다(2026-08-14 사용자 검수 지적). 값 300은 topicGroupLeader와 같은 시행문서 실측치(paraPr 28 prev=300)를 가져온 것 — 번호 제목도 주제 그룹의 머리 문단이라 같은 간격을 적용한다. 제목 계층 자체의 별도 실측은 없으므로 가정이며, 실물 확인 후 조정 가능.",
-      "paraPrId": "243",
-      "prevHwpUnit": 300
-    }
+    "tableBody": { "font": "맑은 고딕", "sizePt": 12, "charPrId": "514", "charSpacingPercent": 0, "lineSpacingPercent": 160 }
+  },
+  "itemLayout": {
+    "_note": "항목 위계·간격 척도(V4, 2026-09-27 사용자 승인 권장안). 한글 PDF 실측에서 서술형 문장에 제목 속성(다음 문단과 함께·160%)이 붙어 19문단이 한 덩어리로 넘어가 빈 쪽이 생기고, 하위 '가.'(10pt)가 상위 '1.'(3pt)보다 넓던 결함의 해소값. src/domain/itemLayout.js·scripts/item_layout.py 쌍둥이가 함께 읽는다.",
+    "_prevNote": "문단 위 간격(HWPUNIT, 100=1pt). 장 제목틀 > 짧은 번호 제목 > 짧은 소제목 > 1단계 항목 > 하위 항목 순으로 줄어야 한다. 8pt는 정책기획조정관 계획 그룹 머리 간격, 3pt는 시행문서 값.",
+    "prevHwpUnit": { "chapter": 1200, "numberedHeading": 800, "koreanSubheading": 400, "topItem": 300, "nestedItem": 0 },
+    "lineSpacingPercent": { "item": 170, "heading": 160 },
+    "_glyphNote": "내어쓰기(둘째 줄을 내용 첫 글자에 맞춤) = 기호 글자폭 합 + 공백. 한글 PDF 실측(함초롬바탕 13pt): 한글 12.60pt·숫자 7.08·마침표/닫는 괄호 4.20·여는 괄호 4.08·공백 6.48·줄표 6.60 — 기호+공백 실측(1. 17.88 / 가. 23.16 / □ 19.08)과 ±0.1pt 일치. 본문 크기를 바꾸면 재실측 대상.",
+    "glyphWidthHwpUnit": { "full": 1260, "digit": 708, "punct": 420, "paren": 408, "space": 648, "dash": 660 },
+    "_indentNote": "항목 기호 시작 위치 = 단계별 칸 수 × 공백 폭(glyphWidthHwpUnit.space, 칸 = 반각 공백). 사용자 샘플(2026-09-27, 함초롬바탕 12pt 실측): 1.=0칸·가.=1칸·1)=3칸·가)=4칸·①=6칸·㉮=7칸 — 한글 기호 단계 +1칸, 숫자 기호 단계 +2칸 교대. 8단계 이후는 같은 규칙으로 연장. 둘째 줄은 기호+공백 뒤 내용 첫 글자에 맞춘다.",
+    "levelIndentHalfSpaces": [0, 1, 3, 4, 6, 7, 9, 10],
+    "maxDisplayLevel": 7,
+    "_keepNote": "다음 문단과 함께가 이보다 많이 연속되면 해제한다. 장 제목틀→번호 제목→소제목(3개) 뒤 본문까지는 한 덩어리로 둔다.",
+    "maxKeepWithNextChain": 3
   },
   "adaptiveSpacing": {
     "_note": "9단계 적응 조판. boncheong 템플릿 한정 — gonmun의 본문 paraPr 0·14는 표지·표와 공용이라 건드리면 회귀한다.",

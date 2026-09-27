@@ -1,5 +1,6 @@
 import { renderInline } from "../domain/previewText.js";
 import { classifyStructuredBlock } from "../domain/headingPresentation.js";
+import { layoutBlocks, noteStyle } from "../domain/itemLayout.js";
 
 const pt = (hwpUnit) => Number.isFinite(Number(hwpUnit)) ? `${Number(hwpUnit) / 100}pt` : undefined;
 const positivePt = (hwpUnit) => Number(hwpUnit) > 0 ? pt(hwpUnit) : undefined;
@@ -20,24 +21,26 @@ function paragraphStyle(block, normalizeTypography = false) {
   };
 }
 
-function PreviewBlock({ block, index, highlighted, normalizeTypography = false }) {
+function PreviewBlock({ block, note, index, highlighted, normalizeTypography = false }) {
   const highlightClass = highlighted ? "rule-target-preview" : "";
+  // 항목 위계·간격은 HWPX와 같은 조판 주석(itemLayout.js)으로 그린다.
+  const layout = note ? noteStyle(note) : {};
+  const listItem = (marker, text, ordered) => <p className={`loaded-list-item ${ordered ? "ordered-list" : ""} ${highlightClass}`.trim()} style={{ ...paragraphStyle(block, normalizeTypography), ...layout }} key={index}><span className="list-marker">{marker}</span>{" "}{renderInline(text)}</p>;
   if (block.type === "heading") {
     const structured = classifyStructuredBlock(block);
     if (structured && structured.kind !== "korean-subheading") {
-      return <div className={`structured-heading structured-heading-${structured.kind} ${highlightClass}`.trim()} role="heading" aria-level={Math.min(Math.max(block.level || 1, 1), 3)} key={index}>
+      return <div className={`structured-heading structured-heading-${structured.kind} ${highlightClass}`.trim()} style={note?.role === "frame" && note.prev ? { marginTop: `${note.prev / 100}pt` } : undefined} role="heading" aria-level={Math.min(Math.max(block.level || 1, 1), 3)} key={index}>
         <span className="structured-heading-label">{renderInline(structured.label)}</span>
         <span className="structured-heading-title">{renderInline(structured.title)}</span>
       </div>;
     }
+    // 서술형 제목('1. …함.')은 제목이 아니라 항목으로 그린다 — HWPX와 같은 규칙.
+    if (note?.role === "item") return listItem(note.marker, note.text, true);
     const Tag = `h${Math.min(Math.max(block.level || 1, 1), 3)}`;
-    return <Tag className={`${structured?.kind === "korean-subheading" ? "korean-subheading" : ""} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</Tag>;
+    const subheading = note?.role === "heading2" || structured?.kind === "korean-subheading";
+    return <Tag className={`${subheading ? "korean-subheading" : ""} ${highlightClass}`.trim()} style={{ ...paragraphStyle(block, normalizeTypography), ...layout }} key={index}>{renderInline(block.text)}</Tag>;
   }
-  if (block.type === "listItem") {
-    const groupLeaderClass = !block.ordered && Number(block.level || 0) === 0 ? "group-leader" : "";
-    const orderedClass = block.ordered ? "ordered-list" : "";
-    return <p className={`loaded-list-item ${orderedClass} ${groupLeaderClass} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}><span className="list-marker">{block.marker || (block.ordered ? "1." : "- ")}</span>{renderInline(block.text)}</p>;
-  }
+  if (block.type === "listItem") return listItem(block.marker || (block.ordered ? "1." : "-"), block.text, block.ordered);
   if (block.type === "table") {
     const [header, ...body] = block.rows;
     const widthSum = block.columnWidthsHwpUnit.reduce((sum, width) => sum + Number(width || 0), 0) || block.widthHwpUnit;
@@ -51,7 +54,8 @@ function PreviewBlock({ block, index, highlighted, normalizeTypography = false }
     </table>;
   }
   if (block.type === "image") return <p className={`loaded-paragraph ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>이미지 보존: {block.image?.filename || block.image?.sha256 || "원본 이미지"}</p>;
-  return <p className={`loaded-paragraph ${block.tocEntry ? "toc-entry" : ""} ${block.blockquote ? "blockquote" : ""} ${highlightClass}`.trim()} style={paragraphStyle(block, normalizeTypography)} key={index}>{renderInline(block.text)}</p>;
+  const bodyLayout = note?.role === "body" && !block.tocEntry ? layout : {};
+  return <p className={`loaded-paragraph ${block.tocEntry ? "toc-entry" : ""} ${block.blockquote ? "blockquote" : ""} ${highlightClass}`.trim()} style={{ ...paragraphStyle(block, normalizeTypography), ...bodyLayout }} key={index}>{renderInline(block.text)}</p>;
 }
 
 function projectionBodyWidth(block) {
@@ -111,6 +115,7 @@ export function PlanPreview({ projection, page, agencyName, highlightBlockIndex 
   const visibleBlocks = page.type === "body-opening"
     ? page.blocks.filter((block) => !isDuplicateBodyTitle(block, projection.title))
     : page.blocks;
+  const notes = layoutBlocks(visibleBlocks);
   const previewStyle = {
     "--plan-body-size": `${projection.layoutProfile?.bodySizePt || projection.tokens.typography.body.sizePt}pt`,
     "--opening-title-size": `${projection.layoutProfile?.openingTitleSizePt || 18}pt`,
@@ -135,7 +140,7 @@ export function PlanPreview({ projection, page, agencyName, highlightBlockIndex 
         {page.type === "body-opening" ? <BodyOpeningHeader projection={projection} /> : null}
         {page.type !== "body" && page.type !== "body-opening" && page.type !== "body-continuation" ? <h1>{page.title}</h1> : null}
         {page.type === "toc" && page.blocks.length === 0 ? <FrontMatterFrame page={page} /> : null}
-        {visibleBlocks.map((block, index) => <PreviewBlock block={block} index={index} highlighted={index === highlightBlockIndex} normalizeTypography={projection.sourceFormat === "hwpx"} key={`${page.id}-${index}`} />)}
+        {visibleBlocks.map((block, index) => <PreviewBlock block={block} note={notes[index]} index={index} highlighted={index === highlightBlockIndex} normalizeTypography={projection.sourceFormat === "hwpx"} key={`${page.id}-${index}`} />)}
       </div>
       {page.displayNumber ? <div className="page-number">- {page.displayNumber} -</div> : null}
     </>}

@@ -58,6 +58,36 @@ NAME_IMAGE_PARAGRAPH = (
     '</hp:linesegarray></hp:p>'
 )
 from layout_engine import BODY_WIDTH_HWPUNIT, PAGE_LABELS, TOKENS, page_sequence, resolve_profile, table_column_widths, table_row_heights  # noqa: E402
+from item_layout import ITEM as ITEM_LAYOUT, indent_position, layout_blocks, marker_hang  # noqa: E402
+
+# 동적 문단 속성(항목·연쇄 해제 제목·비표준 기호 제목) — (정렬·왼여백·내어쓰기·위·아래 간격·
+# 줄간격·다음 문단과 함께) 조합마다 하나씩 248번부터 배정한다. build()마다 비우고
+# presentation_header가 정의를 덧붙인다. 줄간격 None은 본문 줄간격(적응 조판 값 포함)을 뜻한다.
+# 한글은 paraPrIDRef를 id 값이 아니라 목록 위치로 찾으므로 고정 속성(238~247) 바로 뒤에서
+# 빈 번호 없이 이어야 한다(2026-09-27 한글 PDF 실측: 250 시작 시 모든 참조가 두 칸씩 밀림).
+DYNAMIC_PARA_PR_START = 248
+DYNAMIC_PARA_PRS = {}
+
+
+def dynamic_para_pr(*, align, left, intent, prev, next_value, line_spacing, keep_with_next):
+    key = (align, left, intent, prev, next_value, line_spacing, keep_with_next)
+    if key not in DYNAMIC_PARA_PRS:
+        DYNAMIC_PARA_PRS[key] = str(DYNAMIC_PARA_PR_START + len(DYNAMIC_PARA_PRS))
+    return DYNAMIC_PARA_PRS[key]
+
+
+# 고정 제목 문단 속성의 기하 — 243(짧은 번호 제목 `1.`)·240(짧은 소제목 `가.`)·245(장 제목틀 앵커).
+# 간격 척도는 layout-tokens.json itemLayout(2026-09-27 승인 권장안), 내어쓰기는 기호+공백 실측 폭.
+def fixed_heading_geometry(para_pr_id):
+    prev = ITEM_LAYOUT['prevHwpUnit']
+    heading_spacing = ITEM_LAYOUT['lineSpacingPercent']['heading']
+    return {
+        '243': dict(align='LEFT', left=0, intent=-marker_hang('1.'), prev=prev['numberedHeading'],
+                    next_value=0, line_spacing=heading_spacing),
+        '240': dict(align='LEFT', left=indent_position(1), intent=-marker_hang('가.'),
+                    prev=prev['koreanSubheading'], next_value=0, line_spacing=heading_spacing),
+        '245': dict(align='LEFT', left=0, intent=0, prev=prev['chapter'], next_value=0, line_spacing=heading_spacing),
+    }[para_pr_id]
 COVER_CI_BOX_MM = (30, 30)  # 정사각형 제한 박스
 COVER_SLOGAN_BOX_MM = (150, 40)  # 본문 폭 기준 와이드 배너
 BODY_TITLE_FRAME_TABLE_ID = '2063551812'
@@ -115,18 +145,15 @@ STYLE_SETS = {
             '132', '204', '277', '307', '315', '338', '364', '414', '417', '512', '513', '514',
         },
         'bold_map': {'9': '19', '121': '364', '132': '364'},
-        # 제목 문단은 243을 쓴다(73과 기하는 같고 문단 위 간격만 있는 사본).
-        # 73을 직접 고치지 않는 이유: 표지·본문 시작 기관명 줄(:747)도 73을 쓴다.
-        'heading': {1: ('9', '1'), 2: ('132', '243'), 3: ('132', '243'), 4: ('132', '240')},
-        'heading_default': ('132', '243'),
-        'korean_subheading': ('132', '240'),
+        # 본문 문단 속성은 item_layout 조판 주석으로 고른다(render_layout_blocks). 제목 1단계
+        # 문서 제목만 이 표를 쓴다 — 번호 제목(243)·소제목(240)·항목(동적 248~)은 주석 기반.
+        'heading': {1: ('9', '1')},
+        'item_layout': True,
         # 목차 항목: 실물 양식 판정(2026-08-07)에 따라 표가 아닌 문단형으로 낸다.
         # 27=18pt 굵은 제목 계열, 241=목차 전용 문단(왼쪽·여백·200% — presentation_header가 주입).
         'toc_entry': ('27', '241'),
         'body': ('132', '238'),
-        'list_parapr': '239',
         'blockquote_parapr': '244',
-        'group_leader_parapr': '242',
         'cell_parapr': {'header': '246', 'body': '247'},
         'cell_charpr': {'header': '513', 'body': '514'},
         'table_anchor_parapr': '1',
@@ -185,7 +212,6 @@ def style_for_model(template, model):
     profile = resolve_layout_profile(model.get('metadata', {}))
     if template == 'boncheong' and profile.get('bodySizePt') == 13:
         style['body'] = ('132', '238')
-        style['list_parapr'] = '239'
     return style
 
 
@@ -645,7 +671,7 @@ def structured_heading_parts(text):
     return None
 
 
-def structured_heading_table(text, style):
+def structured_heading_table(text, style, anchor_parapr=None):
     parts = structured_heading_parts(text)
     config = (style.get('structured_heading') or {}).get(parts['kind'] if parts else '')
     if not parts or not config:
@@ -659,7 +685,7 @@ def structured_heading_table(text, style):
     label_para_id = next_id()
     title_cell_id = next_id()
     title_para_id = next_id()
-    anchor_parapr = (
+    anchor_parapr = anchor_parapr or (
         style.get('structured_heading_anchor_parapr', style['table_anchor_parapr'])
         if parts['kind'] == 'roman-chapter'
         else style['table_anchor_parapr']
@@ -893,7 +919,65 @@ def table_paragraph(block, styles, style=None):
     )
 
 
+def layout_para_pr(note):
+    """조판 주석 → 문단 속성 ID. 표준 기호의 제목은 고정 243·240, 그 밖은 동적 배정."""
+    left = indent_position(note['level'])
+    if note['role'] == 'item':
+        return dynamic_para_pr(align='JUSTIFY', left=left, intent=-note['hang'], prev=note['prev'],
+                               next_value=0, line_spacing=None, keep_with_next=0)
+    fixed_id, fixed_marker = {'heading1': ('243', '1.'), 'heading2': ('240', '가.')}[note['role']]
+    if note['keep'] and note['marker'] is not None and note['hang'] == marker_hang(fixed_marker):
+        return fixed_id
+    return dynamic_para_pr(align='LEFT', left=left, intent=-note['hang'], prev=note['prev'],
+                           next_value=0, line_spacing=note['lineSpacing'], keep_with_next=1 if note['keep'] else 0)
+
+
+def render_layout_blocks(blocks, styles, style):
+    """boncheong 본문 — item_layout 조판 주석으로 문단 속성을 고른다(V4 항목 위계·간격 척도).
+
+    서술형 제목은 항목(170%·다음 문단과 함께 없음)으로, 짧은 번호 제목·소제목만 제목 속성으로
+    낸다. 한글 실측에서 서술형 제목 19개가 다음 문단과 함께로 묶여 빈 쪽이 생겼던 결함의 수정.
+    빠른 미리보기(PlanPreview → itemLayout.js)와 같은 주석을 쓴다.
+    """
+    notes = layout_blocks(blocks, frame_kind=lambda text: (structured_heading_parts(text) or {}).get('kind'))
+    body_charpr = style['body'][0]
+    paragraphs = []
+    for block, note in zip(blocks, notes):
+        if block['type'] == 'table':
+            paragraphs.append(table_paragraph(block, styles, style))
+            continue
+        text = str(block.get('text') or '')
+        if re.fullmatch(r'\s*-{3,}\s*', text):
+            continue
+        role = note['role']
+        if role == 'frame':
+            # 연쇄 제한으로 다음 문단과 함께가 풀린 장 제목틀은 같은 기하의 해제본 앵커를 쓴다.
+            anchor = None
+            if note['prev'] and not note['keep']:
+                anchor = dynamic_para_pr(**fixed_heading_geometry('245'), keep_with_next=0)
+            framed = structured_heading_table(text, style, anchor_parapr=anchor)
+            if framed:
+                paragraphs.append(framed)
+                continue
+            role = 'heading'
+        if role == 'item':
+            paragraphs.append(text_para(f"{note['marker']} {note['text']}", body_charpr, layout_para_pr(note), style))
+        elif role in ('heading1', 'heading2'):
+            paragraphs.append(text_para(text, body_charpr, layout_para_pr(note), style))
+        elif role == 'quote':
+            paragraphs.append(text_para(text, body_charpr, style['blockquote_parapr'], style))
+        elif role == 'heading':
+            charpr, parapr = style['heading'][1]
+            paragraphs.append(text_para(text, charpr, parapr, style))
+        elif text:
+            charpr, parapr = style['body']
+            paragraphs.append(text_para(text, charpr, parapr, style))
+    return paragraphs
+
+
 def render_blocks(blocks, styles, style):
+    if style.get('item_layout'):
+        return render_layout_blocks(blocks, styles, style)
     paragraphs = []
     for block in blocks:
         if block['type'] == 'table':
@@ -995,11 +1079,14 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
         )
         if not para_properties:
             raise RuntimeError('header.xml에서 paraProperties를 찾지 못했습니다.')
-        custom_ids = {'238', '239', '240', '241', '242', '243', '244', '245', '246', '247'}
+        custom_ids = {str(para_id) for para_id in range(238, 248)} | set(DYNAMIC_PARA_PRS.values())
         # id 뒤에 `\b`를 붙이면 닫는 따옴표와 공백이 모두 비단어 문자라 경계가
         # 성립하지 않아 이 가드가 항상 통과했다. 닫는 따옴표만으로 이미 정확 일치다.
         if any(re.search(rf'<hh:paraPr id="{para_id}"', para_properties.group(4)) for para_id in custom_ids):
             raise RuntimeError(f'사용자 정의 문단 속성 ID {min(custom_ids)}~{max(custom_ids)}가 이미 사용 중입니다.')
+        template_para_ids = [int(value) for value in re.findall(r'<hh:paraPr id="(\d+)"', para_properties.group(4))]
+        if template_para_ids != list(range(len(template_para_ids))) or len(template_para_ids) != 238:
+            raise RuntimeError('boncheong 템플릿 paraPr 번호가 0~237 연속이 아닙니다 — 추가 속성 번호가 목록 위치와 어긋납니다.')
 
         def custom_para_pr(para_id, *, align, left, intent, prev, next_value, line_spacing, keep_with_next):
             margin = (
@@ -1031,14 +1118,15 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 '238', align='JUSTIFY', left=0, intent=0, prev=0,
                 next_value=0, line_spacing=170, keep_with_next=0,
             ),
+            # 239·242: 옛 목록·묶음 제목 속성 자리 — 참조하는 문단은 없지만 한글이 paraPrIDRef를
+            # 목록 위치로 찾으므로 번호를 비우면 뒤 속성이 모두 밀린다. 본문(238)과 같은 기하로 둔다.
             custom_para_pr(
-                '239', align='JUSTIFY', left=1600, intent=-1200, prev=0,
+                '239', align='JUSTIFY', left=0, intent=0, prev=0,
                 next_value=0, line_spacing=170, keep_with_next=0,
             ),
-            custom_para_pr(
-                '240', align='LEFT', left=800, intent=-800, prev=1000,
-                next_value=200, line_spacing=160, keep_with_next=1,
-            ),
+            # 240: 짧은 소제목(`가. 학생 대상`) — 1단계 들여쓰기, 위 간격은 척도값(4pt).
+            # 서술형 `가. …음.`은 항목(동적 속성)으로 나간다 — 10pt+2pt로 상위보다 넓던 역전 해소.
+            custom_para_pr('240', **fixed_heading_geometry('240'), keep_with_next=1),
             # 241: 문단형 목차 항목 — 왼쪽 정렬 + 좌측 여백으로 점·쪽번호 세로열을
             # 맞추고, 샘플 실측(210%)에 준하는 넉넉한 줄간격을 준다.
             custom_para_pr(
@@ -1046,30 +1134,22 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 next_value=0, line_spacing=200, keep_with_next=0,
             ),
             custom_para_pr(
-                '242', align='JUSTIFY', left=1600, intent=-1200,
-                prev=TOKENS['typography']['topicGroupLeader']['prevHwpUnit'],
+                '242', align='JUSTIFY', left=0, intent=0, prev=0,
                 next_value=0, line_spacing=170, keep_with_next=0,
             ),
-            # 243: 제목틀(표)을 쓰지 않는 제목 문단. 기하는 템플릿 paraPr 73과
-            # 같게 두고 문단 위 간격만 준다 — 번호 제목이 붙어 나오던 결함 해소.
-            # keep_with_next=1: 제목만 남고 본문이 다음 쪽으로 넘어가지 않게 한다.
-            custom_para_pr(
-                '243', align='LEFT', left=830, intent=-2130,
-                prev=TOKENS['typography']['numberedHeading']['prevHwpUnit'],
-                next_value=0, line_spacing=160, keep_with_next=1,
-            ),
+            # 243: 짧은 번호 제목(`1. 추진 배경`) — 제목틀(표) 없이 문단으로, 0단계 왼쪽 처음부터.
+            # keep_with_next=1: 제목만 남고 본문이 다음 쪽으로 넘어가지 않게 한다(연속 상한은
+            # item_layout 연쇄 제한이 지킨다). 서술형 `1. …함.`은 항목으로 나간다.
+            custom_para_pr('243', **fixed_heading_geometry('243'), keep_with_next=1),
             # 244: 인용문·비전 문구 — 본문보다 한 단계 안쪽으로 들여쓰되,
             # 다음 문단을 제목처럼 붙이지 않는다.
             custom_para_pr(
                 '244', align='LEFT', left=800, intent=-800, prev=300,
                 next_value=300, line_spacing=160, keep_with_next=0,
             ),
-            # 245: 본문 문단 다음 로마숫자 장 제목틀의 앵커 간격. 표 내부는
+            # 245: 로마숫자 장 제목틀의 앵커 — 장 경계는 척도 최대 간격(12pt). 표 내부는
             # 기존 앵커(1)를 유지하고, 장 제목 표 바깥에서만 위 간격을 준다.
-            custom_para_pr(
-                '245', align='LEFT', left=0, intent=0, prev=300,
-                next_value=0, line_spacing=160, keep_with_next=1,
-            ),
+            custom_para_pr('245', **fixed_heading_geometry('245'), keep_with_next=1),
             # 246·247: 모든 표 셀의 160% 줄간격(머리글 가운데·본문 양쪽정렬).
             custom_para_pr(
                 '246', align='CENTER', left=0, intent=0, prev=0,
@@ -1080,6 +1160,16 @@ def presentation_header(template, line_spacing_percent=None, para_next_hwpunit=0
                 next_value=0, line_spacing=160, keep_with_next=0,
             ),
         ]
+        # 동적 문단 속성(항목·연쇄 해제 제목) — 줄간격 None은 본문 줄간격(적응 조판 값 우선)을 따른다.
+        item_spacing = line_spacing_percent or ITEM_LAYOUT['lineSpacingPercent']['item']
+        for (align, left, intent, prev, next_value, spacing, keep), para_id in DYNAMIC_PARA_PRS.items():
+            custom_definitions.append(custom_para_pr(
+                para_id, align=align, left=left, intent=intent, prev=prev, next_value=next_value,
+                line_spacing=spacing if spacing is not None else item_spacing, keep_with_next=keep,
+            ))
+        appended_ids = [int(re.match(r'<hh:paraPr id="(\d+)"', definition).group(1)) for definition in custom_definitions]
+        if appended_ids != list(range(238, 238 + len(custom_definitions))):
+            raise RuntimeError(f'추가 문단 속성 번호가 238부터 연속이 아닙니다: {appended_ids}')
         additions = ''.join(custom_definitions)
         patched_para_properties = (
             f'{para_properties.group(1)}{int(para_properties.group(2)) + len(custom_definitions)}'
@@ -1163,6 +1253,7 @@ def build(model_path, output, template='gonmun', line_spacing_percent=None, para
     styles = model.get('styles', {})
     style = style_for_model(template, model)
     reset_id(1000)
+    DYNAMIC_PARA_PRS.clear()
     images = []
     if template == 'boncheong':
         profile = resolve_profile(model.get('metadata', {}))
